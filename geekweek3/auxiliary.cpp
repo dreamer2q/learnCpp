@@ -18,6 +18,12 @@ void cls(){
 	system("cls");
 }
 
+void setTitle(const char* title) {
+	char buf[100];
+	sprintf_s(buf, "title %s", title);
+	system(buf);
+}
+
 void initConsole(int width,int height){
 	char cmd[100];
 	sprintf_s(cmd,"mode con cols=%d lines=%d",width,height);
@@ -45,7 +51,7 @@ void printN(int *a,int n,int enter){
 	printf("\b\b ]%c",enter == 0?'\n':' ');
 	
 }
-void randonNumsGenerate(int *a,int n){
+void randomNumsGenerate(int *a,int n){
 	srand(time(NULL));
 	const int max = 99;
 	const int min = 1;
@@ -57,10 +63,18 @@ void randonNumsGenerate(int *a,int n){
 
 void clearLine(int y){
 	setPos(0,y);
-	for(int i=0;i<80;i++){
+	for(int i=0;i<_CONSOLE_COLUMNS_;i++){
 		putchar(' ');
 	}
 	setPos(0,y);
+}
+void printLine(char ch, int c) {
+	setColor(c);
+	for (int i = 0; i < _CONSOLE_COLUMNS_-1; i++) {
+		putchar(ch);
+	}
+	putchar('\n');
+	setColor(white);
 }
 
 void printC(const char *s,int c){
@@ -116,7 +130,7 @@ int getArrayAt(Array root, int position) {
 }
 int getArrayLength(Array root){
 	int length = 0;
-	while (root!=NULL && root->next != NULL) {
+	while (root != NULL && root->next != NULL) {
 		length++;
 		root = root->next;
 	}

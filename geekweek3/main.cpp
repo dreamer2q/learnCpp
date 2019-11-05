@@ -1,27 +1,95 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include <conio.h>
 
 #include "auxiliary.h"
 #include "algorithm.h"
 
 
+#define N 10 // test array size
 
+enum SELECTION {
+	M_EXIT=0,M_BUCKET, M_BUBBLE, M_MERGE,M_MORE=9
+};
+
+void init() {
+	hideCursor();
+	setTitle("Sort Algorithms Teaching Demo");
+	initConsole(_CONSOLE_COLUMNS_, _CONSOLE_LINES_);
+}
+
+int menu() {
+	cls();
+	printC("\t\tSort Algorithms Demo\n", red);
+	printLine('-', purple);
+
+	printC("\t\t1. ", blue);
+	printC("Bucket Sort\n", white);
+	printC("\t\t2. ", blue);
+	printC("Bubble Sort\n", white);
+	printC("\t\t3. ", blue);
+	printC("Merge  Sort\n", white);
+	printC("\t\t______________\n", yellow);
+	printC("\n\t\t9. ", blue);
+	printC("More Detail\n", white);
+	printC("\t\t0. ", blue);
+	printC("Exit\n", white);
+	printLine('-', purple);
+
+
+	setPos(0, _CONSOLE_LINES_ - 4);
+	printC("\t\tBy Jack Li\n\t\t",lightShadowGreen);
+	printC(__DATE__, shadowGreen);
+	printC("\n\tMore algorithms to be added", grey);
+	//printC(__TIME__, lightBright);
+
+	int opt;
+	while (true) {
+		opt = _getch() - '0';
+		switch (opt) {
+		case M_BUBBLE:
+		case M_BUCKET:
+		case M_MERGE:
+		case M_MORE:
+		case M_EXIT:return opt;
+
+		default: // not handle
+			continue;
+		}
+	}
+}
+void algorithmHandler(int select){
+	int a[N];
+	randomNumsGenerate(a, N); // important!
+
+	if (select == M_BUBBLE) {  // !!! do not use switch here !!!
+		bubbleSort(a, N);
+	}
+	else if (select == M_BUCKET) {
+		bucketSort(a, N);
+	}
+	else if (select == M_MERGE) {
+		mergeSort(a, N);
+	}
+	else if (select == M_MORE) {
+		// todo ...
+	}
+	else {
+		// not handle
+	}
+}
+void bye() {
+	//todo
+
+	_getch();
+}
 int main(){
-	
-	int a[10];
-	
-	randonNumsGenerate(a,10);
-	printN(a,10);
-	//cls();
-	
-	//bubbleSort(a,10);
-	//mergeSort(a,10);
-	bucketSort(a, 10);
-
-	printN(a,10);
-	
+	init();
+	int ret;
+	while ((ret = menu()) != M_EXIT) {
+		algorithmHandler(ret);
+	}
+	bye();
 	return 0;
-} 
-
-
+}

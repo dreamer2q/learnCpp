@@ -7,6 +7,9 @@
 #include <stdlib.h>
 #include <stdio.h> 
 
+#define _CONSOLE_LINES_ 30
+#define _CONSOLE_COLUMNS_ 60
+
 enum Color{
 	black = 0,blue,green,lightGreen,red,purple,yellow,white,grey,lightBlue,shadowGreen,lightShadowGreen,lightRed,lightPurple,lightYellow,lightBright
 /*
@@ -39,9 +42,11 @@ void setColor(int c);
 void initConsole(int width,int height);
 void hideCursor();
 void printN(int *a,int n,int enter = 0);
-void randonNumsGenerate(int *a,int n);
+void randomNumsGenerate(int *a,int n);
 void cls();
 void clearLine(int y);
 void printC(const char *s,int c); 
-
+void setTitle(const char* title);
+void initConsole(int width, int height);
+void printLine(char ch, int c);
 #endif
