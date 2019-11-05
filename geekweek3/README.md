@@ -23,7 +23,7 @@ BubbleSort(a,n)
 
 ```python
 BucketSort(a)
-  var buckets[]
+  var buckets[][]
   for value in a
       index = map(value)
       buckets[index].append(value)
