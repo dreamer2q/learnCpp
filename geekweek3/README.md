@@ -64,11 +64,45 @@ Merge(left,right)
 
 归并排序是一种稳定的排序方法。和选择排序一样，归并排序的性能不受输入数据的影响，但表现比选择排序好的多，因为始终都是O(nlogn）的时间复杂度。代价是需要额外的内存空间。
 
+# 快速排序(Quick Sort)
+
+**快速排序的基本思想：** 通过一趟排序将待排记录分隔成独立的两部分，其中一部分记录的关键字均比另一部分的关键字小，则可分别对这两部分记录继续进行排序，以达到整个序列有序。
+
+快速排序使用分治法来把一个串（list）分为两个子串（sub-lists）。具体算法描述如下：
+
+- 从数列中挑出一个元素，称为 “基准”（pivot）；
+- 重新排序数列，所有元素比基准值小的摆放在基准前面，所有元素比基准值大的摆在基准的后面（相同的数可以到任一边）。在这个分区退出之后，该基准就处于数列的中间位置。这个称为分区（partition）操作；
+- 递归地（recursive）把小于基准值元素的子数列和大于基准值元素的子数列排序。
+
+```python
+QuickSort(a,left,right)    
+    if left < right
+        pivot = a[left]
+        l = left
+        r = right
+        while l < r
+            while l < r and pivot < a[r]
+                r--
+            if l < r
+                swap(a[l],a[r])
+                l++
+            while l < r and pivot > a[l]
+                l++
+            if l < r
+                swap(a[l],a[r])
+                r--
+        a[l] = pivot
+        QuickSort(a,left,i-1)
+        QuickSort(a,i+1,right)
+```
+快速排序不稳定，时间复杂度平均O(NlogN),最坏O(N^2)
+
 # TODO
 
 - [x] BucketSort
 - [x] BubbleSort
 - [x] MergeSort
+- [x] QuickSort
 
 - [ ] 完成新排序
 - [ ] 排序过程的可视化

@@ -74,6 +74,7 @@ void algorithmHandler(int select){
 	}
 	else if (select == M_MORE) {
 		// todo ...
+		ShellExecute(NULL, NULL, TEXT("https://github.com/dreamer2q/learnCpp/tree/master/geekweek3"), NULL, NULL, 1);
 	}
 	else {
 		// not handle
