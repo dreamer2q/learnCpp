@@ -52,7 +52,7 @@ void printN(int *a,int n,int enter){
 	
 }
 void randomNumsGenerate(int *a,int n){
-	srand(time(NULL));
+	
 	const int max = 99;
 	const int min = 1;
 	for(int i=0;i<n;i++){

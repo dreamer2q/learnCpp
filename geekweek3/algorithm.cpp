@@ -7,7 +7,6 @@
 #include "auxiliary.h"
 
 
-
 void pBubbleSort() {
 	printf("∏¥‘”∂»a=O(N^2) Œ»∂®\n");
 	_getch();
@@ -17,6 +16,58 @@ void pBucketSort() {
 	_getch();
 }
 
+void selectionSort(int* a, int n) {
+
+	for (int i = 0; i < n - 1; i++) {
+		int min = i;
+		for (int j = i+1; j < n; j++) {
+			if (a[min] > a[j]) {
+				min = j;
+			}
+		}
+		if (i != min) {
+			int t = a[min];
+			a[min] = a[i];
+			a[i] = t;
+		}
+	}
+}
+void insertSort1(int* a, int n) { //based on array
+	int* ret = (int*)malloc(sizeof(int) * n);
+	if (ret == NULL) {
+		fprintf(stderr, "Malloc failed\n");
+		return;			//shit! how could it go wrong?!/@?
+	}
+	memcpy(ret, a, sizeof(int) * n);
+	memset(a, 0,sizeof(int)*n);
+	int length = 0;
+	for (int i = 0; i < n; i++) {
+		int index = 0;
+		for (int j = 0; j < length; j++) {
+			if (ret[i] >= a[j]) {
+				index++;
+			}
+		}
+		for (int j = n - 1; j > index; j--) {
+			a[j] = a[j - 1];
+		}
+		a[index] = ret[i];
+		length++;
+	}
+	free(ret);
+}
+
+void insertSort2(int *a,int n) { //based on Linked list tidy and nice
+	Array ret = makeArray();
+	for (int i = 0; i < n; i++) {
+		insertElementByOrder(ret, a[i]);
+	}
+	int length = getArrayLength(ret);
+	for (int i = 0; i < length; i++) {
+		a[i] = getArrayAt(ret, i);
+	}
+	deleteArray(ret);
+}
 
 int* _merge(int *left,int nleft,int *right,int nright){
 	

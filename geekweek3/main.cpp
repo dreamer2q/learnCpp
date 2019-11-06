@@ -10,13 +10,15 @@
 #define N 10 // test array size
 
 enum SELECTION {
-	M_EXIT=0,M_BUCKET, M_BUBBLE, M_MERGE,M_QUICK,M_MORE=9
+	M_EXIT=0,M_BUCKET, M_BUBBLE, M_MERGE,M_QUICK,M_INSERT,
+	M_MORE=9
 };
 
 void init() {
 	hideCursor();
 	setTitle("Sort Algorithms Teaching Demo");
 	initConsole(_CONSOLE_COLUMNS_, _CONSOLE_LINES_);
+	srand(time(NULL));
 }
 
 int menu() {
@@ -32,6 +34,8 @@ int menu() {
 	printC("Merge  Sort\n", white);
 	printC("\t\t4. ", blue);
 	printC("Quick  Sort\n", white);
+	printC("\t\t5. ", blue);
+	printC("Insert Sort\n", white);
 	printC("\t\t______________\n", yellow);
 	printC("\n\t\t9. ", blue);
 	printC("More Detail\n", white);
@@ -54,6 +58,7 @@ int menu() {
 		case M_BUCKET:
 		case M_MERGE:
 		case M_QUICK:
+		case M_INSERT:
 		case M_MORE:
 		case M_EXIT:return opt;
 
@@ -80,11 +85,29 @@ void algorithmHandler(int select){
 		printN(a, N);
 		quickSort(a,0, N-1);
 		printN(a, N);
+		printf("\n");
+
+		randomNumsGenerate(a, N);
 		printN(a, N);
 		quickSort(a,0, N - 1);
 		printN(a, N);
+		printf("\n");
+
+		randomNumsGenerate(a, N);
 		printN(a, N);
 		quickSort(a,0, N - 1);
+		printN(a, N);
+		_getch();
+	}
+	else if (select = M_INSERT) {
+		cls();
+		printN(a, N);
+		insertSort1(a, N);
+		printN(a, N);
+		printf("\n");
+		randomNumsGenerate(a, N);
+		printN(a, N);
+		insertSort2(a, N);
 		printN(a, N);
 		_getch();
 	}
