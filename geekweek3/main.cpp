@@ -11,7 +11,7 @@
 
 enum SELECTION {
 	M_EXIT=0,M_BUCKET, M_BUBBLE, M_MERGE,M_QUICK,M_INSERT,M_COUNT,
-	M_SHELL,
+	M_SHELL,M_RADIX,
 	M_MORE=9
 };
 
@@ -41,6 +41,8 @@ int menu() {
 	printC("Shell  Sort\n", white);
 	printC("\t\t7. ", blue);
 	printC("Counting Sort\n", white);
+	printC("\t\t8. ", blue);
+	printC("Radix Sort\n", white);
 	printC("\t\t______________\n", yellow);
 	printC("\n\t\t9. ", blue);
 	printC("More Detail\n", white);
@@ -66,6 +68,7 @@ int menu() {
 		case M_INSERT:
 		case M_SHELL:
 		case M_COUNT:
+		case M_RADIX:
 		case M_MORE:
 		case M_EXIT:return opt;
 
@@ -131,6 +134,14 @@ void algorithmHandler(int select){
 		printf("Counting Sort\n");
 		printN(a, N);
 		countingSort(a, N);
+		printN(a, N);
+		_getch();
+	}
+	else if (select == M_RADIX) {
+		cls();
+		printf("Radix Sort\n");
+		printN(a, N);
+		radixSort(a, N);
 		printN(a, N);
 		_getch();
 	}

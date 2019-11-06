@@ -14,7 +14,7 @@
 
 冒泡排序是一种简单的排序算法。它重复地走访过要排序的数列，一次比较两个元素，如果它们的顺序错误就把它们交换过来。走访数列的工作是重复地进行直到没有再需要交换，也就是说该数列已经排序完成。这个算法的名字由来是因为越小的元素会经由交换慢慢“浮”到数列的顶端。 
 
-```python
+```go
 BubbleSort(a,n)
   for i range 0 to n-1
       for j range 0 to n-i-1
@@ -35,7 +35,7 @@ n个记录的直接选择排序可经过n-1趟直接选择排序得到有序结�
 - 初始状态：无序区为R[1..n]，有序区为空；
 - 第i趟排序(i=1,2,3…n-1)开始时，当前有序区和无序区分别为R[1..i-1]和R(i..n）。该趟排序从当前无序区中-选出关键字最小的记录 R[k]，将它与无序区的第1个记录R交换，使R[1..i]和R[i+1..n)分别变为记录个数增加1个的新有序区和记录个数减少1个的新无序区；
 - n-1趟结束，数组有序化了。
-```js
+```go
 SelectionSort(a)
     for i range 0 to a.length - 1
         min = i
@@ -61,7 +61,7 @@ SelectionSort(a)
 - 将新元素插入到该位置后；
 - 重复步骤2~5。
 
-```js
+```go
 InsertSort(a)
     var ret[]
     for i range 0 to a.length
@@ -83,7 +83,7 @@ InsertSort(a)
 - 选择一个增量序列t1，t2，…，tk，其中ti>tj，tk=1；
 - 按增量序列个数k，对序列进行k 趟排序；
 - 每趟排序，根据对应的增量ti，将待排序列分割成若干长度为m 的子序列，分别对各子表进行直接插入排序。仅增量因子为1 时，整个序列作为一个表来处理，表长度即为整个序列的长度。
-```python
+```go
 ShellSort(a,n)
     for gap = n/2 ; gap > 0 ; gap /= 2 
         for i range gap to n
@@ -100,7 +100,7 @@ ShellSort(a,n)
 
 桶排序是计数排序的升级版。它利用了函数的映射关系，高效与否的关键就在于这个映射函数的确定。桶排序 (Bucket sort)的工作的原理：假设输入数据服从均匀分布，将数据分到有限数量的桶里，每个桶再分别排序（有可能再使用别的排序算法或是以递归方式继续使用桶排序进行排）。
 
-```python
+```go
 BucketSort(a)
   var buckets[][]
   for value in a
@@ -120,7 +120,7 @@ BucketSort(a)
 
 归并排序是建立在归并操作上的一种有效的排序算法。该算法是采用分治法（Divide and Conquer）的一个非常典型的应用。将已有序的子序列合并，得到完全有序的序列；即先使每个子序列有序，再使子序列段间有序。若将两个有序表合并成一个有序表，称为2-路归并。 
 
-```python
+```go
 MergeSort(a)
     if a.length <= 1
         return a
@@ -153,7 +153,7 @@ Merge(left,right)
 - 重新排序数列，所有元素比基准值小的摆放在基准前面，所有元素比基准值大的摆在基准的后面（相同的数可以到任一边）。在这个分区退出之后，该基准就处于数列的中间位置。这个称为分区（partition）操作；
 - 递归地（recursive）把小于基准值元素的子数列和大于基准值元素的子数列排序。
 
-```js
+```go
 QuickSort(a,left,right)    
     if left < right
         pivot = a[left]
@@ -184,7 +184,7 @@ QuickSort(a,left,right)
 - 将堆顶元素R[1]与最后一个元素R[n]交换，此时得到新的无序区(R1,R2,……Rn-1)和新的有序区(Rn),且满足R[1,2…n-1]<=R[n]；
 - 由于交换后新的堆顶R[1]可能违反堆的性质，因此需要对当前无序区(R1,R2,……Rn-1)调整为新堆，然后再次将R[1]与无序区最后一个元素交换，得到新的无序区(R1,R2….Rn-2)和新的有序区(Rn-1,Rn)。不断重复此过程直到有序区的元素个数为n-1，则整个排序过程完成。
 
-```js
+```go
 
 ```
 
@@ -198,7 +198,7 @@ QuickSort(a,left,right)
 - 对所有的计数累加（从C中的第一个元素开始，每一项和前一项相加）；
 - 反向填充目标数组：将每个元素i放在新数组的第C(i)项，每放一个元素就将C(i)减去1。
 
-```python
+```go
 CountingSort(a)
     var ret[]
     for v in a
@@ -221,7 +221,7 @@ CountingSort(a)
 - arr为原始数组，从最低位开始取每个位组成radix数组；
 - 对radix进行计数排序（利用计数排序适用于小范围数的特点）;
 
-```python
+```go
 RadixSort(a)
     digits = getDigits(getMax(a))
     
@@ -249,11 +249,13 @@ RadixSort(a)
 - [x] SelectionSort
 - [x] InsertSort
 - [x] ShellSort
+- [x] CountingSort
+- [x] RadixSort
 ---
-- [ ] 完成新排序
+- [ ] Heap Sort
+- [ ] 学习堆，二叉树
+- [ ] 实现动态数组
+---
 - [ ] 排序过程的可视化
 - [ ] 排序时间复杂度的可视化
 - [ ] 不同排序算法的时间比较
-
-
-

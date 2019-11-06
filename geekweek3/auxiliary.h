@@ -50,4 +50,5 @@ void setTitle(const char* title);
 void initConsole(int width, int height);
 void printLine(char ch, int c);
 int getMaxIn(int* a, int n);
+int _pow(int base, int n);
 #endif

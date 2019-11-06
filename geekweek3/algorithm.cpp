@@ -18,11 +18,28 @@ void pBucketSort() {
 
 void radixSort(int* a, int n) {
 	int max = getMaxIn(a, n);
-	int digits = 0;
+	int digits = 1;
 	while (max /= 10) {
 		digits++;
 	}
-
+	for (int i = 0; i < digits; i++) {
+		Array arr[10];
+		for (int j = 0; j < 10; j++) {
+			arr[j] = makeArray();
+		}
+		for (int j = 0; j < n; j++) {
+			int index = (a[j] % _pow(10, i + 1)) / _pow(10, i);
+			insertElementByOrder(arr[index], a[j]);
+		}
+		int index = 0;
+		for (int j = 0; j < 10; j++) {
+			int length = getArrayLength(arr[j]);
+			for (int z = 0; z < length; z++) {
+				a[index++] = getArrayAt(arr[j], z);
+			}
+			deleteArray(arr[j]);
+		}
+	}
 }
 
 void countingSort(int* a, int n) {

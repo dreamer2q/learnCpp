@@ -93,6 +93,14 @@ int getMaxIn(int* a, int n) {
 	return max;
 }
 
+int _pow(int base, int n){
+	int ret = 1;
+	for (int i = 0; i < n; i++) {
+		ret *= base;
+	}
+	return ret;
+}
+
 Array makeArray(){
 	Array ret = (Array)malloc(sizeof(struct tagArray));
 	if (ret != NULL) {
