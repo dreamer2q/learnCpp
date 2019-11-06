@@ -21,6 +21,6 @@
 int* mergeSort(int* a, int n);
 void bubbleSort(int *a,int n);
 void bucketSort(int* a, int n);
-
+void quickSort(int* a, int left, int right);
 
 #endif

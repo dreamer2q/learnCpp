@@ -10,7 +10,7 @@
 #define N 10 // test array size
 
 enum SELECTION {
-	M_EXIT=0,M_BUCKET, M_BUBBLE, M_MERGE,M_MORE=9
+	M_EXIT=0,M_BUCKET, M_BUBBLE, M_MERGE,M_QUICK,M_MORE=9
 };
 
 void init() {
@@ -30,6 +30,8 @@ int menu() {
 	printC("Bubble Sort\n", white);
 	printC("\t\t3. ", blue);
 	printC("Merge  Sort\n", white);
+	printC("\t\t4. ", blue);
+	printC("Quick  Sort\n", white);
 	printC("\t\t______________\n", yellow);
 	printC("\n\t\t9. ", blue);
 	printC("More Detail\n", white);
@@ -51,6 +53,7 @@ int menu() {
 		case M_BUBBLE:
 		case M_BUCKET:
 		case M_MERGE:
+		case M_QUICK:
 		case M_MORE:
 		case M_EXIT:return opt;
 
@@ -71,6 +74,19 @@ void algorithmHandler(int select){
 	}
 	else if (select == M_MERGE) {
 		mergeSort(a, N);
+	}
+	else if (select == M_QUICK) {
+		cls();
+		printN(a, N);
+		quickSort(a,0, N-1);
+		printN(a, N);
+		printN(a, N);
+		quickSort(a,0, N - 1);
+		printN(a, N);
+		printN(a, N);
+		quickSort(a,0, N - 1);
+		printN(a, N);
+		_getch();
 	}
 	else if (select == M_MORE) {
 		// todo ...

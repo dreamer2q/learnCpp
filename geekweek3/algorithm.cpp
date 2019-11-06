@@ -215,4 +215,30 @@ void bucketSort(int* a, int n) {
 	setColor(white);
 }
 
+void quickSort(int* a, int left, int right) {
+	if (left < right) {
+		int l = left;
+		int r = right;
+		int k = a[left];
+		while (l < r) {
+			while (l < r && k < a[r]) {
+				r--;
+			}
+			if (l < r) {
+				a[l] = a[r];
+				l++;
+			}
+			while (l < r && a[l] <= k) {
+				l++;
+			}
+			if (l < r) {
+				a[r] = a[l];
+				r--;
+			}
+		}
+		a[l] = k;
+		quickSort(a, left, l - 1);
+		quickSort(a, l + 1, right);
+	}
+}
 
