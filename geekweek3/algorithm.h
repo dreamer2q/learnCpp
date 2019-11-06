@@ -25,5 +25,6 @@ void quickSort(int* a, int left, int right);
 void insertSort1(int* a, int n); //array
 void insertSort2(int* a, int n); //linked list
 void selectionSort(int* a, int n);
+void shellSort(int* a, int n);
 
 #endif

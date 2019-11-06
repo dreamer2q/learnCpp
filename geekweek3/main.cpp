@@ -11,6 +11,7 @@
 
 enum SELECTION {
 	M_EXIT=0,M_BUCKET, M_BUBBLE, M_MERGE,M_QUICK,M_INSERT,
+	M_SHELL,
 	M_MORE=9
 };
 
@@ -36,6 +37,8 @@ int menu() {
 	printC("Quick  Sort\n", white);
 	printC("\t\t5. ", blue);
 	printC("Insert Sort\n", white);
+	printC("\t\t6. ", blue);
+	printC("Shell  Sort\n", white);
 	printC("\t\t______________\n", yellow);
 	printC("\n\t\t9. ", blue);
 	printC("More Detail\n", white);
@@ -60,6 +63,7 @@ int menu() {
 		case M_QUICK:
 		case M_INSERT:
 		case M_MORE:
+		case M_SHELL:
 		case M_EXIT:return opt;
 
 		default: // not handle
@@ -99,7 +103,7 @@ void algorithmHandler(int select){
 		printN(a, N);
 		_getch();
 	}
-	else if (select = M_INSERT) {
+	else if (select == M_INSERT) {
 		cls();
 		printN(a, N);
 		insertSort1(a, N);
@@ -108,6 +112,14 @@ void algorithmHandler(int select){
 		randomNumsGenerate(a, N);
 		printN(a, N);
 		insertSort2(a, N);
+		printN(a, N);
+		_getch();
+	}
+	else if (select == M_SHELL) {
+		cls();
+		printf("Shell Sort\n");
+		printN(a, N);
+		shellSort(a, N);
 		printN(a, N);
 		_getch();
 	}

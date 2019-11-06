@@ -16,6 +16,24 @@ void pBucketSort() {
 	_getch();
 }
 
+void shellSort(int* a, int n) {
+
+	for (int gap = n / 2; gap > 0; gap /= 2) {
+		
+		for (int i = gap; i < n; i++) {
+
+			int j = i;
+			int cur = a[j];
+			while (j - gap >= 0 && cur < a[j - gap]) {
+				a[j] = a[j - gap];
+				j -= gap;
+			}
+			a[j] = cur;
+		}
+	}
+}
+
+
 void selectionSort(int* a, int n) {
 
 	for (int i = 0; i < n - 1; i++) {
