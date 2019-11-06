@@ -49,4 +49,5 @@ void printC(const char *s,int c);
 void setTitle(const char* title);
 void initConsole(int width, int height);
 void printLine(char ch, int c);
+int getMaxIn(int* a, int n);
 #endif

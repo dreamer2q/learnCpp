@@ -198,9 +198,19 @@ QuickSort(a,left,right)
 - 对所有的计数累加（从C中的第一个元素开始，每一项和前一项相加）；
 - 反向填充目标数组：将每个元素i放在新数组的第C(i)项，每放一个元素就将C(i)减去1。
 
-```js
-
+```python
+CountingSort(a)
+    var ret[]
+    for v in a
+        ret[v]++
+    index = 0
+    for i range 0 to ret.length
+        while ret[i] > 0
+            a[index] = i
+            ret[i]--
+            index++
 ```
+
 计数排序是一个稳定的排序算法。当输入的元素是 n 个 0到 k 之间的整数时，时间复杂度是O(n+k)，空间复杂度也是O(n+k)，其排序速度快于任何比较排序算法。当k不是很大并且序列比较集中时，计数排序是一个很有效的排序算法。
 
 # 基数排序(Radix Sort)
@@ -211,12 +221,25 @@ QuickSort(a,left,right)
 - arr为原始数组，从最低位开始取每个位组成radix数组；
 - 对radix进行计数排序（利用计数排序适用于小范围数的特点）;
 
-```js
-
+```python
+RadixSort(a)
+    digits = getDigits(getMax(a))
+    
+    for i range 0 to digits
+        var buckets[]  //each time make it empty
+        for v in a
+            index = (v % pow(10,i+1)) / pow(10,i)
+            buckets[index].push(v)
+        index = 0
+        for bucket in buckets
+            if bucket.length > 0
+                for v in bucket
+                    a[index] = v
+                    index++
 ```
 基数排序基于分别排序，分别收集，所以是稳定的。但基数排序的性能比桶排序要略差，每一次关键字的桶分配都需要O(n)的时间复杂度，而且分配之后得到新的关键字序列又需要O(n)的时间复杂度。假如待排数据可以分为d个关键字，则基数排序的时间复杂度将是O(d*2n) ，当然d要远远小于n，因此基本上还是线性级别的。
 
-】
+
 # TODO
 
 - [x] BucketSort

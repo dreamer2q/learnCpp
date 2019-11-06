@@ -10,7 +10,7 @@
 #define N 10 // test array size
 
 enum SELECTION {
-	M_EXIT=0,M_BUCKET, M_BUBBLE, M_MERGE,M_QUICK,M_INSERT,
+	M_EXIT=0,M_BUCKET, M_BUBBLE, M_MERGE,M_QUICK,M_INSERT,M_COUNT,
 	M_SHELL,
 	M_MORE=9
 };
@@ -39,6 +39,8 @@ int menu() {
 	printC("Insert Sort\n", white);
 	printC("\t\t6. ", blue);
 	printC("Shell  Sort\n", white);
+	printC("\t\t7. ", blue);
+	printC("Counting Sort\n", white);
 	printC("\t\t______________\n", yellow);
 	printC("\n\t\t9. ", blue);
 	printC("More Detail\n", white);
@@ -62,8 +64,9 @@ int menu() {
 		case M_MERGE:
 		case M_QUICK:
 		case M_INSERT:
-		case M_MORE:
 		case M_SHELL:
+		case M_COUNT:
+		case M_MORE:
 		case M_EXIT:return opt;
 
 		default: // not handle
@@ -120,6 +123,14 @@ void algorithmHandler(int select){
 		printf("Shell Sort\n");
 		printN(a, N);
 		shellSort(a, N);
+		printN(a, N);
+		_getch();
+	}
+	else if (select == M_COUNT) {
+		cls();
+		printf("Counting Sort\n");
+		printN(a, N);
+		countingSort(a, N);
 		printN(a, N);
 		_getch();
 	}

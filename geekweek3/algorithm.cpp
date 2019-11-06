@@ -16,6 +16,40 @@ void pBucketSort() {
 	_getch();
 }
 
+void radixSort(int* a, int n) {
+	int max = getMaxIn(a, n);
+	int digits = 0;
+	while (max /= 10) {
+		digits++;
+	}
+
+}
+
+void countingSort(int* a, int n) {
+	
+	int max = getMaxIn(a, n);
+	max++; // ensure there is enough space
+	int* ret = (int*)malloc(sizeof(int) * max);
+	memset(ret, 0, sizeof(int) * max);
+	if (NULL == ret) {
+		fprintf(stderr, "Malloc Error");
+		return;
+	}
+
+	for (int i = 0; i < n; i++) {
+		ret[a[i]]++;
+	}
+	int index = 0;
+	for (int i = 0; i < max; i++) {
+		while (ret[i] > 0) {
+			a[index] = i;
+			ret[i]--;
+			index++;
+		}
+	}
+	free(ret);
+}
+
 void shellSort(int* a, int n) {
 
 	for (int gap = n / 2; gap > 0; gap /= 2) {
@@ -32,7 +66,6 @@ void shellSort(int* a, int n) {
 		}
 	}
 }
-
 
 void selectionSort(int* a, int n) {
 
