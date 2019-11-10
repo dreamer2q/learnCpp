@@ -16,7 +16,9 @@ int main() {
 	GAME game(WIDTH, HEIGHT);
 
 	game.init();
-	game.startPersonVsPerson();
+	//game.startPersonVsPerson();
+	
+	game.startPersonVsAI();
 
 	return 0;
 }

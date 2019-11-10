@@ -2,6 +2,8 @@
 
 #include <easyx.h>
 
+#include "AI.h"
+
 class MAP {
 
 public:
@@ -13,6 +15,9 @@ public:
 	void unputChessRect();
 	void triggerMouseEvent(MOUSEMSG *msg);
 	void triggerKeyboardEvent(char c);
+	void setAI(class AI *p);
+	void nextPlayer();
+	int getCurPlayer();
 	int hasWinner(); // 0 no 1 black 2 white -1 draw
 	
 	MAP(int x,int y,int width, int height);
@@ -36,4 +41,6 @@ private:
 	IMAGE* m_pt;
 	int curPlayer = 0; // odd = black , even = white;
 	int gap;
+
+	class AI *m_ai;
 };

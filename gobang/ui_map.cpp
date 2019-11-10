@@ -22,9 +22,13 @@ void MAP::drawMap() { 	//size 15x15 = 225
 void MAP::putChess(int rows, int lines){
 	if (inMap(rows,lines)) {
 		if (m_map[rows][lines] == 0) {
-			m_map[rows][lines] = curPlayer++ % 2 ? 1 : 2;
+			m_map[rows][lines] = getCurPlayer();
 			drawChess(rows, lines);
 			updateImg();
+			if (m_ai) {
+				m_ai->putchess(rows, lines, getCurPlayer());
+			}
+			nextPlayer();
 		}
 	}
 }
@@ -81,6 +85,18 @@ void MAP::triggerMouseEvent(MOUSEMSG* msg) {
 
 void MAP::triggerKeyboardEvent(char c){
 
+}
+
+void MAP::setAI(AI* p){
+	m_ai = p;
+}
+
+int MAP::getCurPlayer(){
+	return curPlayer % 2 ? 1 : 2;
+}
+
+void MAP::nextPlayer() {
+	curPlayer++;
 }
 
 int MAP::hasWinner(){

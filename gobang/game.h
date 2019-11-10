@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ui_map.h"
+#include "AI.h"
 
 class GAME{
 public:
@@ -13,6 +14,8 @@ public:
 
 private:
 	MAP* map;
+	AI *ai;
 	int m_width, m_height;
+	int playerAI, playerPerson;
 };
 
