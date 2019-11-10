@@ -13,12 +13,14 @@ public:
 	void setMap(class MAP *m);
 	int getAiRole();
 
+	int evaluteBoard(int player);
+
 	AI(int player,int ai);
 
 private:
 	int evalutePos(int x, int y);
 	int evaluteLine(char* line);
-	int evaluteBoard(int player);
+	
 	const char* isMatched(const char* searchStr, const char* subStr);
 
 	typedef struct TagEvaluteMap {

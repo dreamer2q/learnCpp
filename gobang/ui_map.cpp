@@ -25,8 +25,15 @@ void MAP::putChess(int rows, int lines){
 			m_map[rows][lines] = getCurPlayer();
 			drawChess(rows, lines);
 			updateImg();
+
 			if (m_ai) {
 				m_ai->putchess(rows, lines, getCurPlayer());
+			}
+			if (1) {
+				int boardVal = m_ai->evaluteBoard(getCurPlayer());
+				TCHAR s[100];
+				wsprintf(s, _T("Score is %d\nPlayer is %d\n"), boardVal, getCurPlayer());
+				MessageBox(GetHWnd(), s, _T("INFO"), MB_OK);
 			}
 			nextPlayer();
 		}

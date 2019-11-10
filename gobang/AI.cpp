@@ -132,15 +132,16 @@ int AI::evalutePos(int x, int y){
 				break;
 			}
 		}
-		
 	}
-
 	m_map[x][y] = 0;
 	return score;
 }
 
 int AI::evaluteLine(char* line) {
 	int score = 0;
+	if (strlen(line) < 5) {
+		return 0;
+	}
 	for (int i = 0; i < 16; i++) {
 		if (isMatched(line,m_evaluteMap[i].t)){
 			score += m_evaluteMap[i].score;
@@ -154,26 +155,54 @@ int AI::evaluteBoard(int player){
 	int score = 0;
 	char c[3];
 	c[0] = '+';
-	c[m_ai] = '0';
-	c[m_player] = 'A';
+	c[player] = '0';
+	c[player == m_ai?m_player:m_ai] = 'A';
 
-	
 	for (int i = 0; i < 15; i++) {
 		char t[16] = { 0 };
-		for (int j = 0; j < 15; j++) {
+		for (int j = 0; j < 15; j++) {		/* -- */
 			t[j] = c[m_map[i][j]];
 		}
 		score += evaluteLine(t);
-		t[16] = { 0 };
-		for (int j = 0; j < 15; j++) {
+		memset(t, 0, sizeof(t));
+		for (int j = 0; j < 15; j++) {		/* | */
 			t[j] = c[m_map[j][i]];
 		}
 		score += evaluteLine(t);
+		memset(t, 0, sizeof(t));
+		for (int j = 0,x=i,y=0,index=0; j < 15; j++,x++,y++) {		/* \ */
+			if (x < 15 && y < 15) {
+				t[index++] = c[m_map[x][y]];
+			}
+		}
+		score += evaluteLine(t);
+		memset(t, 0, sizeof(t));
+		for (int j = 0, x = 0, y = i, index = 0; j < 15; j++, x++, y++) {		/* \ */
+			if (x < 15 && y < 15) {
+				t[index++] = c[m_map[x][y]];
+			}
+		}
+		if (i != 0) { //skip 
+			score += evaluteLine(t);
+		}
+		memset(t, 0, sizeof(t));
+		for (int j = 0, x = 14 - i, y = 0, index = 0; j < 15; j++, x--, y++) {		/* / */
+			if (x >= 0 && x < 15 && y < 15 && y >= 0) {
+				t[index++] = c[m_map[x][y]];
+			}
+		}
+		score += evaluteLine(t);
+		memset(t, 0, sizeof(t));
+		for (int j = 0, x = 14, y = i, index = 0; j < 15; j++, x--, y++) {		/* / */
+			if (x >= 0 && x < 15 && y < 15 && y >= 0) {
+				t[index++] = c[m_map[x][y]];
+			}
+		}
+		if (i != 0) { //skip 
+			score += evaluteLine(t);
+		}
 	}
-	
-
-
-	return 0;
+	return score;
 }
 
 const char* AI::isMatched(const char* searchStr, const char* subStr){

@@ -41,16 +41,18 @@ int GAME::startPersonVsAI() {
 		if (MouseHit()) {
 			msg = GetMouseMsg();
 			map->triggerMouseEvent(&msg);
+
 			if (map->getCurPlayer() == playerAI) {
 				int x, y;
 				int ret = ai->searchBestPos(&x, &y);
-				
+
 				TCHAR s[100];
-				wsprintf(s, _T("Score is %d\nPos:%d,%d\n"),ret,x,y);
+				wsprintf(s, _T("Score is %d\nPos:%d,%d\n"), ret, x, y);
 				MessageBox(GetHWnd(), s, _T("INFO"), MB_OK);
 
 				map->putChess(x, y);
 			}
+
 			int winner = map->hasWinner();
 			if (winner) {
 				TCHAR s[100];
