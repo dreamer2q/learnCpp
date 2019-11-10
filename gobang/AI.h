@@ -17,6 +17,9 @@ public:
 
 private:
 	int evalutePos(int x, int y);
+	int evaluteLine(char* line);
+	int evaluteBoard(int player);
+	const char* isMatched(const char* searchStr, const char* subStr);
 
 	typedef struct TagEvaluteMap {
 		int n;

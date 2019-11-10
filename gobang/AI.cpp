@@ -7,7 +7,7 @@
 int AI::searchBestPos(int* x, int* y){
 
 	int bestX, bestY;
-	int score = -1;
+	int score = 0;
 	for (int i = 0; i < 15; i++) {
 		for (int j = 0; j < 15; j++) {
 			if (m_map[i][j]) {
@@ -82,7 +82,7 @@ AI::AI(int player, int ai) {
 int AI::evalutePos(int x, int y){
 	
 	int score = 0;
-	m_map[x][y] = m_player;
+	m_map[x][y] = m_ai;
 
 	char c[3];
 	c[0] = '+';
@@ -113,16 +113,20 @@ int AI::evalutePos(int x, int y){
 			break;
 		}
 		char t[10] = { 0 };
+		int index = 0;
 		for (int i = -4; i < 5; i++) {
 			int tx = x + i * dx;
 			int ty = y + i * dy;
-			int index = 0;
+	
 			if (tx >= 0 && tx < 15 && ty >= 0 && ty < 15) {
 				t[index++] = c[m_map[tx][ty]];
 			}
 		}
+		if (index < 5) {
+			continue;
+		}
 		for (int i = 0; i < 16; i++) {
-			const char *ret = strstr(m_evaluteMap[i].t, t);
+			const char* ret = isMatched(m_evaluteMap[i].t, t);
 			if (ret) {
 				score += m_evaluteMap[i].score;
 				break;
@@ -133,5 +137,55 @@ int AI::evalutePos(int x, int y){
 
 	m_map[x][y] = 0;
 	return score;
+}
+
+int AI::evaluteLine(char* line) {
+	int score = 0;
+	for (int i = 0; i < 16; i++) {
+		if (isMatched(line,m_evaluteMap[i].t)){
+			score += m_evaluteMap[i].score;
+		}
+	}
+	return score;
+}
+
+int AI::evaluteBoard(int player){
+
+	int score = 0;
+	char c[3];
+	c[0] = '+';
+	c[m_ai] = '0';
+	c[m_player] = 'A';
+
+	
+	for (int i = 0; i < 15; i++) {
+		char t[16] = { 0 };
+		for (int j = 0; j < 15; j++) {
+			t[j] = c[m_map[i][j]];
+		}
+		score += evaluteLine(t);
+		t[16] = { 0 };
+		for (int j = 0; j < 15; j++) {
+			t[j] = c[m_map[j][i]];
+		}
+		score += evaluteLine(t);
+	}
+	
+
+
+	return 0;
+}
+
+const char* AI::isMatched(const char* searchStr, const char* subStr){
+	const char* ret = NULL;
+	int searchLength = strlen(searchStr);
+	int subLength = strlen(subStr);
+	if (searchLength < subLength) {
+		ret = strstr(subStr, searchStr);
+	}
+	else {
+		ret = strstr(searchStr, subStr);
+	}
+	return ret;
 }
 
