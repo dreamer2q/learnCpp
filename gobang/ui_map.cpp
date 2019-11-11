@@ -2,6 +2,8 @@
 
 void MAP::init(){
 	memset(&m_map, 0, sizeof(m_map));
+	memset(movements, 0, sizeof(movements));
+	m_index_move = 0;
 }
 
 void MAP::drawMap() { 	//size 15x15 = 225
@@ -25,15 +27,15 @@ void MAP::putChess(int rows, int lines){
 			m_map[rows][lines] = getCurPlayer();
 			drawChess(rows, lines);
 			updateImg();
-
+			movements[m_index_move++] = POSITION{ rows,lines };
 			if (m_ai) {
 				m_ai->putchess(rows, lines, getCurPlayer());
 			}
 			if (1) {
 				int boardVal = m_ai->evaluteBoard(getCurPlayer());
 				TCHAR s[100];
-				wsprintf(s, _T("Score is %d\nPlayer is %d\n"), boardVal, getCurPlayer());
-				MessageBox(GetHWnd(), s, _T("INFO"), MB_OK);
+				wsprintf(s, _T("BoardEvalution is %d Player is %d\n"), boardVal, getCurPlayer());
+				MessageBox(GetHWnd(), s, _T("INFO"), MB_OK | MB_ICONINFORMATION);
 			}
 			nextPlayer();
 		}
@@ -82,11 +84,19 @@ void MAP::triggerMouseEvent(MOUSEMSG* msg) {
 			putChessRect(x, y);
 		}
 		else if (msg->mkRButton) {
-			unputChess(x, y);
+			//unputChess(x, y);
 		}
 	}
 	else {
 		unputChessRect();
+		if (msg->mkRButton) {
+			TCHAR s[100];
+			wsprintf(s, _T("Do you want to have a take-back?"));
+			int ret = MessageBox(GetHWnd(), s, _T("QUESTION"), MB_YESNO | MB_ICONQUESTION);
+			if (IDYES == ret) {
+				takeBack();
+			}
+		}
 	}
 }
 
@@ -120,6 +130,23 @@ int MAP::hasWinner(){
 		return -1;
 	}
 	return 0;
+}
+
+void MAP::takeBack(){
+	if (m_index_move > 1) {
+		POSITION pos1 = movements[--m_index_move];
+		POSITION pos2 = movements[--m_index_move];
+		unputChess(pos1.x, pos1.y);
+		unputChess(pos2.x, pos2.y);
+		if (m_ai) {
+			m_ai->unputchess(pos1.x, pos1.y);
+			m_ai->unputchess(pos2.x, pos2.y);
+		}
+	}
+}
+
+int MAP::getCurIndexMove(){
+	return m_index_move;
 }
 
 bool MAP::isMapFull(){

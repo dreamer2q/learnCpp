@@ -19,7 +19,10 @@ public:
 	void nextPlayer();
 	int getCurPlayer();
 	int hasWinner(); // 0 no 1 black 2 white -1 draw
-	
+	void takeBack();
+	int getCurIndexMove();
+
+
 	MAP(int x,int y,int width, int height);
 	~MAP();
 
@@ -34,6 +37,11 @@ private:
 	bool isMapFull();
 	bool checkLines(int x,int y);
 
+	typedef struct TagPos {
+		int x, y;
+	} POSITION;
+	POSITION movements[15 * 15];
+	int m_index_move;
 	int m_x, m_y;
 	int m_width, m_height;
 	int m_map[15][15] = { 0 }; // 1 = black 2 = white 0 = empty
