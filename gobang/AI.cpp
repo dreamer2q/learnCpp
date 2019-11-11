@@ -27,7 +27,7 @@ int AI::searchBestPos(int* x, int* y){
 }
 
 void AI::init(){
-	memset(m_map, 0, sizeof(m_map));
+	//memset(m_map, 0, sizeof(m_map));
 
 	static const char* scoreMatch[] = {
 		"00000","+0000+",
@@ -58,23 +58,23 @@ void AI::init(){
 	}
 }
 
-void AI::putchess(int x, int y, int player){
-	m_map[x][y] = player;
-}
+//void AI::putchess(int x, int y, int player){
+//	m_map[x][y] = player;
+//}
 
-void AI::unputchess(int x, int y){
-	m_map[x][y] = 0;
-}
+//void AI::unputchess(int x, int y){
+//	m_map[x][y] = 0;
+//}
 
-void AI::setMap(MAP* m){
-	this->map = m;
-}
+//void AI::setMap(MAP* m){
+//	this->map = m;
+//}
 
-int AI::getAiRole(){
+int AI::getRole(){
 	return m_ai;
 }
 
-AI::AI(int player, int ai) {
+AI::AI(int player, int ai, int(&map)[15][15]):m_map(map) {
 	m_player = player;
 	m_ai = ai;
 }

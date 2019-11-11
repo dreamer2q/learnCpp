@@ -8,14 +8,14 @@ public:
 	int searchBestPos(int *x, int *y);
 
 	void init();
-	void putchess(int x, int y,int player);
-	void unputchess(int x, int y);
-	void setMap(class MAP *m);
-	int getAiRole();
+	//void putchess(int x, int y,int player);
+	//void unputchess(int x, int y);
+	//void setMap(class MAP *m);
+	int getRole();
 
 	int evaluteBoard(int player);
 
-	AI(int player,int ai);
+	AI(int player,int ai,int (&map)[15][15]);
 
 private:
 	int evalutePos(int x, int y);
@@ -30,10 +30,10 @@ private:
 	} EvaluteMap;
 	EvaluteMap m_evaluteMap[16] = {0};
 
-	int m_map[15][15];
+	int (&m_map)[15][15];
 	int m_player;
 	int m_ai;
 
-	class MAP* map;
+	//class MAP* map;
 };
 

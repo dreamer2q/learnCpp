@@ -28,15 +28,15 @@ void MAP::putChess(int rows, int lines){
 			drawChess(rows, lines);
 			updateImg();
 			movements[m_index_move++] = POSITION{ rows,lines };
-			if (m_ai) {
-				m_ai->putchess(rows, lines, getCurPlayer());
-			}
+
+			//debug code
 			if (1) {
 				int boardVal = m_ai->evaluteBoard(getCurPlayer());
 				TCHAR s[100];
 				wsprintf(s, _T("BoardEvalution is %d Player is %d\n"), boardVal, getCurPlayer());
 				MessageBox(GetHWnd(), s, _T("INFO"), MB_OK | MB_ICONINFORMATION);
 			}
+
 			nextPlayer();
 		}
 	}
@@ -138,15 +138,15 @@ void MAP::takeBack(){
 		POSITION pos2 = movements[--m_index_move];
 		unputChess(pos1.x, pos1.y);
 		unputChess(pos2.x, pos2.y);
-		if (m_ai) {
-			m_ai->unputchess(pos1.x, pos1.y);
-			m_ai->unputchess(pos2.x, pos2.y);
-		}
 	}
 }
 
 int MAP::getCurIndexMove(){
 	return m_index_move;
+}
+
+int(&MAP::getMap())[15][15]{
+	return m_map;
 }
 
 bool MAP::isMapFull(){

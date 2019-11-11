@@ -21,7 +21,7 @@ public:
 	int hasWinner(); // 0 no 1 black 2 white -1 draw
 	void takeBack();
 	int getCurIndexMove();
-
+	int(&getMap())[15][15];
 
 	MAP(int x,int y,int width, int height);
 	~MAP();
