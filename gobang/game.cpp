@@ -29,7 +29,6 @@ int GAME::startPersonVsPerson(){
 }
 int GAME::startPersonVsAI() {
 
-	map->setAI(ai);
 	map->drawMap();
 	while (true) {
 		MOUSEMSG msg;
@@ -43,16 +42,8 @@ int GAME::startPersonVsAI() {
 			map->triggerMouseEvent(&msg);
 
 			if (map->getCurPlayer() == playerAI) {
-				int x, y;
-				int ret = ai->searchBestPos(&x, &y);
-
-				TCHAR s[100];
-				wsprintf(s, _T("Score is %d\nPos:%d,%d\n"), ret, x, y);
-				MessageBox(GetHWnd(), s, _T("INFO"), MB_OK);
-
-				map->putChess(x, y);
+				ai->play();
 			}
-
 			int winner = map->hasWinner();
 			if (winner) {
 				TCHAR s[100];
@@ -74,7 +65,9 @@ int GAME::startPersonVsAI() {
 
 void GAME::init() {
 	map->init();
+	map->setAI(ai);
 	ai->init();
+	ai->setMap(map);
 }
 
 GAME::GAME(int width, int height){

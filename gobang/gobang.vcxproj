@@ -159,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AI.h" />
+    <ClInclude Include="auxiliary.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="ui_map.h" />
     <ClInclude Include="ui_menu.h" />

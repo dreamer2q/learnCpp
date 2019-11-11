@@ -3,6 +3,8 @@
 #include <memory.h>
 #include <string.h>
 
+#define MAX_SCORE ( 10000000)
+#define MIN_SCORE (-10000000)
 
 int AI::searchBestPos(int* x, int* y){
 
@@ -26,8 +28,25 @@ int AI::searchBestPos(int* x, int* y){
 	return score;
 }
 
+void AI::play(){
+	memset(&abResult, 0, sizeof(abResult));
+	int ret = abEvalute(m_depth,MIN_SCORE,MAX_SCORE,m_ai);
+	if (abResult.score) {
+		map->putChess(abResult.p.x, abResult.p.y);
+	}
+	else {
+		//sth went wrong...
+		map->putChess(0, 0);
+	}
+
+	TCHAR s[100];
+	wsprintf(s, L"abResult:%d\nPos( %d, %d)", abResult.score, abResult.p.x, abResult.p.y);
+	MessageBox(GetHWnd(), s, TEXT("DEBUG"), MB_OK | MB_ICONINFORMATION);
+}
+
 void AI::init(){
 	//memset(m_map, 0, sizeof(m_map));
+	m_depth = 5;
 
 	static const char* scoreMatch[] = {
 		"00000","+0000+",
@@ -58,17 +77,9 @@ void AI::init(){
 	}
 }
 
-//void AI::putchess(int x, int y, int player){
-//	m_map[x][y] = player;
-//}
-
-//void AI::unputchess(int x, int y){
-//	m_map[x][y] = 0;
-//}
-
-//void AI::setMap(MAP* m){
-//	this->map = m;
-//}
+void AI::setMap(MAP* m){
+	this->map = m;
+}
 
 int AI::getRole(){
 	return m_ai;
@@ -150,6 +161,46 @@ int AI::evaluteLine(char* line) {
 	return score;
 }
 
+int AI::abEvalute(int depth, int alpha, int beta,int player){
+	
+	int score1 = evaluteBoard(player);
+	int score2 = evaluteBoard(player == m_ai ? m_player : m_ai);
+	
+	if (score1 >= 50000) {
+		return MAX_SCORE - 1000 - (depth);
+	}
+	if (score2 >= 50000) {
+		return MIN_SCORE + 1000 + (depth);
+	}
+	
+	if (depth == 0) {
+		return score1 - score2;
+	}
+
+	POSITION moves[15 * 15];
+	int moveLength = generatePossiblePositions(moves);
+	for (int i = 0; i < moveLength && i<10; i++) {
+		int x = moves[i].x;
+		int y = moves[i].y;
+		m_map[x][y] = player;
+
+		int val = -abEvalute(depth - 1, -beta, -alpha, player == m_ai ? m_player : m_ai);
+
+		m_map[x][y] = 0;
+		if (val >= beta) {
+			return beta;
+
+		}
+		if (val > alpha) {
+			alpha = val;
+			if (depth == m_depth) {
+				abResult = MOVE{ moves[i],val };
+			}
+		}
+	}
+	return alpha;
+}
+
 int AI::evaluteBoard(int player){
 
 	int score = 0;
@@ -203,6 +254,38 @@ int AI::evaluteBoard(int player){
 		}
 	}
 	return score;
+}
+
+bool isOnlyOne(POSITION *p,int index,POSITION pos) {
+	for (int i = 0; i < index; i++) {
+		if (p[i].x == pos.x && p[i].y == pos.y) {
+			return false;
+		}
+	}
+	return true;
+}
+
+int AI::generatePossiblePositions(POSITION* p){
+	int index = 0;
+	for (int i = 0; i < 15; i++) {
+		for (int j = 0; j < 15; j++) {
+			if (m_map[i][j]) {
+				for (int z = -1; z <= 1; z++) {
+					for (int k = -1; k <= 1; k++) {
+						if (i + z >= 0 && i + z < 15 && j + k >= 0 && j + k < 15) {
+							if (!m_map[i + z][j + k]) {
+								POSITION pos{ i+z,j+k };
+								if (isOnlyOne(p,index,pos)) {
+									p[index++] = pos;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return index;
 }
 
 const char* AI::isMatched(const char* searchStr, const char* subStr){

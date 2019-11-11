@@ -1,39 +1,38 @@
 #pragma once
 
 #include "ui_map.h"
+#include "auxiliary.h"
 
 class AI{
 public:
-	
-	int searchBestPos(int *x, int *y);
-
 	void init();
-	//void putchess(int x, int y,int player);
-	//void unputchess(int x, int y);
-	//void setMap(class MAP *m);
+	int searchBestPos(int *x, int *y);
+	void play();
+	
+
+	void setMap(class MAP *m);
 	int getRole();
 
-	int evaluteBoard(int player);
+	
 
 	AI(int player,int ai,int (&map)[15][15]);
 
 private:
 	int evalutePos(int x, int y);
 	int evaluteLine(char* line);
-	
+	int abEvalute(int depth, int alpha, int beta,int player);
+	MOVE abResult;
+	int evaluteBoard(int player);
+	int generatePossiblePositions(POSITION* p);
 	const char* isMatched(const char* searchStr, const char* subStr);
 
-	typedef struct TagEvaluteMap {
-		int n;
-		int score;
-		const char* t;
-	} EvaluteMap;
 	EvaluteMap m_evaluteMap[16] = {0};
-
+	
 	int (&m_map)[15][15];
 	int m_player;
 	int m_ai;
+	int m_depth;
 
-	//class MAP* map;
+	class MAP* map;
 };
 

@@ -28,15 +28,6 @@ void MAP::putChess(int rows, int lines){
 			drawChess(rows, lines);
 			updateImg();
 			movements[m_index_move++] = POSITION{ rows,lines };
-
-			//debug code
-			if (1) {
-				int boardVal = m_ai->evaluteBoard(getCurPlayer());
-				TCHAR s[100];
-				wsprintf(s, _T("BoardEvalution is %d Player is %d\n"), boardVal, getCurPlayer());
-				MessageBox(GetHWnd(), s, _T("INFO"), MB_OK | MB_ICONINFORMATION);
-			}
-
 			nextPlayer();
 		}
 	}

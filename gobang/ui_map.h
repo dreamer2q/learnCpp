@@ -3,6 +3,7 @@
 #include <easyx.h>
 
 #include "AI.h"
+#include "auxiliary.h"
 
 class MAP {
 
@@ -37,9 +38,6 @@ private:
 	bool isMapFull();
 	bool checkLines(int x,int y);
 
-	typedef struct TagPos {
-		int x, y;
-	} POSITION;
 	POSITION movements[15 * 15];
 	int m_index_move;
 	int m_x, m_y;
