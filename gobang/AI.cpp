@@ -71,7 +71,6 @@ AI::AI(int player, int ai, int(&map)[15][15]):m_map(map) {
 }
 
 int AI::evalutePos(int x, int y,int player){
-	
 	int score = 0;
 	//m_map[x][y] = m_ai;
 
@@ -294,5 +293,9 @@ const char* AI::isMatched(const char* searchStr, const char* subStr){
 		ret = strstr(searchStr, subStr);
 	}
 	return ret;
+}
+
+void AI::updateScore(POSITION p){
+
 }
 

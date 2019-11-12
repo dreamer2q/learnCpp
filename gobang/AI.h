@@ -23,12 +23,17 @@ private:
 	int generatePossiblePositions(POSITION* p,int player);
 	const char* isMatched(const char* searchStr, const char* subStr);
 
+	void updateScore(POSITION p);
+
 	EvaluteMap m_evaluteMap[16] = {0};
 	
 	int (&m_map)[15][15];
 	int m_player;
 	int m_ai;
 	int m_depth;
+
+	int scoreAll[2];
+	int scores[2];
 
 	class MAP* map;
 };
