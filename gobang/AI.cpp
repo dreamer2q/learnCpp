@@ -2,31 +2,11 @@
 
 #include <memory.h>
 #include <string.h>
+#include <stdio.h>
 
 #define MAX_SCORE ( 10000000)
 #define MIN_SCORE (-10000000)
 
-int AI::searchBestPos(int* x, int* y){
-
-	int bestX, bestY;
-	int score = 0;
-	for (int i = 0; i < 15; i++) {
-		for (int j = 0; j < 15; j++) {
-			if (m_map[i][j]) {
-				continue;
-			}
-			int tmpScore = evalutePos(i, j);
-			if (tmpScore > score) {
-				score = tmpScore;
-				bestX = i;
-				bestY = j;
-			}
-		}
-	}
-	*x = bestX;
-	*y = bestY;
-	return score;
-}
 
 void AI::play(){
 	memset(&abResult, 0, sizeof(abResult));
@@ -46,7 +26,7 @@ void AI::play(){
 
 void AI::init(){
 	//memset(m_map, 0, sizeof(m_map));
-	m_depth = 5;
+	m_depth = 4;
 
 	static const char* scoreMatch[] = {
 		"00000","+0000+",
@@ -90,15 +70,15 @@ AI::AI(int player, int ai, int(&map)[15][15]):m_map(map) {
 	m_ai = ai;
 }
 
-int AI::evalutePos(int x, int y){
+int AI::evalutePos(int x, int y,int player){
 	
 	int score = 0;
-	m_map[x][y] = m_ai;
+	//m_map[x][y] = m_ai;
 
 	char c[3];
 	c[0] = '+';
-	c[m_ai] = '0';
-	c[m_player] = 'A';
+	c[player] = '0';
+	c[player == m_player ? m_ai:m_player] = 'A';
 
 	for (int z = 0; z < 4; z++) {
 		int dx, dy;
@@ -136,26 +116,26 @@ int AI::evalutePos(int x, int y){
 		if (index < 5) {
 			continue;
 		}
-		for (int i = 0; i < 16; i++) {
-			const char* ret = isMatched(m_evaluteMap[i].t, t);
-			if (ret) {
-				score += m_evaluteMap[i].score;
-				break;
-			}
-		}
+		score += evaluteLine(t);
 	}
-	m_map[x][y] = 0;
+	//m_map[x][y] = 0;
 	return score;
 }
 
 int AI::evaluteLine(char* line) {
 	int score = 0;
-	if (strlen(line) < 5) {
+	int length = strlen(line);
+	if (length < 5) {
 		return 0;
 	}
-	for (int i = 0; i < 16; i++) {
-		if (isMatched(line,m_evaluteMap[i].t)){
-			score += m_evaluteMap[i].score;
+	for (int i = 0; i < 16; i++) {                                                                            
+		int n = m_evaluteMap[i].n;
+		const char* t = m_evaluteMap[i].t;
+		for (int j = 0; j < length - n;j++) {
+			if (!strncmp(t, line + j, n)) {
+				score += m_evaluteMap[i].score;
+				j += n;
+			}
 		}
 	}
 	return score;
@@ -167,10 +147,10 @@ int AI::abEvalute(int depth, int alpha, int beta,int player){
 	int score2 = evaluteBoard(player == m_ai ? m_player : m_ai);
 	
 	if (score1 >= 50000) {
-		return MAX_SCORE - 1000 - (depth);
+		return MAX_SCORE - 1000 - (m_depth - depth);
 	}
 	if (score2 >= 50000) {
-		return MIN_SCORE + 1000 + (depth);
+		return MIN_SCORE + 1000 + (m_depth - depth);
 	}
 	
 	if (depth == 0) {
@@ -178,8 +158,8 @@ int AI::abEvalute(int depth, int alpha, int beta,int player){
 	}
 
 	POSITION moves[15 * 15];
-	int moveLength = generatePossiblePositions(moves);
-	for (int i = 0; i < moveLength && i<10; i++) {
+	int moveLength = generatePossiblePositions(moves,player);
+	for (int i = 0; i < moveLength; i++) {
 		int x = moves[i].x;
 		int y = moves[i].y;
 		m_map[x][y] = player;
@@ -265,8 +245,14 @@ bool isOnlyOne(POSITION *p,int index,POSITION pos) {
 	return true;
 }
 
-int AI::generatePossiblePositions(POSITION* p){
+int _cmp(const void* a, const void* b) {
+	return -((MOVE*)a)->score + ((MOVE*)b)->score;
+}
+
+int AI::generatePossiblePositions(POSITION* p,int player){
 	int index = 0;
+	MOVE m[15 * 15];
+	memset(m, 0, sizeof(m));
 	for (int i = 0; i < 15; i++) {
 		for (int j = 0; j < 15; j++) {
 			if (m_map[i][j]) {
@@ -276,7 +262,12 @@ int AI::generatePossiblePositions(POSITION* p){
 							if (!m_map[i + z][j + k]) {
 								POSITION pos{ i+z,j+k };
 								if (isOnlyOne(p,index,pos)) {
-									p[index++] = pos;
+									m[index].p = pos;
+									m_map[pos.x][pos.y] = player;
+									m[index].score = evalutePos(pos.x, pos.y, player);
+									m_map[pos.x][pos.y] = 0;
+									//m[index].score = evalutePos(pos.x, pos.y, player);
+									index++;
 								}
 							}
 						}
@@ -284,6 +275,10 @@ int AI::generatePossiblePositions(POSITION* p){
 				}
 			}
 		}
+	}
+	qsort(m, index, sizeof(MOVE), _cmp);
+	for (int i = 0; i < index; i++) {
+		p[i] = m[i].p;
 	}
 	return index;
 }
