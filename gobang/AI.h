@@ -32,8 +32,8 @@ private:
 	int m_ai;
 	int m_depth;
 
-	int scoreAll[2];
-	int scores[2];
+	int boardScores[2];
+	int prePosScores[2];
 
 	class MAP* map;
 };

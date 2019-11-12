@@ -71,9 +71,9 @@ void MAP::triggerMouseEvent(MOUSEMSG* msg) {
 		if (msg->mkLButton) {
 			putChess(x, y);
 			int score = m_ai->evalutePos(x, y, 2);
-			TCHAR t[100];
-			wsprintf(t, L"eval(%d,%d):%d", x + 1, y + 1, score);
-			MessageBox(GetHWnd(), t, L"INFO", MB_OK);
+			//TCHAR t[100];
+			//wsprintf(t, L"eval(%d,%d):%d", x + 1, y + 1, score);
+			//MessageBox(GetHWnd(), t, L"INFO", MB_OK);
 		}
 		else if (!m_map[x][y]) {
 			putChessRect(x, y);
