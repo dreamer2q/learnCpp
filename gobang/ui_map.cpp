@@ -4,6 +4,7 @@ void MAP::init(){
 	memset(&m_map, 0, sizeof(m_map));
 	memset(movements, 0, sizeof(movements));
 	m_index_move = 0;
+	m_winner = 0;
 }
 
 void MAP::drawMap() { 	//size 15x15 = 225
@@ -29,6 +30,8 @@ void MAP::putChess(int rows, int lines){
 			updateImg();
 			movements[m_index_move++] = POSITION{ rows,lines };
 			nextPlayer();
+
+			updateWinner();
 		}
 	}
 }
@@ -70,16 +73,9 @@ void MAP::triggerMouseEvent(MOUSEMSG* msg) {
 	if (inMap(x, y)) {
 		if (msg->mkLButton) {
 			putChess(x, y);
-			int score = m_ai->evalutePos(x, y, 2);
-			//TCHAR t[100];
-			//wsprintf(t, L"eval(%d,%d):%d", x + 1, y + 1, score);
-			//MessageBox(GetHWnd(), t, L"INFO", MB_OK);
 		}
 		else if (!m_map[x][y]) {
 			putChessRect(x, y);
-		}
-		else if (msg->mkRButton) {
-			//unputChess(x, y);
 		}
 	}
 	else {
@@ -105,6 +101,14 @@ void MAP::setAI(AI* p){
 
 int MAP::getCurPlayer(){
 	return curPlayer % 2 ? 1 : 2;
+}
+
+int MAP::getWinner(){
+	return m_winner;
+}
+
+POSITION MAP::getLastPosition(){
+	return movements[m_index_move - 1];
 }
 
 void MAP::nextPlayer() {
@@ -201,6 +205,10 @@ bool MAP::checkLines(int x,int y){
 		}
 	}
 	return false;
+}
+
+void MAP::updateWinner(){
+	m_winner = hasWinner();
 }
 
 MAP::MAP(int x, int y, int width, int height){

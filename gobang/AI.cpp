@@ -9,6 +9,9 @@
 
 
 void AI::play(){
+	if (map->getWinner()) {
+		return;
+	}
 	memset(&abResult, 0, sizeof(abResult));
 	int ret = abEvalute(m_depth,MIN_SCORE,MAX_SCORE,m_ai);
 	if (abResult.score) {
@@ -26,7 +29,7 @@ void AI::play(){
 
 void AI::init(){
 	//memset(m_map, 0, sizeof(m_map));
-	m_depth = 6;
+	m_depth = 4;
 	memset(boardScores, 0, sizeof(boardScores));
 	memset(prePosScores, 0, sizeof(prePosScores));
 
@@ -162,7 +165,7 @@ int AI::abEvalute(int depth, int alpha, int beta,int player){
 
 	POSITION moves[15 * 15];
 	int moveLength = generatePossiblePositions(moves,player);
-	for (int i = 0; i < moveLength && i<10; i++) {
+	for (int i = 0; i < moveLength; i++) {
 		int x = moves[i].x;
 		int y = moves[i].y;
 		m_map[x][y] = player;

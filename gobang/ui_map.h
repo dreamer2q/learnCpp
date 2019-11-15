@@ -4,6 +4,7 @@
 
 #include "AI.h"
 #include "auxiliary.h"
+#include "brain.h"
 
 class MAP {
 
@@ -19,7 +20,8 @@ public:
 	void setAI(class AI *p);
 	void nextPlayer();
 	int getCurPlayer();
-	int hasWinner(); // 0 no 1 black 2 white -1 draw
+	int getWinner();
+	POSITION getLastPosition();
 	void takeBack();
 	int getCurIndexMove();
 	int(&getMap())[15][15];
@@ -37,8 +39,11 @@ private:
 	void drawOuterBorder();
 	bool isMapFull();
 	bool checkLines(int x,int y);
+	void updateWinner();
+	int hasWinner(); // 0 no 1 black 2 white -1 draw
 
 	POSITION movements[15 * 15];
+	int m_winner;
 	int m_index_move;
 	int m_x, m_y;
 	int m_width, m_height;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AI.cpp" />
+    <ClCompile Include="brain.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="ui_map.cpp" />
     <ClCompile Include="ui_menu.cpp" />
@@ -160,6 +161,7 @@
   <ItemGroup>
     <ClInclude Include="AI.h" />
     <ClInclude Include="auxiliary.h" />
+    <ClInclude Include="brain.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="ui_map.h" />
     <ClInclude Include="ui_menu.h" />

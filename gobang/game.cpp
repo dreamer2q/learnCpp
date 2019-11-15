@@ -15,7 +15,7 @@ int GAME::startPersonVsPerson(){
 		if (MouseHit()) {
 			msg = GetMouseMsg();
 			map->triggerMouseEvent(&msg);
-			int winner = map->hasWinner();
+			int winner = map->getWinner();
 			if (winner) {
 				TCHAR s[100];
 				wsprintf(s, _T("Winner is %s"), winner == 1 ? _T("BLACK") : _T("WHITE"));
@@ -40,11 +40,14 @@ int GAME::startPersonVsAI() {
 		if (MouseHit()) {
 			msg = GetMouseMsg();
 			map->triggerMouseEvent(&msg);
-
+			
 			if (map->getCurPlayer() == playerAI) {
-				ai->play();
+				POSITION lastMove = map->getLastPosition();
+				POSITION p = brain->turn(lastMove.x, lastMove.y);
+				map->putChess(p.x, p.y);
 			}
-			int winner = map->hasWinner();
+
+			int winner = map->getWinner();
 			if (winner) {
 				TCHAR s[100];
 				wsprintf(s, _T("Winner is %s\nDo you want to restart?"), winner == 1 ? _T("BLACK") : _T("WHITE"));
@@ -53,6 +56,7 @@ int GAME::startPersonVsAI() {
 					map->init();
 					ai->init();
 					map->drawMap();
+					brain->init();
 				}
 				else {
 					exit(0);
@@ -68,6 +72,8 @@ void GAME::init() {
 	map->setAI(ai);
 	ai->init();
 	ai->setMap(map);
+	brain->init();
+	brain->setLevel(5);
 }
 
 GAME::GAME(int width, int height){
@@ -78,9 +84,12 @@ GAME::GAME(int width, int height){
 	playerPerson = 2;
 	map = new MAP(0, 0, height, height);
 	ai = new AI(playerPerson, playerAI,map->getMap());
+	brain = new BRAIN(playerAI, playerPerson, map->getMap());
 }
 
 GAME::~GAME(){
 	delete map;
+	delete brain;
+	delete ai;
 	closegraph();
 }

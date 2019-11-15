@@ -2,6 +2,7 @@
 
 #include "ui_map.h"
 #include "AI.h"
+#include "brain.h"
 
 class GAME{
 public:
@@ -15,6 +16,7 @@ public:
 private:
 	MAP* map;
 	AI *ai;
+	BRAIN* brain;
 	int m_width, m_height;
 	int playerAI, playerPerson;
 };
