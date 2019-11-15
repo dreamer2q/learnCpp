@@ -73,7 +73,7 @@ void GAME::init() {
 	ai->init();
 	ai->setMap(map);
 	brain->init();
-	brain->setLevel(5);
+	//brain->setLevel(100);
 }
 
 GAME::GAME(int width, int height){
