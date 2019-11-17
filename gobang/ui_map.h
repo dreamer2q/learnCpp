@@ -41,6 +41,7 @@ private:
 	bool checkLines(int x,int y);
 	void updateWinner();
 	int hasWinner(); // 0 no 1 black 2 white -1 draw
+	RECT getRectText(int index);
 
 	POSITION movements[15 * 15];
 	int m_winner;

@@ -10,9 +10,9 @@
 #define N 10 // test array size
 
 enum SELECTION {
-	M_EXIT=0,M_BUCKET, M_BUBBLE, M_MERGE,M_QUICK,M_INSERT,M_COUNT,
-	M_SHELL,M_RADIX,
-	M_MORE=9
+	M_SELECT = '0',M_BUCKET, M_BUBBLE, M_MERGE,M_QUICK,M_INSERT,M_COUNT,
+	M_SHELL,M_RADIX,M_HEAP,
+	M_MORE= 'm', M_EXIT = 'e'
 };
 
 void init() {
@@ -27,6 +27,8 @@ int menu() {
 	printC("\t\tSort Algorithms Demo\n", red);
 	printLine('-', purple);
 
+	printC("\t\t0. ", blue);
+	printC("Selection Sort\n", white);
 	printC("\t\t1. ", blue);
 	printC("Bucket Sort\n", white);
 	printC("\t\t2. ", blue);
@@ -43,10 +45,12 @@ int menu() {
 	printC("Counting Sort\n", white);
 	printC("\t\t8. ", blue);
 	printC("Radix Sort\n", white);
+	printC("\t\t9. ", blue);
+	printC("Heap Sort\n", white);
 	printC("\t\t______________\n", yellow);
-	printC("\n\t\t9. ", blue);
+	printC("\n\t\tm. ", blue);
 	printC("More Detail\n", white);
-	printC("\t\t0. ", blue);
+	printC("\t\tq. ", blue);
 	printC("Exit\n", white);
 	printLine('-', purple);
 
@@ -59,8 +63,9 @@ int menu() {
 
 	int opt;
 	while (true) {
-		opt = _getch() - '0';
+		opt = _getch();
 		switch (opt) {
+		case M_SELECT:
 		case M_BUBBLE:
 		case M_BUCKET:
 		case M_MERGE:
@@ -70,6 +75,7 @@ int menu() {
 		case M_COUNT:
 		case M_RADIX:
 		case M_MORE:
+		case M_HEAP:
 		case M_EXIT:return opt;
 
 		default: // not handle
@@ -78,10 +84,11 @@ int menu() {
 	}
 }
 void algorithmHandler(int select){
-	int a[N];
+	int a[N];					//stack may not have enough space if N is very large
 	randomNumsGenerate(a, N); // important!
-
-	if (select == M_BUBBLE) {  // !!! do not use switch here !!!
+	if (select == M_SELECT) {
+		selectionSort(a, N);
+	}else if (select == M_BUBBLE) {  // !!! do not use switch here !!!
 		bubbleSort(a, N);
 	}
 	else if (select == M_BUCKET) {
@@ -110,16 +117,8 @@ void algorithmHandler(int select){
 		_getch();
 	}
 	else if (select == M_INSERT) {
-		cls();
-		printN(a, N);
 		insertSort1(a, N);
-		printN(a, N);
-		printf("\n");
-		randomNumsGenerate(a, N);
-		printN(a, N);
-		insertSort2(a, N);
-		printN(a, N);
-		_getch();
+		//insertSort2(a, N);  //this one used a linked list
 	}
 	else if (select == M_SHELL) {
 		cls();
@@ -146,7 +145,7 @@ void algorithmHandler(int select){
 		_getch();
 	}
 	else if (select == M_MORE) {
-		// todo ...
+		// here open my github reposition where I have written detailed information about those algorithms with false code
 		ShellExecute(NULL, NULL, TEXT("https://github.com/dreamer2q/learnCpp/tree/master/geekweek3"), NULL, NULL, 1);
 	}
 	else {
@@ -161,7 +160,7 @@ void bye() {
 int main(){
 	init();
 	int ret;
-	while ((ret = menu()) != M_EXIT) {
+	while ((ret = menu()) != M_EXIT) {		//the main loop, loop forever if ......
 		algorithmHandler(ret);
 	}
 	bye();

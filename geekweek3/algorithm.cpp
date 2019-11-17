@@ -85,7 +85,10 @@ void shellSort(int* a, int n) {
 }
 
 void selectionSort(int* a, int n) {
-
+	cls();
+	setColor(red);
+	printN(a, n);
+	setColor(white);
 	for (int i = 0; i < n - 1; i++) {
 		int min = i;
 		for (int j = i+1; j < n; j++) {
@@ -93,21 +96,41 @@ void selectionSort(int* a, int n) {
 				min = j;
 			}
 		}
+		printf("[ ");
+		for (int j = 0; j < n; j++) {
+			setColor(j<i?green:white);
+			if (j == min) {
+				setColor(red);
+			}
+			printf("%2d ", a[j]);
+			
+		}
+		setColor(white);
+		printf("]\n");
 		if (i != min) {
 			int t = a[min];
 			a[min] = a[i];
 			a[i] = t;
 		}
 	}
+	setColor(green);
+	printN(a, n);
+	printf("复杂度a=O(N^2) 不稳定\n");
+	setColor(white);
+	_getch();
 }
 void insertSort1(int* a, int n) { //based on array
+	cls();
 	int* ret = (int*)malloc(sizeof(int) * n);
 	if (ret == NULL) {
 		fprintf(stderr, "Malloc failed\n");
 		return;			//shit! how could it go wrong?!/@?
 	}
 	memcpy(ret, a, sizeof(int) * n);
-	memset(a, 0,sizeof(int)*n);
+	memset(a, 0,sizeof(int)*n); //here assume that no number is less than zero Or it will go wrong.
+
+	printN(ret, n);
+	printf("[  ]\n");
 	int length = 0;
 	for (int i = 0; i < n; i++) {
 		int index = 0;
@@ -116,13 +139,39 @@ void insertSort1(int* a, int n) { //based on array
 				index++;
 			}
 		}
+		setColor(blue);
+		printf("%2d",ret[i]);
+		setColor(white);
+		printf(" => [ ");
+		for (int j = 0; j <= index; j++) {
+			if (j == index) {
+				setColor(red);
+				printf(" _ ");
+			}
+			else {
+				setColor(green);
+				printf("%2d ", a[j]);
+			}
+		}
+		
 		for (int j = n - 1; j > index; j--) {
 			a[j] = a[j - 1];
 		}
 		a[index] = ret[i];
 		length++;
+		setColor(green);
+		for (int j = index + 1; j < length; j++) {
+			printf("%2d ", a[j]);
+		}
+		setColor(white);
+		printf("]\n");
 	}
 	free(ret);
+
+	setColor(green);
+	printN(a, n);
+	printf("复杂度a=O(N^2) 稳定\n");
+	_getch();
 }
 
 void insertSort2(int *a,int n) { //based on Linked list tidy and nice

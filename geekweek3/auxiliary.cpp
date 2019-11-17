@@ -1,6 +1,8 @@
 
 #include "auxiliary.h"
 
+ULONGLONG _g_RecordingTimer_;  //applied when starTimer() is called
+
 void setPos(int x,int y){
 	COORD cd;
 	cd.X = x;
@@ -100,6 +102,15 @@ int _pow(int base, int n){
 	}
 	return ret;
 }
+
+void startTimer(){
+	_g_RecordingTimer_ = GetTickCount64();
+}
+
+ULONGLONG stopTimer(){
+	return GetTickCount64() - _g_RecordingTimer_;
+}
+
 
 Array makeArray(){
 	Array ret = (Array)malloc(sizeof(struct tagArray));

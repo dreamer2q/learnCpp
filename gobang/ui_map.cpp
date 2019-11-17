@@ -5,6 +5,7 @@ void MAP::init(){
 	memset(movements, 0, sizeof(movements));
 	m_index_move = 0;
 	m_winner = 0;
+	curPlayer = 0;
 }
 
 void MAP::drawMap() { 	//size 15x15 = 225
@@ -26,9 +27,10 @@ void MAP::putChess(int rows, int lines){
 	if (inMap(rows,lines)) {
 		if (m_map[rows][lines] == 0) {
 			m_map[rows][lines] = getCurPlayer();
+
+			movements[m_index_move++] = POSITION{ rows,lines };
 			drawChess(rows, lines);
 			updateImg();
-			movements[m_index_move++] = POSITION{ rows,lines };
 			nextPlayer();
 
 			updateWinner();
@@ -129,6 +131,11 @@ int MAP::hasWinner(){
 		return -1;
 	}
 	return 0;
+}
+
+RECT MAP::getRectText(int index){
+	POSITION p = movements[index];
+	return RECT{ 40 + p.x * gap - gap / 3,40 + p.y * gap - gap / 4,40 + p.x * gap + gap / 3,40 + p.y * gap + gap / 3 };
 }
 
 void MAP::takeBack(){
@@ -232,9 +239,24 @@ bool MAP::inMap(int row, int line){
 
 void MAP::drawChess(int x, int y){
 	SetWorkingImage(m_img);
-	setfillcolor(m_map[x][y] == 1 ? BLACK : WHITE);
+	setfillcolor(curPlayer % 2 ?  WHITE : BLACK);
+	
 	setfillstyle(BS_SOLID);
 	fillcircle(40 + x * gap, 40 + y * gap, gap / 3);
+
+	RECT recText = getRectText(curPlayer);
+	settextcolor(RED);
+	WCHAR num[10] = { 0 };
+	wsprintf(num,L"%d",curPlayer+1);
+	drawtext(num, &recText, DT_CENTER);
+	
+	if (curPlayer > 0) {
+		settextcolor(curPlayer % 2 ? WHITE : BLACK);
+		recText = getRectText(curPlayer - 1);
+		wsprintf(num, L"%d", curPlayer );
+		drawtext(num, &recText, DT_CENTER);
+	}
+
 	SetWorkingImage();
 }
 

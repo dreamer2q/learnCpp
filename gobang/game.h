@@ -9,6 +9,8 @@ public:
 	void init();
 	int startPersonVsPerson();
 	int startPersonVsAI();
+	void setAiPFisrt();
+	void setPlayFirst();
 	//void startNetPk();
 	GAME(int width,int height);
 	~GAME();
@@ -19,5 +21,6 @@ private:
 	BRAIN* brain;
 	int m_width, m_height;
 	int playerAI, playerPerson;
+	bool m_AiFirst = false;
 };
 

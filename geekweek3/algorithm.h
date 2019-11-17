@@ -1,3 +1,4 @@
+#pragma once
 
 #ifndef __algorithm__
 #define __algorithm__

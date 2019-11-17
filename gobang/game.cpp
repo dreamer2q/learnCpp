@@ -67,6 +67,14 @@ int GAME::startPersonVsAI() {
 	return 0;
 }
 
+void GAME::setAiPFisrt(){
+	m_AiFirst = true;
+}
+
+void GAME::setPlayFirst(){
+	m_AiFirst = false;
+}
+
 void GAME::init() {
 	map->init();
 	map->setAI(ai);
