@@ -10,8 +10,7 @@
 #define N 10 // test array size
 
 enum SELECTION {
-	M_SELECT = '0',M_BUCKET, M_BUBBLE, M_MERGE,M_QUICK,M_INSERT,M_COUNT,
-	M_SHELL,M_RADIX,M_HEAP,
+	M_SELECT = '0',M_BUCKET, M_BUBBLE, M_MERGE,M_QUICK,M_INSERT, M_SHELL,M_COUNT,M_RADIX,M_HEAP,
 	M_MORE= 'm', M_EXIT = 'e'
 };
 
@@ -129,20 +128,10 @@ void algorithmHandler(int select){
 		_getch();
 	}
 	else if (select == M_COUNT) {
-		cls();
-		printf("Counting Sort\n");
-		printN(a, N);
 		countingSort(a, N);
-		printN(a, N);
-		_getch();
 	}
 	else if (select == M_RADIX) {
-		cls();
-		printf("Radix Sort\n");
-		printN(a, N);
 		radixSort(a, N);
-		printN(a, N);
-		_getch();
 	}
 	else if (select == M_MORE) {
 		// here open my github reposition where I have written detailed information about those algorithms with false code

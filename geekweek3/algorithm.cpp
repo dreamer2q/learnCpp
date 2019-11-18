@@ -6,46 +6,95 @@
 
 #include "auxiliary.h"
 
-
-void pBubbleSort() {
-	printf("复杂度a=O(N^2) 稳定\n");
-	_getch();
-}
-void pBucketSort() {
-	printf("复杂度a=O(N) 稳定\n");
-	_getch();
-}
-
 void radixSort(int* a, int n) {
+
 	int max = getMaxIn(a, n);
 	int digits = 1;
 	while (max /= 10) {
 		digits++;
 	}
+
 	for (int i = 0; i < digits; i++) {
+		cls();
+		setColor(white + i);
+		printN(a, n);
+		printf("\n");
+		for (int j = 0; j < 10; j++) {
+			for (int z = 0; z < digits; z++) {
+				if ( z == i) {
+					printf("_");
+				}else{
+					printf("%d", j);
+				}
+			}
+			printf(" <= \n");
+		}
+
 		Array arr[10];
 		for (int j = 0; j < 10; j++) {
 			arr[j] = makeArray();
 		}
 		for (int j = 0; j < n; j++) {
 			int index = (a[j] % _pow(10, i + 1)) / _pow(10, i);
+			setColor(green);
+			setPos(j*4+3-i, 1);
+			printf("I");
+
 			insertElementByOrder(arr[index], a[j]);
+			int length = getArrayLength(arr[index]);
+			setColor(green);
+			setPos(6, index + 2);
+			for (int z = 0; z < length; z++) {
+				printf("%2d " ,getArrayAt(arr[index],z));
+			}
+			_getch();
 		}
 		int index = 0;
+		setPos(0, 13);
+		setColor(red);
+		printf("Output(%d/%d) => [ ", i + 1, digits);
+		setColor(green);
 		for (int j = 0; j < 10; j++) {
 			int length = getArrayLength(arr[j]);
 			for (int z = 0; z < length; z++) {
 				a[index++] = getArrayAt(arr[j], z);
+				printf("%2d ", a[index - 1]);
+				_getch();
 			}
 			deleteArray(arr[j]);
 		}
+		setColor(red);
+		printf("]");
+		_getch();
 	}
+	printf("复杂度a=O(N*k) 稳定\n");
+	_getch();
 }
 
 void countingSort(int* a, int n) {
-	
+	cls();
 	int max = getMaxIn(a, n);
 	max++; // ensure there is enough space
+
+	printN(a, n);
+	printf("\n");
+
+	int* pos = (int*)malloc(sizeof(int) * max);
+	bool flag = true;
+	for (int i = 0,j = 0; i <= max; i++) {
+		if (isInArray(i,a,n)) {
+			printf("[ %2d ] => 0\n", i);
+			flag = true;
+			pos[i] = j++;
+		}
+		else if(flag){
+			printf("...\n");
+			flag = false;
+			j++;
+		}
+	}
+	_getch();
+
 	int* ret = (int*)malloc(sizeof(int) * max);
 	memset(ret, 0, sizeof(int) * max);
 	if (NULL == ret) {
@@ -55,6 +104,11 @@ void countingSort(int* a, int n) {
 
 	for (int i = 0; i < n; i++) {
 		ret[a[i]]++;
+		setPos(4*i+3, 1);
+		printf("I");
+		setPos(10, pos[a[i]] + 2);
+		printf("%d", ret[a[i]]);
+		_getch();
 	}
 	int index = 0;
 	for (int i = 0; i < max; i++) {
@@ -65,6 +119,15 @@ void countingSort(int* a, int n) {
 		}
 	}
 	free(ret);
+	
+
+	setPos(0, pos[max-1]+5);
+	setColor(green);
+	printN(a, n);
+	printf("复杂度a=O(N+k) 稳定\n");
+	setColor(white);
+	_getch();
+	free(pos);
 }
 
 void shellSort(int* a, int n) {
@@ -173,7 +236,6 @@ void insertSort1(int* a, int n) { //based on array
 	printf("复杂度a=O(N^2) 稳定\n");
 	_getch();
 }
-
 void insertSort2(int *a,int n) { //based on Linked list tidy and nice
 	Array ret = makeArray();
 	for (int i = 0; i < n; i++) {
@@ -272,7 +334,6 @@ int* mergeSort(int* a, int n) {
 	return ret;
 }
 
-
 void bubbleSort(int *a,int n){
 	
 	cls();
@@ -319,10 +380,10 @@ void bubbleSort(int *a,int n){
 
 	setColor(yellow);
 	setPos(0, 2);
-	pBubbleSort();
+	printf("复杂度a=O(N^2) 稳定\n");
+	_getch();
 	setColor(white);
 }
-
 
 void bucketSort(int* a, int n) {
 	Array bucket[10] = { 0 };  //assume the value is no more than 100
@@ -379,7 +440,8 @@ void bucketSort(int* a, int n) {
 	printf("\b\b ]"); 
 	setPos(0, 16);
 	setColor(yellow);
-	pBucketSort();
+	printf("复杂度a=O(N) 稳定\n");
+	_getch();
 	setColor(white);
 }
 

@@ -111,6 +111,15 @@ ULONGLONG stopTimer(){
 	return GetTickCount64() - _g_RecordingTimer_;
 }
 
+bool isInArray(int i, int* a, int n){
+	for (int j = 0; j < n; j++) {
+		if (i == a[j]) {
+			return true;
+		}
+	}
+	return false;
+}
+
 
 Array makeArray(){
 	Array ret = (Array)malloc(sizeof(struct tagArray));

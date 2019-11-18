@@ -53,5 +53,6 @@ int getMaxIn(int* a, int n);
 int _pow(int base, int n);
 void startTimer();
 ULONGLONG stopTimer();  //returns how long has passed measured in millisecond
+bool isInArray(int i, int* a, int n);
 
 #endif
