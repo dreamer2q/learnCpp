@@ -98,22 +98,14 @@ void algorithmHandler(int select){
 	}
 	else if (select == M_QUICK) {
 		cls();
-		printN(a, N);
+		initConsole(80, 60);
 		quickSort(a,0, N-1);
-		printN(a, N);
-		printf("\n");
-
-		randomNumsGenerate(a, N);
-		printN(a, N);
-		quickSort(a,0, N - 1);
-		printN(a, N);
-		printf("\n");
-
-		randomNumsGenerate(a, N);
-		printN(a, N);
-		quickSort(a,0, N - 1);
-		printN(a, N);
+		setColor(green);
+		printf("∏¥‘”∂»a=O(NlogN) ≤ªŒ»∂®\n");
+		setColor(white);
 		_getch();
+		initConsole(_CONSOLE_COLUMNS_, _CONSOLE_LINES_);
+
 	}
 	else if (select == M_INSERT) {
 		insertSort1(a, N);
@@ -121,10 +113,7 @@ void algorithmHandler(int select){
 	}
 	else if (select == M_SHELL) {
 		cls();
-		printf("Shell Sort\n");
-		printN(a, N);
 		shellSort(a, N);
-		printN(a, N);
 		_getch();
 	}
 	else if (select == M_COUNT) {

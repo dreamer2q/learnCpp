@@ -131,20 +131,34 @@ void countingSort(int* a, int n) {
 }
 
 void shellSort(int* a, int n) {
+	cls();
+	initConsole(80, 40);
+	printf("Starting ShellSort\n");
 
 	for (int gap = n / 2; gap > 0; gap /= 2) {
-		
+		printf("Divide into groups with gap = %d\n", gap);
+		printN(a, n);
 		for (int i = gap; i < n; i++) {
 
 			int j = i;
 			int cur = a[j];
+			printf("process %2d => result => ", cur);
 			while (j - gap >= 0 && cur < a[j - gap]) {
 				a[j] = a[j - gap];
 				j -= gap;
 			}
 			a[j] = cur;
+			printN(a, n);
 		}
+		printf("Next divide\n\n");
 	}
+	printf("\nFinished");
+	printN(a, n);
+	setColor(green);
+	printf("¸´ÔÓ¶Èa=O(N^1.3) ²»ÎÈ¶¨\n");
+	setColor(white);
+	_getch();
+	initConsole(_CONSOLE_COLUMNS_, _CONSOLE_LINES_);
 }
 
 void selectionSort(int* a, int n) {
@@ -447,9 +461,20 @@ void bucketSort(int* a, int n) {
 
 void quickSort(int* a, int left, int right) {
 	if (left < right) {
+
+		setColor(lightShadowGreen);
+		printf("Start QuickSort => ");
+		printN(a + left, right - left + 1);
+
 		int l = left;
 		int r = right;
 		int k = a[left];
+		setColor(green);
+		printf("\tNumbers less than ");
+		setColor(red);
+		printf("%d", k);
+		setColor(green);
+		printf(" are moved to the left of it\n");
 		while (l < r) {
 			while (l < r && k < a[r]) {
 				r--;
@@ -467,8 +492,25 @@ void quickSort(int* a, int left, int right) {
 			}
 		}
 		a[l] = k;
+		setColor(green);
+		printf("\tMove result [ ");
+		for (int i = 0; i < right - left + 1; i++) {
+			if ((a + left)[i] == k) {
+				setColor(red);
+				printf("%2d ", k);
+				setColor(white);
+			}
+			else {
+				printf("%2d ", (a + left)[i]);
+			}
+		}
+		printf("]\n");
 		quickSort(a, left, l - 1);
 		quickSort(a, l + 1, right);
+
+		printf("End => ");
+		printN(a + left, right - left + 1);
 	}
+	_getch();
 }
 
