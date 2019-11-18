@@ -185,51 +185,28 @@ QuickSort(a,left,right)
 - 由于交换后新的堆顶R[1]可能违反堆的性质，因此需要对当前无序区(R1,R2,……Rn-1)调整为新堆，然后再次将R[1]与无序区最后一个元素交换，得到新的无序区(R1,R2….Rn-2)和新的有序区(Rn-1,Rn)。不断重复此过程直到有序区的元素个数为n-1，则整个排序过程完成。
 
 
-```js
-var len;    // 因为声明的多个函数都需要数据长度，所以把len设置成为全局变量
- 
-function buildMaxHeap(arr) {   // 建立大顶堆
-    len = arr.length;
-    for (var i = Math.floor(len/2); i >= 0; i--) {
-        heapify(arr, i);
-    }
-}
- 
-function heapify(arr, i) {     // 堆调整
-    var left = 2 * i + 1,
-        right = 2 * i + 2,
-        largest = i;
- 
-    if (left < len && arr[left] > arr[largest]) {
-        largest = left;
-    }
- 
-    if (right < len && arr[right] > arr[largest]) {
-        largest = right;
-    }
- 
-    if (largest != i) {
-        swap(arr, i, largest);
-        heapify(arr, largest);
-    }
-}
- 
-function swap(arr, i, j) {
-    var temp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = temp;
-}
- 
-function heapSort(arr) {
-    buildMaxHeap(arr);
- 
-    for (var i = arr.length - 1; i > 0; i--) {
-        swap(arr, 0, i);
-        len--;
-        heapify(arr, 0);
-    }
-    return arr;
-}
+```go
+Heapify(a,n,i)
+    left    = i*2 + 1
+    right   = i*2 + 2
+    max     = i
+    if left < n && a[left] > a[max]
+        max = left
+    if right < n && a[right] > a[max]
+        max = right
+    if max != i
+        swap(a[max],a[i])
+        Heapify(a,n,max)
+
+BuildMaxHeap(a,n)
+    for i range from n/2 to 0
+        Heapify(a,n,i)
+
+HeapSort(a,n)
+    BuildMaxHeap(a,n)
+    for i range from n - 1 to 1
+        swap(a[0],a[i])
+        Heapify(a,n,i)
 ```
 
 # 计数排序(Counting Sort)
@@ -295,11 +272,7 @@ RadixSort(a)
 - [x] ShellSort
 - [x] CountingSort
 - [x] RadixSort
+- [x] Heap Sort
 ---
-- [ ] Heap Sort
-- [ ] 学习堆，二叉树
-- [ ] 实现动态数组
----
-- [ ] 排序过程的可视化
-- [ ] 排序时间复杂度的可视化
-- [ ] 不同排序算法的时间比较
+- [ ] 时间测试函数
+

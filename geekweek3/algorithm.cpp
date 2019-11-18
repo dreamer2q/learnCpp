@@ -97,18 +97,24 @@ void heapSort(int* a, int n){
 	initConsole(80, 40);
 	setColor(red);
 	printN(a, n);
-
+	
 	showHeap(a, n, 0, 2, 40);
+	_getch();
 	buildMaxHeap(a, n);
 	showHeap(a, n, 0, 2, 40);
 	_getch();
 
-	for (int i = n - 1; i >= 0; --i) {
+	for (int i = n - 1; i > 0; --i) {
 		swap(a, 0, i);
 		heapify(a, i, 0);
 		showHeap(a, i, 0, 2, 40);
+		setPos(0, 0);
+		printN(a, n);
+		_getch();
 	}
 
+	setPos(0, 13);
+	printf("∏¥‘”∂»a=O(NlogN) ≤ªŒ»∂®\n");
 	_getch();
 	initConsole(_CONSOLE_COLUMNS_, _CONSOLE_LINES_);
 }
