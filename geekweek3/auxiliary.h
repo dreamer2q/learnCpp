@@ -51,8 +51,10 @@ void initConsole(int width, int height);
 void printLine(char ch, int c);
 int getMaxIn(int* a, int n);
 int _pow(int base, int n);
+void bye();
 void startTimer();
 ULONGLONG stopTimer();  //returns how long has passed measured in millisecond
 bool isInArray(int i, int* a, int n);
-
+void swap(int* a, int i, int j);
+void showHeap(int* a, int n, int i, int y, int x);
 #endif

@@ -53,6 +53,13 @@ void printN(int *a,int n,int enter){
 	printf("\b\b ]%c",enter == 0?'\n':' ');
 	
 }
+
+void bye() {
+	//todo
+	MessageBoxA(NULL, "Unkonw Error!\nPress OK to restart your computer!", "ERROR", MB_OK | MB_ICONERROR);
+	//_getch();
+}
+
 void randomNumsGenerate(int *a,int n){
 	
 	const int max = 99;
@@ -120,6 +127,31 @@ bool isInArray(int i, int* a, int n){
 	return false;
 }
 
+void swap(int* a, int i, int j){
+	int tmp = a[i];
+	a[i] = a[j];
+	a[j] = tmp;
+}
+
+void showHeap(int* a, int n,int i,int y,int x){
+	//initConsole(80,40);
+	static int times = 0;
+	int l = i * 2 + 1;
+	int r = i * 2 + 2;
+	times++;
+	if (i < n) {
+		setPos(x, y);
+		setColor(a[i] % 15 + 1);
+		printf("%2d", a[i]);
+	}
+	if (l < n) {
+		showHeap(a, n, l, y + 1 + times, x - 15/times);
+	}
+	if (r < n) {
+		showHeap(a, n, r, y + 1 + times, x + 15/times);
+	}
+	times--;
+}
 
 Array makeArray(){
 	Array ret = (Array)malloc(sizeof(struct tagArray));

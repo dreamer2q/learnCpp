@@ -29,5 +29,8 @@ void selectionSort(int* a, int n);
 void shellSort(int* a, int n);
 void countingSort(int* a, int n);
 void radixSort(int* a, int n);
-
+void heapSort(int* a, int n);
+void buildMaxHeap(int* a, int n);
+void heapify(int* a, int n, int node);
+void heapSort(int* a, int n);
 #endif

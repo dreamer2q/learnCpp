@@ -5,6 +5,7 @@
 #include <conio.h>
 
 #include "auxiliary.h"
+#include "algorithm.h"
 
 void radixSort(int* a, int n) {
 
@@ -69,6 +70,47 @@ void radixSort(int* a, int n) {
 	}
 	printf("¸´ÔÓ¶Èa=O(N*k) ÎÈ¶¨\n");
 	_getch();
+}
+
+void buildMaxHeap(int* a, int n) {
+	for (int i = n / 2; i >= 0; i--) {
+		heapify(a, n, i);
+	}
+}
+void heapify(int* a, int n, int node) {
+	int l = node * 2 + 1;
+	int r = node * 2 + 2;
+	int max = node;
+	if (l<n && a[l]>a[max]) {
+		max = l;
+	}
+	if (r<n && a[r] > a[max]) {
+		max = r;
+	}
+	if (max != node) {
+		swap(a, max, node);
+		heapify(a, n, max);
+	}
+}
+
+void heapSort(int* a, int n){
+	initConsole(80, 40);
+	setColor(red);
+	printN(a, n);
+
+	showHeap(a, n, 0, 2, 40);
+	buildMaxHeap(a, n);
+	showHeap(a, n, 0, 2, 40);
+	_getch();
+
+	for (int i = n - 1; i >= 0; --i) {
+		swap(a, 0, i);
+		heapify(a, i, 0);
+		showHeap(a, i, 0, 2, 40);
+	}
+
+	_getch();
+	initConsole(_CONSOLE_COLUMNS_, _CONSOLE_LINES_);
 }
 
 void countingSort(int* a, int n) {

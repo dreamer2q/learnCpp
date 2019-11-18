@@ -11,7 +11,7 @@
 
 enum SELECTION {
 	M_SELECT = '0',M_BUCKET, M_BUBBLE, M_MERGE,M_QUICK,M_INSERT, M_SHELL,M_COUNT,M_RADIX,M_HEAP,
-	M_MORE= 'm', M_EXIT = 'e'
+	M_MORE= 'm', M_EXIT = 'q'
 };
 
 void init() {
@@ -126,16 +126,13 @@ void algorithmHandler(int select){
 		// here open my github reposition where I have written detailed information about those algorithms with false code
 		ShellExecute(NULL, NULL, TEXT("https://github.com/dreamer2q/learnCpp/tree/master/geekweek3"), NULL, NULL, 1);
 	}
-	else {
-		// not handle
+	else if(select == M_HEAP){
+		heapSort(a, N);
 	}
 }
-void bye() {
-	//todo
 
-	_getch();
-}
 int main(){
+
 	init();
 	int ret;
 	while ((ret = menu()) != M_EXIT) {		//the main loop, loop forever if ......
