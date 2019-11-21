@@ -6,6 +6,12 @@
 #include "auxiliary.h"
 #include "brain.h"
 
+class Player {
+
+
+
+};
+
 class MAP {
 
 public:
@@ -15,8 +21,7 @@ public:
 	void unputChess(int rows, int lines);
 	void putChessRect(int rows,int lines);
 	void unputChessRect();
-	void triggerMouseEvent(MOUSEMSG *msg);
-	void triggerKeyboardEvent(char c);
+
 	void setAI(class AI *p);
 	void nextPlayer();
 	int getCurPlayer();
@@ -29,7 +34,7 @@ public:
 	MAP(int x,int y,int width, int height);
 	~MAP();
 
-private:
+	int getMapAt(int x, int y);
 	bool inMap(int row, int line);
 	void drawChess(int x, int y);
 	void clearChess(int x, int y);
@@ -43,14 +48,16 @@ private:
 	int hasWinner(); // 0 no 1 black 2 white -1 draw
 	RECT getRectText(int index);
 
+private:
 	POSITION movements[15 * 15];
 	int m_winner;
 	int m_index_move;
 	int m_x, m_y;
 	int m_width, m_height;
 	int m_map[15][15] = { 0 }; // 1 = black 2 = white 0 = empty
-	IMAGE *m_img;
+	IMAGE* m_img;
 	IMAGE* m_pt;
+
 	int curPlayer = 0; // odd = black , even = white;
 	int gap;
 

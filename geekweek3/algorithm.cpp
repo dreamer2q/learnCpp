@@ -107,7 +107,7 @@ void heapSort(int* a, int n){
 	for (int i = n - 1; i > 0; --i) {
 		swap(a, 0, i);
 		heapify(a, i, 0);
-		showHeap(a, i, 0, 2, 40);
+		showHeap(a, n, 0, 2, 40);
 		setPos(0, 0);
 		printN(a, n);
 		_getch();

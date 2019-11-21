@@ -75,7 +75,7 @@ bool BRAIN::loadEngine(){
 	si.hStdInput = hInRd;
 	si.hStdOutput = hOutWr;
 	si.hStdError = hOutWr;
-	si.wShowWindow = SWP_SHOWWINDOW;
+	si.wShowWindow = SWP_HIDEWINDOW;
 	si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
 
 	if (!CreateProcess(m_pbrain,NULL,NULL,NULL,true,NULL,NULL,NULL,&si,&pi)) {

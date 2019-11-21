@@ -15,10 +15,12 @@ void MAP::drawMap() { 	//size 15x15 = 225
 	drawOuterBorder();
 	setlinestyle(0, 1);
 	for (int i = 0; i < 15; i++) {
-		line(40, 40 + i * gap, m_width - 42, 40 + i * gap);
+		line(40, 40 + i * gap, m_height - 42, 40 + i * gap);
 		line(40 + i * gap, 40, 40 + i * gap, m_height - 42);
 	}
 	drawMapBlackDots();
+
+	
 
 	updateImg();
 }
@@ -67,34 +69,6 @@ void MAP::putChessRect(int rows, int lines){
 
 void MAP::unputChessRect(){
 	putimage(m_x, m_y, m_img);
-}
-
-void MAP::triggerMouseEvent(MOUSEMSG* msg) {
-	int x = (msg->x - 30) / gap;
-	int y = (msg->y - 30) / gap;
-	if (inMap(x, y)) {
-		if (msg->mkLButton) {
-			putChess(x, y);
-		}
-		else if (!m_map[x][y]) {
-			putChessRect(x, y);
-		}
-	}
-	else {
-		unputChessRect();
-		if (msg->mkRButton) {
-			TCHAR s[100];
-			wsprintf(s, _T("Do you want to have a take-back?"));
-			int ret = MessageBox(GetHWnd(), s, _T("QUESTION"), MB_YESNO | MB_ICONQUESTION);
-			if (IDYES == ret) {
-				takeBack();
-			}
-		}
-	}
-}
-
-void MAP::triggerKeyboardEvent(char c){
-
 }
 
 void MAP::setAI(AI* p){
@@ -226,11 +200,15 @@ MAP::MAP(int x, int y, int width, int height){
 	m_img = new IMAGE(width, height);
 	m_pt = new IMAGE();
 	loadimage(m_pt, L"map.png", m_width, m_height, true);
-	gap = (m_width - 40) / 15;
+	gap = (m_height - 40) / 15;
 }
 
 MAP::~MAP() {
 	delete m_img;
+}
+
+int MAP::getMapAt(int x, int y){
+	return m_map[x][y];
 }
 
 bool MAP::inMap(int row, int line){
@@ -314,7 +292,7 @@ void MAP::drawBackground(){
 void MAP::drawOuterBorder() {
 	setlinecolor(BLACK);
 	setlinestyle(0, 2);
-	rectangle(10, 10, m_width - 10, m_height - 10);
+	rectangle(10, 10, m_height - 10, m_height - 10);
 
 	char t[] = "123456789ABCDEF";
 	setbkmode(TRANSPARENT);
