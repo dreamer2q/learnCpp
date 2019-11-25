@@ -13,12 +13,15 @@ public:
 	void drawMap(HDC hdc);
 	void drawChess(POSITION p,int index,Gdiplus::Graphics& graphics);
 	void drawMapChess(Gdiplus::Graphics& graphics);
-
+	void setTipCircle(POSITION p);
 private:
+	POSITION encodeXY(POSITION p);
 	Gdiplus::Image* m_bkGround;
 	Gdiplus::Image* m_chess[3];
 	Gdiplus::Rect m_DrawRect;
 
+	POSITION m_TipCircle;
+	int m_Sep;
 	class MAP* m_map;
 };
 

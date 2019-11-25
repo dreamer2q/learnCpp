@@ -6,6 +6,9 @@ UI_BOARD::UI_BOARD(Gdiplus::Rect& rc):m_DrawRect(rc)
 	m_bkGround = new Gdiplus::Image(TEXT("picture/board.jpg"));
 	m_chess[BLACK] = new Gdiplus::Image(TEXT("picture/black_chess.png"));
 	m_chess[WHITE] = new Gdiplus::Image(TEXT("picture/white_chess.png"));
+	m_chess[EMPTY] = new Gdiplus::Image(TEXT("picture/tip_chess.png"));
+
+	m_Sep = (m_DrawRect.Height / 535.0) * 33;
 }
 
 UI_BOARD::~UI_BOARD()
@@ -32,24 +35,31 @@ void UI_BOARD::drawMap(HDC hdc)
 
 	drawMapChess(gbuf);
 
+	if (m_TipCircle.x >= 0) {
+		POSITION p = encodeXY(m_TipCircle);
+		Gdiplus::Rect rcChess(p.x+2, p.y+2, m_Sep, m_Sep);
+		Gdiplus::Image* img = m_chess[EMPTY];
+		gbuf.DrawImage(img, rcChess);
+	}
+
 	Gdiplus::Graphics graphics(hdc);
 	graphics.DrawImage(&bk,m_DrawRect);
 }
 
 void UI_BOARD::drawChess(POSITION p,int index, Gdiplus::Graphics& graphics)
 {
+
+	POSITION ep = encodeXY(p);
 	int step = (m_DrawRect.Height / 535.0) * 33;
-	int x = (m_DrawRect.Height / 535.0) * (20 + 35 * p.x) - step / 2;
-	int y = (m_DrawRect.Height / 535.0) * (20 + 35 * p.y) - step / 2;
 	
-	Gdiplus::Rect rcChess(x, y, step, step);
+	Gdiplus::Rect rcChess(ep.x, ep.y, step, step);
 	Gdiplus::Image* img = m_chess[m_map->boardIndex(p.x, p.y)];
 	graphics.DrawImage(img, rcChess);
 
 	WCHAR num[10];
 	wsprintfW(num, L"%d", index);
 	Gdiplus::Font mfont(L"Arial",16);
-	Gdiplus::PointF pf(x+12-5*lstrlenW(num),y+7);
+	Gdiplus::PointF pf(ep.x+12-5*lstrlenW(num),ep.y+7);
 	Gdiplus::Color color;
 	if (m_map->getSumSteps() == index) {
 		color.SetFromCOLORREF(Gdiplus::Color::Blue);
@@ -70,3 +80,18 @@ void UI_BOARD::drawMapChess(Gdiplus::Graphics& graphics)
 		drawChess(p,i+1, graphics);
 	}
 }
+
+void UI_BOARD::setTipCircle(POSITION p)
+{
+	m_TipCircle = p;
+}
+
+POSITION UI_BOARD::encodeXY(POSITION p)
+{
+	int step = (m_DrawRect.Height / 535.0) * 33;
+	int x = (m_DrawRect.Height / 535.0) * (20 + 35 * p.x) - step / 2;
+	int y = (m_DrawRect.Height / 535.0) * (20 + 35 * p.y) - step / 2;
+	return POSITION{ x,y };
+}
+
+

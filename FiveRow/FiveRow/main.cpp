@@ -11,10 +11,14 @@ HINSTANCE g_hInst;
 UI_BOARD* g_board;
 MAP* g_map;
 
+
 ATOM MyRegisterClass(HINSTANCE);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 BOOL InitInstance(HINSTANCE, int);
 void OnPaint(HDC hdc);
+void OnLButtonDown(int x, int y);
+void OnMouseOver(int wx, int wy);
+
 
 int APIENTRY wWinMain(HINSTANCE hInstance,HINSTANCE prevInstance,LPWSTR lpCmdLine,int nCmdShow) {
 
@@ -119,7 +123,23 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		break;
 	case WM_LBUTTONDOWN:
 	{
+		int x = LOWORD(lParam);
+		int y = HIWORD(lParam);
+		OnLButtonDown(x, y);
 
+	
+	}
+		break;
+	case WM_MOUSEMOVE:
+	{
+		int x = LOWORD(lParam);
+		int y = HIWORD(lParam);
+		OnMouseOver(x, y);
+		HDC dc = GetDC(hwnd);
+		OnPaint(dc);
+		ReleaseDC(hwnd, dc);
+		//SendMessage(hwnd, WM_PAINT, 0, 0);
+		//UpdateWindow(hwnd);
 	}
 		break;
 	case WM_DESTROY:
@@ -135,4 +155,28 @@ void OnPaint(HDC hdc) {
 
 	g_board->drawMap(hdc);
 
+}
+
+void OnLButtonDown(int wx, int wy) {
+	CHAR str[100];
+	wsprintfA(str, "Mouse(%d,%d)\n", wx, wy);
+	OutputDebugStringA(str);
+
+	//double factor = 800 / 535.0;
+	int x = (wx - 10) / 40;
+	int y = (wy - 10) / 40;
+
+	wsprintfA(str, "Chess(%d,%d)\n", x, y);
+	OutputDebugStringA(str);
+
+}
+void OnMouseOver(int wx, int wy) {
+	int x = (wx ) / 40;
+	int y = (wy) / 40;
+	if (x >= 0 && x < MAPWIDTH && y >= 0 && y < MAPWIDTH) {
+		g_board->setTipCircle(POSITION{ x,y });
+	}
+	else {
+		g_board->setTipCircle(POSITION{ -1,-1 });
+	}
 }
