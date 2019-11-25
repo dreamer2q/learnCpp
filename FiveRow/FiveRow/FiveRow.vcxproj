@@ -124,9 +124,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MAP.cpp" />
+    <ClCompile Include="ui_board.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include.h" />
+    <ClInclude Include="MAP.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="UI_BOARD.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FiveRow.rc" />

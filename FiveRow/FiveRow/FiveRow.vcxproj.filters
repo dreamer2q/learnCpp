@@ -18,9 +18,24 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ui_board.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MAP.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_BOARD.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MAP.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
