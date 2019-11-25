@@ -11,7 +11,7 @@ public:
 	void setMap(class MAP* map);
 
 	void drawMap(HDC hdc);
-	void drawChess(POSITION p,Gdiplus::Graphics& graphics);
+	void drawChess(POSITION p,int index,Gdiplus::Graphics& graphics);
 	void drawMapChess(Gdiplus::Graphics& graphics);
 
 private:

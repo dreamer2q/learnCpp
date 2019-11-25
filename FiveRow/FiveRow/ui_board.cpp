@@ -36,7 +36,7 @@ void UI_BOARD::drawMap(HDC hdc)
 	graphics.DrawImage(&bk,m_DrawRect);
 }
 
-void UI_BOARD::drawChess(POSITION p, Gdiplus::Graphics& graphics)
+void UI_BOARD::drawChess(POSITION p,int index, Gdiplus::Graphics& graphics)
 {
 	int step = (m_DrawRect.Height / 535.0) * 33;
 	int x = (m_DrawRect.Height / 535.0) * (20 + 35 * p.x) - step / 2;
@@ -45,6 +45,21 @@ void UI_BOARD::drawChess(POSITION p, Gdiplus::Graphics& graphics)
 	Gdiplus::Rect rcChess(x, y, step, step);
 	Gdiplus::Image* img = m_chess[m_map->boardIndex(p.x, p.y)];
 	graphics.DrawImage(img, rcChess);
+
+	WCHAR num[10];
+	wsprintfW(num, L"%d", index);
+	Gdiplus::Font mfont(L"Arial",16);
+	Gdiplus::PointF pf(x+12-5*lstrlenW(num),y+7);
+	Gdiplus::Color color;
+	if (m_map->getSumSteps() == index) {
+		color.SetFromCOLORREF(Gdiplus::Color::Blue);
+	}else if(m_map->boardIndex(p.x, p.y) == WHITE) {
+		color.SetFromCOLORREF(Gdiplus::Color::Black);
+	}else {
+		color.SetFromCOLORREF(Gdiplus::Color::White);
+	}
+	Gdiplus::SolidBrush mbrush(color);
+	graphics.DrawString(num, lstrlenW(num), &mfont,pf,&mbrush);
 }
 
 void UI_BOARD::drawMapChess(Gdiplus::Graphics& graphics)
@@ -52,6 +67,6 @@ void UI_BOARD::drawMapChess(Gdiplus::Graphics& graphics)
 	int length = m_map->getSumSteps();
 	for (int i = 0; i < length; i++) {
 		POSITION p = m_map->moveIndex(i);
-		drawChess(p, graphics);
+		drawChess(p,i+1, graphics);
 	}
 }

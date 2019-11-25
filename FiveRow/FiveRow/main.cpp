@@ -67,7 +67,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	g_hInst = hInstance;
 
-	HWND hWnd = CreateWindowEx(WS_EX_CLIENTEDGE, g_szWndClass, g_szTitle, WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME,
+	HWND hWnd = CreateWindowEx(WS_EX_CLIENTEDGE, g_szWndClass, g_szTitle, WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX,
 		CW_USEDEFAULT, CW_USEDEFAULT, WIN_WIDTH, WIN_HEIGHT, NULL, NULL, hInstance, NULL);
 
 	if (!hWnd) {
@@ -92,14 +92,19 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		g_map = new MAP();
 		g_board = new UI_BOARD(rc);
 		g_board->setMap(g_map);
-		g_map->putChess(POSITION{ 6,6 }, PLAYER);
-		g_map->putChess(POSITION{ 6,7 }, COMPUTER);
-		g_map->putChess(POSITION{ 7,7 }, PLAYER);
-		g_map->putChess(POSITION{ 8,7 }, COMPUTER);
-		g_map->putChess(POSITION{ 0,0 }, PLAYER);
-		g_map->putChess(POSITION{ 1,2 }, COMPUTER);
-		g_map->putChess(POSITION{ 1,1 }, PLAYER);
-		g_map->putChess(POSITION{ 2,7 }, COMPUTER);
+		//g_map->putChess(POSITION{ 6,6 }, PLAYER);
+		//g_map->putChess(POSITION{ 6,7 }, COMPUTER);
+		//g_map->putChess(POSITION{ 7,7 }, PLAYER);
+		//g_map->putChess(POSITION{ 8,7 }, COMPUTER);
+		//g_map->putChess(POSITION{ 0,0 }, PLAYER);
+		//g_map->putChess(POSITION{ 1,2 }, COMPUTER);
+		//g_map->putChess(POSITION{ 1,1 }, PLAYER);
+		//g_map->putChess(POSITION{ 2,7 }, COMPUTER);
+		//g_map->putChess(POSITION{ 2,2 }, COMPUTER);
+		//g_map->putChess(POSITION{ 3,3 }, PLAYER);
+		//g_map->putChess(POSITION{ 11,2 }, COMPUTER);
+		//g_map->putChess(POSITION{ 12,1 }, PLAYER);
+		//g_map->putChess(POSITION{ 12,7 }, COMPUTER);
 	}
 		break;
 	case WM_PAINT:
@@ -110,6 +115,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		OnPaint(hdc);
 
 		EndPaint(hwnd, &ps);
+	}
+		break;
+	case WM_LBUTTONDOWN:
+	{
+
 	}
 		break;
 	case WM_DESTROY:
