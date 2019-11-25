@@ -5,9 +5,9 @@ PLAYER::PLAYER()
 	m_StartTime = GetTickCount();
 }
 
-PLAYER::PLAYER(DWORD totalTime)
+PLAYER::PLAYER(DWORD totalTime):PLAYER()
 {
-	PLAYER();
+	
 	m_TotalTime = totalTime;
 }
 
@@ -25,11 +25,6 @@ DWORD PLAYER::getLeftTime()
 {
 	updateTime();
 	return m_LeftTime;
-}
-
-POSITION PLAYER::play()
-{
-	return POSITION{ -1,-1 };
 }
 
 void formatTime(DWORD time, LPWSTR lpResult)

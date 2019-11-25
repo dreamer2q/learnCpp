@@ -11,6 +11,7 @@ void MAP::init()
 void MAP::setFirstPlayer(int player)
 {
 	m_FirstPlayer = player;
+	m_CurPlayer = player;
 }
 
 bool MAP::putChess(POSITION p)

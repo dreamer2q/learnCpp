@@ -2,6 +2,8 @@
 
 #include "include.h"
 #include "MAP.h"
+#include "PERSON.h"
+#include "COMPUTER.h"
 
 class UI_BOARD
 {

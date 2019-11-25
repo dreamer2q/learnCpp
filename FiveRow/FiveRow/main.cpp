@@ -10,6 +10,8 @@ HINSTANCE g_hInst;
 
 UI_BOARD* g_board;
 MAP* g_map;
+class PLAYER* g_players[3];
+class COMPUTER* g_computer;
 
 
 ATOM MyRegisterClass(HINSTANCE);
@@ -41,9 +43,14 @@ int APIENTRY wWinMain(HINSTANCE hInstance,HINSTANCE prevInstance,LPWSTR lpCmdLin
 		DispatchMessage(&msg);
 	}
 
-	Gdiplus::GdiplusShutdown(gdiToken);
+	
 	delete g_map;
 	delete g_board;
+	delete g_players[PLAYER];
+	delete g_players[COMPUTER];
+
+	Gdiplus::GdiplusShutdown(gdiToken);
+
 	return (int)msg.wParam;
 }
 
@@ -71,65 +78,61 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	g_hInst = hInstance;
 
-	HWND hWnd = CreateWindowEx(WS_EX_CLIENTEDGE, g_szWndClass, g_szTitle, WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX,
-		CW_USEDEFAULT, CW_USEDEFAULT, WIN_WIDTH, WIN_HEIGHT, NULL, NULL, hInstance, NULL);
+HWND hWnd = CreateWindowEx(WS_EX_CLIENTEDGE, g_szWndClass, g_szTitle, WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX,
+	CW_USEDEFAULT, CW_USEDEFAULT, WIN_WIDTH, WIN_HEIGHT, NULL, NULL, hInstance, NULL);
 
-	if (!hWnd) {
-		MessageBox(NULL, TEXT("Create WindowEx Error"), TEXT("ERROR"), MB_OK | MB_ICONERROR);
-		return FALSE;
-	}
+if (!hWnd) {
+	MessageBox(NULL, TEXT("Create WindowEx Error"), TEXT("ERROR"), MB_OK | MB_ICONERROR);
+	return FALSE;
+}
 
-	ShowWindow(hWnd, nCmdShow);
-	UpdateWindow(hWnd);
-	return TRUE;
+ShowWindow(hWnd, nCmdShow);
+UpdateWindow(hWnd);
+return TRUE;
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
 
 	switch (message) {
-		
+
 	case WM_CREATE:
 	{
 		RECT rcClient;
 		GetClientRect(hwnd, &rcClient);
 		Gdiplus::Rect rc(rcClient.left, rcClient.top, rcClient.right, rcClient.bottom);
 		g_map = new MAP();
+		g_map->setFirstPlayer(PLAYER);
 		g_board = new UI_BOARD(rc);
 		g_board->setMap(g_map);
-		//g_map->putChess(POSITION{ 6,6 }, PLAYER);
-		//g_map->putChess(POSITION{ 6,7 }, COMPUTER);
-		//g_map->putChess(POSITION{ 7,7 }, PLAYER);
-		//g_map->putChess(POSITION{ 8,7 }, COMPUTER);
-		//g_map->putChess(POSITION{ 0,0 }, PLAYER);
-		//g_map->putChess(POSITION{ 1,2 }, COMPUTER);
-		//g_map->putChess(POSITION{ 1,1 }, PLAYER);
-		//g_map->putChess(POSITION{ 2,7 }, COMPUTER);
-		//g_map->putChess(POSITION{ 2,2 }, COMPUTER);
-		//g_map->putChess(POSITION{ 3,3 }, PLAYER);
-		//g_map->putChess(POSITION{ 11,2 }, COMPUTER);
-		//g_map->putChess(POSITION{ 12,1 }, PLAYER);
-		//g_map->putChess(POSITION{ 12,7 }, COMPUTER);
+		g_players[PLAYER] = new class PERSON();
+		g_computer = new class COMPUTER();
+		//g_computer->setLevel(1);
+		g_computer->beforeStart();
+		
+		g_players[COMPUTER] = g_computer;
 	}
-		break;
+	break;
 	case WM_PAINT:
 	{
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hwnd, &ps);
-		
+
 		OnPaint(hdc);
 
 		EndPaint(hwnd, &ps);
 	}
-		break;
+	break;
 	case WM_LBUTTONDOWN:
 	{
 		int x = LOWORD(lParam);
 		int y = HIWORD(lParam);
 		OnLButtonDown(x, y);
-
-	
+		OnMouseOver(x, y);
+		HDC dc = GetDC(hwnd);
+		OnPaint(dc);
+		ReleaseDC(hwnd, dc);
 	}
-		break;
+	break;
 	case WM_MOUSEMOVE:
 	{
 		int x = LOWORD(lParam);
@@ -138,10 +141,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		HDC dc = GetDC(hwnd);
 		OnPaint(dc);
 		ReleaseDC(hwnd, dc);
-		//SendMessage(hwnd, WM_PAINT, 0, 0);
-		//UpdateWindow(hwnd);
 	}
-		break;
+	break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
@@ -160,7 +161,7 @@ void OnPaint(HDC hdc) {
 void OnLButtonDown(int wx, int wy) {
 	CHAR str[100];
 	wsprintfA(str, "Mouse(%d,%d)\n", wx, wy);
-	OutputDebugStringA(str);
+	//OutputDebugStringA(str);
 
 	//double factor = 800 / 535.0;
 	int x = (wx - 10) / 40;
@@ -169,14 +170,27 @@ void OnLButtonDown(int wx, int wy) {
 	wsprintfA(str, "Chess(%d,%d)\n", x, y);
 	OutputDebugStringA(str);
 
+	if (x >= 0 && x < MAPWIDTH && y >= 0 && y < MAPWIDTH) {
+		if (!g_map->boardIndex(x, y)) {
+			g_map->putChess(POSITION{ x,y });
+			OutputDebugStringA("Start boardIndex");
+			class PLAYER* player = g_players[g_map->getCurPlayer()];
+			player->OnLButtonDown(POSITION{ x,y });
+			POSITION p = player->play();
+			g_map->putChess(p);
+		}
+	}
 }
+
 void OnMouseOver(int wx, int wy) {
 	int x = (wx ) / 40;
 	int y = (wy) / 40;
+
+	POSITION p{ -1,-1 };
 	if (x >= 0 && x < MAPWIDTH && y >= 0 && y < MAPWIDTH) {
-		g_board->setTipCircle(POSITION{ x,y });
+		if (!g_map->boardIndex(x, y)) {
+			p = POSITION{ x,y };
+		}
 	}
-	else {
-		g_board->setTipCircle(POSITION{ -1,-1 });
-	}
+	g_board->setTipCircle(p);
 }
