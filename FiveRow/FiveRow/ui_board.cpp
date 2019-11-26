@@ -95,12 +95,18 @@ void UI_BOARD::drawMapChess(Gdiplus::Graphics& graphics)
 
 void UI_BOARD::drawTipCircle(HDC hdc, POSITION p)
 {
-	draw(hdc);
 	if (p.x >= 0) {
 		POSITION ep = encodeXY(p);
 		Gdiplus::Rect rcChess(ep.x, ep.y, m_Sep, m_Sep);
+		Gdiplus::Bitmap bufbitmap(m_DrawRect.Width, m_DrawRect.Height);
+		Gdiplus::Graphics g(&bufbitmap);
+		g.DrawImage(&m_bitBuf, 0, 0);
+		g.DrawImage(m_chess[EMPTY], rcChess);
 		Gdiplus::Graphics graphics(hdc);
-		graphics.DrawImage(m_chess[EMPTY], rcChess);
+		graphics.DrawImage(&bufbitmap, 0, 0);
+	}
+	else {
+		draw(hdc);
 	}
 }
 

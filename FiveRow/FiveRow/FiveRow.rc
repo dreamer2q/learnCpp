@@ -1,7 +1,5 @@
 // Microsoft Visual C++ generated resource script.
 //
-#pragma code_page(65001)
-
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -15,10 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 涓枃(绠�浣擄紝涓浗) resources
+// 中文(简体，中国) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -53,14 +52,63 @@ END
 
 IDR_MAIN_MENU MENU
 BEGIN
-    POPUP "鏂囦欢"
+    POPUP "文件"
     BEGIN
         MENUITEM "ces",                         ID_40001
     END
-    POPUP "鍏充簬"
+    POPUP "关于"
     BEGIN
-        MENUITEM "鍏充簬",                          ID_40002
+        MENUITEM "关于",                          ID_40002
     END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DLG_START DIALOGEX 0, 0, 589, 355
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_CHILD | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "五子棋"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_TAB2,"SysTabControl32",0x0,69,14,189,243
+    PUSHBUTTON      "退出",IDC_BT_EXIT,169,216,102,23
+    PUSHBUTTON      "关于",IDC_BT_ABOUT,169,186,102,22
+    PUSHBUTTON      "人机",IDC_BT_PLAYERCOMPUTER,168,151,104,25
+    PUSHBUTTON      "基友",IDC_BT_PLAYERPAYER,167,116,103,24
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_DLG_START, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 464
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 277
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_DLG_START AFX_DIALOG_LAYOUT
+BEGIN
+    0
 END
 
 
@@ -75,7 +123,7 @@ BEGIN
     IDS_TITLE               "Five Row Demo"
 END
 
-#endif    // 涓枃(绠�浣擄紝涓浗) resources
+#endif    // 中文(简体，中国) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

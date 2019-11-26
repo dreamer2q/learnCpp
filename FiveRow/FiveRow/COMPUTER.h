@@ -17,13 +17,14 @@ public:
 
 	void turn(POSITION p);
 	bool isThinking();
+	POSITION firstStep();
 	POSITION getLastPos();
 	void takeBack(POSITION p);
 	void setLevel(int level);
 
 	//
 	//void setLevel(int level);
-	//POSITION begin();
+	//
 	//POSITION turn(int x, int y);
 	//bool playChess(int x, int y);
 

@@ -15,6 +15,7 @@
 #define WIN_WIDTH 820
 #define WIN_HEIGHT 663
 #define MAPWIDTH 15
+#define COMPUTER_MAIN_TIMER 11101
 
 enum {
 	EMPTY = 0,
@@ -44,5 +45,12 @@ typedef struct {
 } POSITION;
 
 #include "resource.h"
+
+
+
+
+bool isInMap(int x, int y);
+bool isInMap(POSITION p);
+
 
 #endif // ! __INCLUDE_H__

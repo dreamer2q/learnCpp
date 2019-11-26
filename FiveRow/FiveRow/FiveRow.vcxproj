@@ -124,6 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="COMPUTER.cpp" />
+    <ClCompile Include="include.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MAP.cpp" />
     <ClCompile Include="PERSON.cpp" />
@@ -133,6 +134,7 @@
   <ItemGroup>
     <ClInclude Include="COMPUTER.h" />
     <ClInclude Include="include.h" />
+    <ClInclude Include="main.h" />
     <ClInclude Include="MAP.h" />
     <ClInclude Include="PERSON.h" />
     <ClInclude Include="PLAYER.h" />

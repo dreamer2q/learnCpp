@@ -53,6 +53,14 @@ bool COMPUTER::isThinking()
 	return m_isThinking;
 }
 
+POSITION COMPUTER::firstStep()
+{
+	char cmd[128] = { 0 };
+	sprintf_s(cmd, "begin\n");
+	sendCommand(cmd);
+	return getXY();
+}
+
 POSITION COMPUTER::getLastPos()
 {
 	return m_lastPos;
@@ -206,9 +214,16 @@ void COMPUTER::sendTurn(POSITION p)
 bool COMPUTER::parseXY(char* cmd, POSITION* p)
 {
 	char* comma = strstr(cmd, ",");
-	int x, y;
+	int x=-1, y=-1;
+	int length = strlen(cmd);
 	if (comma) {
-		sscanf_s(cmd, "%d,%d", &x, &y);
+		if (length > 6) {
+			comma -= 2;
+		}
+		else {
+			comma = cmd;
+		}
+		sscanf_s(comma, "%d,%d", &x, &y);
 		sprintf_s(cmd, 64, "ParseXY-> %d,%d\n", x, y);
 		OutputDebugStringA(cmd); //For debug
 		*p = POSITION{ x,y };

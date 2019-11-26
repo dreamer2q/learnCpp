@@ -1,30 +1,6 @@
 
-
-//#include "MAP.h"
 #include "UI_BOARD.h"
-
-WCHAR g_szWndClass[MAXSTR];
-WCHAR g_szTitle[MAXSTR];
-
-HINSTANCE g_hInst;
-
-UI_BOARD* g_board;
-MAP* g_map;
-class PLAYER* g_players[3];
-class COMPUTER* g_computer;
-int g_mode = PLAYER_PLAYER;
-
-
-ATOM MyRegisterClass(HINSTANCE);
-LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-BOOL InitInstance(HINSTANCE, int);
-void OnPaint(HDC hdc);
-void OnLButtonDownMode1(HDC hdc, int wx, int wy); //PLAYER_PLAYER
-void OnLButtonDownMode2(HDC hdc, int wx, int wy); //PLAYER_AI
-//void OnLButtonDown(HDC hdc, int x, int y);
-void OnMouseOver(HDC hdc, int wx, int wy);
-void showWinner(int status);
-
+#include "main.h"
 
 int APIENTRY wWinMain(HINSTANCE hInstance,HINSTANCE prevInstance,LPWSTR lpCmdLine,int nCmdShow) {
 
@@ -47,12 +23,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,HINSTANCE prevInstance,LPWSTR lpCmdLin
 		DispatchMessage(&msg);
 	}
 
-	
-	delete g_map;
-	delete g_board;
-	delete g_players[PLAYER];
-	delete g_players[COMPUTER];
-
+	freeNew();
 	Gdiplus::GdiplusShutdown(gdiToken);
 
 	return (int)msg.wParam;
@@ -101,21 +72,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 
 	case WM_CREATE:
 	{
-		RECT rcClient;
-		GetClientRect(hwnd, &rcClient);
-		Gdiplus::Rect rc(rcClient.left, rcClient.top, rcClient.right, rcClient.bottom);
-		g_map = new MAP();
-		g_map->setFirstPlayer(PLAYER);
-		g_board = new UI_BOARD(rc);
-		g_board->setMap(g_map);
-		g_board->updateBoard();
-
-		g_players[PLAYER] = new class PERSON();
-		g_computer = new class COMPUTER();
-		g_computer->setLevel(1);
-		g_computer->beforeStart();
+		g_main_hwnd = hwnd;
+		initNew();
+		//DialogBox(hInst, MAKEINTRESOURCE(IDD_DLG_START), hwnd, );
+		initData();
 		
-		g_players[COMPUTER] = g_computer;
 	}
 	break;
 	case WM_PAINT:
@@ -128,17 +89,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		EndPaint(hwnd, &ps);
 	}
 	break;
+	case WM_TIMER:
+	{
+		HDC hdc = GetDC(hwnd);
+		computerTimerProc(hdc);
+		ReleaseDC(hwnd, hdc);
+	}
+		break;
 	case WM_LBUTTONDOWN:
 	{
 		int x = LOWORD(lParam);
 		int y = HIWORD(lParam);
 		HDC hdc = GetDC(hwnd);
-		if (PLAYER_PLAYER == g_mode) {
-			OnLButtonDownMode1(hdc, x, y);
-		}
-		else {
-			OnLButtonDownMode2(hdc, x, y);
-		}
+
+		OnLButtonDown(hdc, x, y);
+
 		ReleaseDC(hwnd, hdc);
 	}
 	break;
@@ -160,70 +125,152 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 	return 0;
 }
 
+INT_PTR DlgStartProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		return (INT_PTR)TRUE;
+
+	case WM_COMMAND:
+	{
+		int wmId = LOWORD(wParam);
+	}
+		break;
+	case WM_PAINT:
+	{
+
+	}
+		break;
+	default:
+		break;
+	}
+	return (INT_PTR)FALSE;
+}
+
+void initData() {
+	g_board->setMap(g_map);
+	g_map->init();
+	g_map->setFirstPlayer(PLAYER);
+	g_computer->setLevel(1);
+	g_computer->beforeStart();
+	
+
+	g_board->updateBoard();
+	//g_board->draw()
+}
+
+void initNew() {
+
+	RECT rcClient;
+	GetClientRect(g_main_hwnd, &rcClient);
+	Gdiplus::Rect rc(rcClient.left, rcClient.top, rcClient.right, rcClient.bottom);
+
+	g_board = new UI_BOARD(rc);
+	g_map = new MAP();
+	g_player = new class PERSON();
+	g_computer = new class COMPUTER();
+}
+
+void freeNew()
+{
+	delete g_map;
+	delete g_board;
+	delete g_player;
+	delete g_computer;
+}
+
 void OnPaint(HDC hdc) {
 
 	g_board->draw(hdc);
 
 }
 
-void showWinner(int status) {
-	if (!status) {
+void checkWinner() {
+	g_status = g_map->hasWinner();
+	if (!g_status) {
 		return;
 	}
 	char tmp[100] = { 0 };
-	if (status != -1) {
-		wsprintfA(tmp, "The Winner is %s\n", status == WHITE ? "WHITE" : "BLACK");
+	if (g_status != -1) {
+		wsprintfA(tmp, "%s获胜\n", g_status == WHITE ? "白棋" : "黑棋");
 	}
 	else {
-		wsprintfA(tmp, "Game Draw");
+		wsprintfA(tmp, "平局");
 	}
-	MessageBoxA(NULL, tmp, "我是傻逼", MB_OK);
+	MessageBoxA(g_main_hwnd, tmp, "游戏结束", MB_OK | MB_ICONINFORMATION);
 }
 
-void OnLButtonDownMode1(HDC hdc, int wx, int wy) {  //PLAYER_PLAYER
+void showThinking() {
+	MessageBoxA(g_main_hwnd,"Computer还在思考！","思考",MB_OK | MB_ICONINFORMATION);
+}
 
-	int x = (wx - 10) / 40;
-	int y = (wy - 10) / 40;
+void CALLBACK computerTimerProc(HDC hdc)
+{
+	if (!g_status) {
+		if (!g_computer->isThinking()) {
+			if (g_map->getCurPlayer() == COMPUTER) {
+				POSITION p = g_computer->getLastPos();
+				g_map->putChess(p);
+				g_board->updateBoard();
+				g_board->draw(hdc);
+				KillTimer(g_main_hwnd, COMPUTER_MAIN_TIMER);
+				checkWinner();
+			}
+		}
+	}
+}
+
+void OnLButtonDown(HDC hdc, int wx, int wy) {  //PLAYER_PLAYER
+
+	int x = (wx) / 40;
+	int y = (wy) / 40;
 	//debug
 	CHAR str[100];
-
-
-	int status = g_map->hasWinner();
-
-	wsprintfA(str, "Chess(%d,%d) => %d\n", x, y,status);
+	wsprintfA(str, "Chess(%d,%d) => %d\n", x, y,g_status);
 	OutputDebugStringA(str);
 
-	if (status == 0) { //in game
-		if (x >= 0 && x < MAPWIDTH && y >= 0 && y < MAPWIDTH) {
+	POSITION p{ x,y };
+	if (g_status == 0) { //in game
+		if (isInMap(x,y)) {
 			if (!g_map->boardIndex(x, y)) {
-				g_map->putChess(POSITION{ x,y });
+				if (PLAYER_PLAYER == g_mode) {
+					g_map->putChess(p);
+				}
+				else {
+					if (g_map->getCurPlayer() == PLAYER) {
+						g_map->putChess(p);
+						g_computer->OnLButtonDown(p);
+						SetTimer(g_main_hwnd, COMPUTER_MAIN_TIMER, 100, NULL);
+					}
+					else {
+						if (g_computer->isThinking()) {
+							showThinking();
+						}
+					}
+				}
 				g_board->updateBoard();
 				g_board->draw(hdc);
 			}
 		}
 	}
-	status = g_map->hasWinner();
-	wsprintfA(str,"            => %d\n", status);
-	OutputDebugStringA(str);
-	if(status) {
-		showWinner(status);
-	}
+	checkWinner();
 }
-void OnLButtonDownMode2(HDC hdc, int wx, int wy) {
 
-
-}
 void OnMouseOver(HDC hdc,int wx, int wy) {
-	int x = (wx ) / 40;
+	int x = (wx) / 40;
 	int y = (wy) / 40;
 
 	POSITION p{ -1,-1 };
-	if (!g_map->hasWinner()) {
-		if (x >= 0 && x < MAPWIDTH && y >= 0 && y < MAPWIDTH) {
-			if (!g_map->boardIndex(x, y)) {
-				p = POSITION{ x,y };
+	if (!g_status) {
+		if (!g_computer->isThinking()) {
+			if (isInMap(x, y)) {
+				if (!g_map->boardIndex(x, y)) {
+					p = POSITION{ x,y };
+				}
 			}
 		}
 	}
 	g_board->drawTipCircle(hdc, p);
 }
+
