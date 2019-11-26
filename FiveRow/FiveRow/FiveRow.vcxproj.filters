@@ -27,6 +27,12 @@
     <ClCompile Include="player.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="PERSON.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="COMPUTER.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -42,6 +48,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="PLAYER.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PERSON.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="COMPUTER.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

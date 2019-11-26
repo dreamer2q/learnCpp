@@ -123,14 +123,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="COMPUTER.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MAP.cpp" />
+    <ClCompile Include="PERSON.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="ui_board.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="COMPUTER.h" />
     <ClInclude Include="include.h" />
     <ClInclude Include="MAP.h" />
+    <ClInclude Include="PERSON.h" />
     <ClInclude Include="PLAYER.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="UI_BOARD.h" />
