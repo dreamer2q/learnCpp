@@ -1,5 +1,7 @@
 // Microsoft Visual C++ generated resource script.
 //
+#pragma code_page(65001)
+
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -13,11 +15,10 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// ����(���壬�й�) resources
+// 中文(简体，中国) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
-#pragma code_page(936)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -52,13 +53,32 @@ END
 
 IDR_MAIN_MENU MENU
 BEGIN
-    POPUP "�ļ�"
+    POPUP "游戏"
     BEGIN
-        MENUITEM "ces",                         ID_40001
+        POPUP "开局"
+        BEGIN
+            MENUITEM "基友对局",                        IDM_GAYPLAY
+            POPUP "人机对局"
+            BEGIN
+                MENUITEM "我先走",                         IDM_ME_FIRST
+                MENUITEM "电脑先走",                        IDM_COMPUTER_FIRST
+            END
+            MENUITEM "载入残局",                        IDM_LOAD_HALFBOARD
+        END
+        MENUITEM "设置",                          IDM_SETTING
+        MENUITEM SEPARATOR
+        MENUITEM "载入棋谱",                        IDM_LOADBOARD
+        MENUITEM "创造棋谱",                        IDM_CREATEBOARD
+        MENUITEM "保存棋谱",                        40027
+        MENUITEM SEPARATOR
+        MENUITEM "退出",                          IDM_EXIT
     END
-    POPUP "����"
+    MENUITEM "悔棋",                          IDM_TAKEBACK
+    POPUP "帮助"
     BEGIN
-        MENUITEM "����",                          ID_40002
+        MENUITEM "关于",                          IDM_ABOUT
+        MENUITEM SEPARATOR
+        MENUITEM "Github",                      IDM_GITHUB
     END
 END
 
@@ -68,17 +88,32 @@ END
 // Dialog
 //
 
-IDD_DLG_START DIALOGEX 0, 0, 589, 355
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_CHILD | WS_CAPTION | WS_SYSMENU
+IDD_DLG_SETTING DIALOGEX 0, 0, 220, 177
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_APPWINDOW
-CAPTION "������"
+CAPTION "设置"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_TAB2,"SysTabControl32",0x0,69,14,189,243
-    PUSHBUTTON      "�˳�",IDC_BT_EXIT,169,216,102,23
-    PUSHBUTTON      "����",IDC_BT_ABOUT,169,186,102,22
-    PUSHBUTTON      "�˻�",IDC_BT_PLAYERCOMPUTER,168,151,104,25
-    PUSHBUTTON      "����",IDC_BT_PLAYERPAYER,167,116,103,24
+    PUSHBUTTON      "取消",IDC_BT_CANCEL,108,156,50,14
+    PUSHBUTTON      "保存",IDC_BT_SAVE,44,156,50,14
+    GROUPBOX        "AI智障程度",IDC_STATIC,6,7,194,90
+    CONTROL         "智障",IDC_R_LEVEL1,"Button",BS_AUTORADIOBUTTON,17,22,46,10
+    CONTROL         "弱智",IDC_R_LEVEL2,"Button",BS_AUTORADIOBUTTON,17,39,38,11
+    CONTROL         "睿智",IDC_R_LEVEL3,"Button",BS_AUTORADIOBUTTON,17,56,33,10
+    CONTROL         "迟钝",IDC_R_LEVEL4,"Button",BS_AUTORADIOBUTTON,17,74,44,10
+    GROUPBOX        "音乐",IDC_STATIC,6,98,195,54
+    CONTROL         "背景音乐",IDC_CK_BKMUSIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,113,50,10
+    CONTROL         "特效音乐",IDC_CK_EFMUSIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,130,50,10
+END
+
+IDD_DLG_ABOUT DIALOGEX 0, 0, 310, 177
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "关于"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,199,156,50,14
+    PUSHBUTTON      "取消",IDCANCEL,253,156,50,14
+    LTEXT           "This is about dialog",IDC_STATIC_ABOUT,8,8,287,101
 END
 
 
@@ -90,12 +125,18 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO
 BEGIN
-    IDD_DLG_START, DIALOG
+    IDD_DLG_SETTING, DIALOG
+    BEGIN
+        RIGHTMARGIN, 214
+        BOTTOMMARGIN, 149
+    END
+
+    IDD_DLG_ABOUT, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 464
+        RIGHTMARGIN, 303
         TOPMARGIN, 7
-        BOTTOMMARGIN, 277
+        BOTTOMMARGIN, 170
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -106,7 +147,12 @@ END
 // AFX_DIALOG_LAYOUT
 //
 
-IDD_DLG_START AFX_DIALOG_LAYOUT
+IDD_DLG_SETTING AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_ABOUT AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
@@ -123,7 +169,7 @@ BEGIN
     IDS_TITLE               "Five Row Demo"
 END
 
-#endif    // ����(���壬�й�) resources
+#endif    // 中文(简体，中国) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

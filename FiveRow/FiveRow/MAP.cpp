@@ -4,6 +4,7 @@ void MAP::init()
 {
 	m_CurMoveIndex = -1;
 	m_CurPlayer = NOBODY;
+	m_GameStatus = 0;
 	memset(m_Moves, 0, sizeof(m_Moves));
 	memset(m_Board, 0, sizeof(m_Board));
 }

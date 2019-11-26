@@ -137,9 +137,9 @@ void COMPUTER::setLevel(int level)
 			sendCommand(command);
 			break;
 		}
-		timeoutmatch = 100000000;
-		timeoutturn = 2000000;
-		increment = 0;
+		int timeoutmatch = 100000000;
+		int timeoutturn = 2000000;
+		int increment = 0;
 		sprintf_s(command, "INFO timeout_match %d\n", timeoutmatch);
 		sendCommand(command);
 		sprintf_s(command, "INFO time_left %d\n", timeoutmatch);

@@ -53,17 +53,18 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	g_hInst = hInstance;
 
-HWND hWnd = CreateWindowEx(WS_EX_CLIENTEDGE, g_szWndClass, g_szTitle, WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX,
-	CW_USEDEFAULT, CW_USEDEFAULT, WIN_WIDTH, WIN_HEIGHT, NULL, NULL, hInstance, NULL);
+	HWND hWnd = CreateWindowEx(WS_EX_CLIENTEDGE, g_szWndClass, g_szTitle, WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX,
+		CW_USEDEFAULT, CW_USEDEFAULT, WIN_WIDTH, WIN_HEIGHT, NULL, NULL, hInstance, NULL);
 
-if (!hWnd) {
-	MessageBox(NULL, TEXT("Create WindowEx Error"), TEXT("ERROR"), MB_OK | MB_ICONERROR);
-	return FALSE;
-}
+	if (!hWnd) {
+		MessageBox(NULL, TEXT("Create WindowEx Error"), TEXT("ERROR"), MB_OK | MB_ICONERROR);
+		return FALSE;
+	}
 
-ShowWindow(hWnd, nCmdShow);
-UpdateWindow(hWnd);
-return TRUE;
+	//g_main_hwnd = hWnd;
+	ShowWindow(hWnd, nCmdShow);
+	UpdateWindow(hWnd);
+	return TRUE;
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
@@ -74,18 +75,46 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 	{
 		g_main_hwnd = hwnd;
 		initNew();
-		//DialogBox(hInst, MAKEINTRESOURCE(IDD_DLG_START), hwnd, );
-		initData();
-		
+		g_board->updateBoard();
 	}
 	break;
+	case WM_COMMAND:
+	{
+		int wmId = LOWORD(wParam);
+		switch (wmId)
+		{
+		case IDM_ME_FIRST:
+			startGame(PLAYER_AI, PLAYER);
+			break;
+		case IDM_COMPUTER_FIRST:
+			startGame(PLAYER_AI, COMPUTER);
+			break;
+		case IDM_GAYPLAY:
+			startGame(PLAYER_PLAYER, PLAYER);
+			break;
+		case IDM_SETTING:
+			DialogBox(g_hInst, MAKEINTRESOURCE(IDD_DLG_SETTING), hwnd, DlgSettingProc);
+			break;
+		case IDM_ABOUT:
+			DialogBox(g_hInst, MAKEINTRESOURCE(IDD_DLG_ABOUT), hwnd, DlgAboutProc);
+			break;
+		case IDM_EXIT:
+			PostQuitMessage(0);
+			break;
+		case IDM_TAKEBACK:
+			
+			//break;
+		default:
+			MessageBoxA(hwnd, "To be implemented!", "INFO", MB_OK | MB_ICONINFORMATION);
+			break;
+		}
+	}
+		break;
 	case WM_PAINT:
 	{
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hwnd, &ps);
-
 		OnPaint(hdc);
-
 		EndPaint(hwnd, &ps);
 	}
 	break;
@@ -101,9 +130,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		int x = LOWORD(lParam);
 		int y = HIWORD(lParam);
 		HDC hdc = GetDC(hwnd);
-
-		OnLButtonDown(hdc, x, y);
-
+		if (g_started) {
+			OnLButtonDown(hdc, x, y);
+		}
+		else {
+			MessageBoxA(hwnd, "游戏未开始", "GAME", MB_OK | MB_ICONINFORMATION);
+		}
 		ReleaseDC(hwnd, hdc);
 	}
 	break;
@@ -112,7 +144,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		int x = LOWORD(lParam);
 		int y = HIWORD(lParam);
 		HDC hdc = GetDC(hwnd);
-		OnMouseOver(hdc,x, y);
+		if (g_started) {
+			OnMouseOver(hdc, x, y);
+		}
 		ReleaseDC(hwnd, hdc);
 	}
 	break;
@@ -125,39 +159,62 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 	return 0;
 }
 
-INT_PTR DlgStartProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK DlgSettingProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
 	case WM_INITDIALOG:
+	{
+		CheckRadioButton(hDlg, IDC_R_LEVEL1, IDC_R_LEVEL4, IDC_R_LEVEL1 + g_setting.level-1);
+		CheckDlgButton(hDlg, IDC_CK_BKMUSIC, g_setting.bkMusic);
+		CheckDlgButton(hDlg, IDC_CK_EFMUSIC, g_setting.bkEffect);
 		return (INT_PTR)TRUE;
-
+	}
 	case WM_COMMAND:
 	{
 		int wmId = LOWORD(wParam);
+		if (wmId == IDC_BT_SAVE) {
+			applySetting(hDlg);
+			EndDialog(hDlg, 0);
+		}
+		else if (wmId == IDC_BT_CANCEL) {
+			EndDialog(hDlg, 0);
+		}
+		return TRUE;
 	}
-		break;
-	case WM_PAINT:
-	{
-
-	}
-		break;
 	default:
 		break;
 	}
 	return (INT_PTR)FALSE;
 }
 
+INT_PTR CALLBACK DlgAboutProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		return TRUE;
+	case WM_COMMAND:
+	{
+		int wmId = LOWORD(wParam);
+		if (wmId == IDOK || wmId == IDCANCEL) {
+			EndDialog(hDlg, 0);
+		}
+	}
+	default:
+		break;
+	}
+	return FALSE;
+}
+
 void initData() {
-	g_board->setMap(g_map);
+
 	g_map->init();
-	g_map->setFirstPlayer(PLAYER);
-	g_computer->setLevel(1);
+	g_map->setFirstPlayer(g_setting.firstToPlay);
+	g_computer->setLevel(g_setting.level);
 	g_computer->beforeStart();
 	
-
 	g_board->updateBoard();
-	//g_board->draw()
 }
 
 void initNew() {
@@ -170,6 +227,7 @@ void initNew() {
 	g_map = new MAP();
 	g_player = new class PERSON();
 	g_computer = new class COMPUTER();
+	g_board->setMap(g_map);
 }
 
 void freeNew()
@@ -180,10 +238,40 @@ void freeNew()
 	delete g_computer;
 }
 
+void applySetting(HWND hDlg)
+{
+	for (int i = 0; i < 4; i++) {
+		if (IsDlgButtonChecked(hDlg, IDC_R_LEVEL1 + i)) {
+			g_setting.level = i + 1;
+			break;
+		}
+	}
+	g_setting.bkMusic = IsDlgButtonChecked(hDlg, IDC_CK_BKMUSIC);
+	g_setting.bkEffect = IsDlgButtonChecked(hDlg, IDC_CK_EFMUSIC);
+}
+
+void startGame(int mode, int firstPlayer)
+{
+	g_setting.firstToPlay = firstPlayer;
+	g_setting.mode = mode;
+	g_started = true;
+	g_status = 0;
+	initData();
+
+	if (mode == PLAYER_AI && firstPlayer == COMPUTER) {
+		auto p = g_computer->firstStep();
+		g_map->putChess(p);
+		g_board->updateBoard();
+	}
+}
+
+void endGame()
+{
+	g_started = false;
+}
+
 void OnPaint(HDC hdc) {
-
 	g_board->draw(hdc);
-
 }
 
 void checkWinner() {
@@ -199,6 +287,7 @@ void checkWinner() {
 		wsprintfA(tmp, "平局");
 	}
 	MessageBoxA(g_main_hwnd, tmp, "游戏结束", MB_OK | MB_ICONINFORMATION);
+	g_started = false;
 }
 
 void showThinking() {
@@ -234,7 +323,7 @@ void OnLButtonDown(HDC hdc, int wx, int wy) {  //PLAYER_PLAYER
 	if (g_status == 0) { //in game
 		if (isInMap(x,y)) {
 			if (!g_map->boardIndex(x, y)) {
-				if (PLAYER_PLAYER == g_mode) {
+				if (PLAYER_PLAYER == g_setting.mode) {
 					g_map->putChess(p);
 				}
 				else {
