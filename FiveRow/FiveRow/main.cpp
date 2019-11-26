@@ -12,14 +12,18 @@ UI_BOARD* g_board;
 MAP* g_map;
 class PLAYER* g_players[3];
 class COMPUTER* g_computer;
+int g_mode = PLAYER_PLAYER;
 
 
 ATOM MyRegisterClass(HINSTANCE);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 BOOL InitInstance(HINSTANCE, int);
 void OnPaint(HDC hdc);
-void OnLButtonDown(int x, int y);
-void OnMouseOver(int wx, int wy);
+void OnLButtonDownMode1(HDC hdc, int wx, int wy); //PLAYER_PLAYER
+void OnLButtonDownMode2(HDC hdc, int wx, int wy); //PLAYER_AI
+//void OnLButtonDown(HDC hdc, int x, int y);
+void OnMouseOver(HDC hdc, int wx, int wy);
+void showWinner(int status);
 
 
 int APIENTRY wWinMain(HINSTANCE hInstance,HINSTANCE prevInstance,LPWSTR lpCmdLine,int nCmdShow) {
@@ -104,16 +108,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		g_map->setFirstPlayer(PLAYER);
 		g_board = new UI_BOARD(rc);
 		g_board->setMap(g_map);
-<<<<<<< HEAD
+		g_board->updateBoard();
 
-=======
 		g_players[PLAYER] = new class PERSON();
 		g_computer = new class COMPUTER();
-		//g_computer->setLevel(1);
+		g_computer->setLevel(1);
 		g_computer->beforeStart();
 		
 		g_players[COMPUTER] = g_computer;
->>>>>>> 97b42f3f02cb7497be02306b328dcba850995d54
 	}
 	break;
 	case WM_PAINT:
@@ -130,21 +132,23 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 	{
 		int x = LOWORD(lParam);
 		int y = HIWORD(lParam);
-		OnLButtonDown(x, y);
-		OnMouseOver(x, y);
-		HDC dc = GetDC(hwnd);
-		OnPaint(dc);
-		ReleaseDC(hwnd, dc);
+		HDC hdc = GetDC(hwnd);
+		if (PLAYER_PLAYER == g_mode) {
+			OnLButtonDownMode1(hdc, x, y);
+		}
+		else {
+			OnLButtonDownMode2(hdc, x, y);
+		}
+		ReleaseDC(hwnd, hdc);
 	}
 	break;
 	case WM_MOUSEMOVE:
 	{
 		int x = LOWORD(lParam);
 		int y = HIWORD(lParam);
-		OnMouseOver(x, y);
-		HDC dc = GetDC(hwnd);
-		OnPaint(dc);
-		ReleaseDC(hwnd, dc);
+		HDC hdc = GetDC(hwnd);
+		OnMouseOver(hdc,x, y);
+		ReleaseDC(hwnd, hdc);
 	}
 	break;
 	case WM_DESTROY:
@@ -158,43 +162,68 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 
 void OnPaint(HDC hdc) {
 
-	g_board->drawMap(hdc);
+	g_board->draw(hdc);
 
 }
 
-void OnLButtonDown(int wx, int wy) {
-	CHAR str[100];
-	wsprintfA(str, "Mouse(%d,%d)\n", wx, wy);
-	//OutputDebugStringA(str);
+void showWinner(int status) {
+	if (!status) {
+		return;
+	}
+	char tmp[100] = { 0 };
+	if (status != -1) {
+		wsprintfA(tmp, "The Winner is %s\n", status == WHITE ? "WHITE" : "BLACK");
+	}
+	else {
+		wsprintfA(tmp, "Game Draw");
+	}
+	MessageBoxA(NULL, tmp, "ÎÒÊÇÉµ±Æ", MB_OK);
+}
 
-	//double factor = 800 / 535.0;
+void OnLButtonDownMode1(HDC hdc, int wx, int wy) {  //PLAYER_PLAYER
+
 	int x = (wx - 10) / 40;
 	int y = (wy - 10) / 40;
+	//debug
+	CHAR str[100];
 
-	wsprintfA(str, "Chess(%d,%d)\n", x, y);
+
+	int status = g_map->hasWinner();
+
+	wsprintfA(str, "Chess(%d,%d) => %d\n", x, y,status);
 	OutputDebugStringA(str);
 
-	if (x >= 0 && x < MAPWIDTH && y >= 0 && y < MAPWIDTH) {
-		if (!g_map->boardIndex(x, y)) {
-			g_map->putChess(POSITION{ x,y });
-			OutputDebugStringA("Start boardIndex");
-			class PLAYER* player = g_players[g_map->getCurPlayer()];
-			player->OnLButtonDown(POSITION{ x,y });
-			POSITION p = player->play();
-			g_map->putChess(p);
+	if (status == 0) { //in game
+		if (x >= 0 && x < MAPWIDTH && y >= 0 && y < MAPWIDTH) {
+			if (!g_map->boardIndex(x, y)) {
+				g_map->putChess(POSITION{ x,y });
+				g_board->updateBoard();
+				g_board->draw(hdc);
+			}
 		}
 	}
+	status = g_map->hasWinner();
+	wsprintfA(str,"            => %d\n", status);
+	OutputDebugStringA(str);
+	if(status) {
+		showWinner(status);
+	}
 }
+void OnLButtonDownMode2(HDC hdc, int wx, int wy) {
 
-void OnMouseOver(int wx, int wy) {
+
+}
+void OnMouseOver(HDC hdc,int wx, int wy) {
 	int x = (wx ) / 40;
 	int y = (wy) / 40;
 
 	POSITION p{ -1,-1 };
-	if (x >= 0 && x < MAPWIDTH && y >= 0 && y < MAPWIDTH) {
-		if (!g_map->boardIndex(x, y)) {
-			p = POSITION{ x,y };
+	if (!g_map->hasWinner()) {
+		if (x >= 0 && x < MAPWIDTH && y >= 0 && y < MAPWIDTH) {
+			if (!g_map->boardIndex(x, y)) {
+				p = POSITION{ x,y };
+			}
 		}
 	}
-	g_board->setTipCircle(p);
+	g_board->drawTipCircle(hdc, p);
 }

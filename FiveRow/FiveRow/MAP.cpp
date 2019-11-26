@@ -25,6 +25,7 @@ bool MAP::putChess(POSITION p, int player)
 		boardIndex(p) = (player==m_FirstPlayer?BLACK:WHITE);
 		nextPlayer();
 		addMove(p);
+		updateGameStatus();
 		return true;
 	}
 	return false;
@@ -50,7 +51,10 @@ bool MAP::isInBoard(POSITION p)
 
 bool MAP::isEmpty(POSITION p)
 {
-	return !(isInBoard(p) && m_Board[p.x][p.y]);
+	if (isInBoard(p)) {
+		return !m_Board[p.x][p.y];
+	}
+	return false;
 }
 
 int& MAP::boardIndex(POSITION p)
@@ -86,20 +90,20 @@ bool MAP::checkPos(POSITION p)
 	}
 	for (int i = 0; i < 5; i++) {
 		if (p.x + i < MAPWIDTH) {
-			sum[0] += boardIndex(p.x + i, p.y);
+			sum[0] += (boardIndex(p.x + i, p.y)==player);
 		}
 		if (p.y + i < MAPWIDTH) {
-			sum[1] += boardIndex(p.x, p.y + i);
+			sum[1] += (boardIndex(p.x, p.y + i)==player);
 		}
 		if (p.x + i < MAPWIDTH && p.y < MAPWIDTH) {
-			sum[2] += boardIndex(p.x + i, p.y + i);
+			sum[2] += (boardIndex(p.x + i, p.y + i)==player);
 		}
 		if (p.x + i < MAPWIDTH && p.y - i >= 0) {
-			sum[3] += boardIndex(p.x + i, p.y - i);
+			sum[3] += (boardIndex(p.x + i, p.y - i)==player);
 		}
 	}
 	for (int i = 0; i < 4; i++) {
-		if (sum[i] == player * 5) {
+		if (sum[i] == 5) {
 			return true;
 		}
 	}

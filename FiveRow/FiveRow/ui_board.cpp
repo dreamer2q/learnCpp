@@ -41,8 +41,6 @@ void UI_BOARD::drawMap(HDC hdc)
 
 	drawMapChess(gbuf);
 
-
-
 	Gdiplus::Graphics graphics(hdc);
 	graphics.DrawImage(&bk,m_DrawRect);
 }
@@ -56,7 +54,6 @@ void UI_BOARD::updateBoard()
 	gbuf.DrawImage(m_bkGround, rc);
 
 	drawMapChess(gbuf);
-
 }
 
 void UI_BOARD::drawChess(POSITION p,int index, Gdiplus::Graphics& graphics)
@@ -98,14 +95,12 @@ void UI_BOARD::drawMapChess(Gdiplus::Graphics& graphics)
 
 void UI_BOARD::drawTipCircle(HDC hdc, POSITION p)
 {
+	draw(hdc);
 	if (p.x >= 0) {
 		POSITION ep = encodeXY(p);
 		Gdiplus::Rect rcChess(ep.x, ep.y, m_Sep, m_Sep);
 		Gdiplus::Graphics graphics(hdc);
 		graphics.DrawImage(m_chess[EMPTY], rcChess);
-	}
-	else {
-		draw(hdc);
 	}
 }
 

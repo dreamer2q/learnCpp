@@ -12,17 +12,50 @@ COMPUTER::COMPUTER()
 
 POSITION COMPUTER::play()
 {
-	return getXY();
+	if (!isThinking()) {
+		return getLastPos();
+	}
+	else {
+		return POSITION{ -1,-1 };
+	}
 }
 
 void COMPUTER::OnLButtonDown(POSITION p)
 {
-	sendTurn(p);
+
+	auto func = [&](POSITION pos)->void {
+		this->turn(pos);
+	};
+	std::thread thr(func,p);
+	thr.detach();
+
+	//sendTurn(p);
 }
 
 int COMPUTER::getPlayerInt()
 {
 	return ::COMPUTER;
+}
+
+void COMPUTER::turn(POSITION p)
+{
+	char cmd[128] = { 0 };
+	char result[512] = { 0 };
+	sprintf_s(cmd, "turn %d,%d\n", p.x, p.y);
+	sendCommand(cmd);
+	m_isThinking = true;
+	m_lastPos = getXY();
+	m_isThinking = false;
+}
+
+bool COMPUTER::isThinking()
+{
+	return m_isThinking;
+}
+
+POSITION COMPUTER::getLastPos()
+{
+	return m_lastPos;
 }
 
 void COMPUTER::takeBack(POSITION p)
@@ -110,7 +143,7 @@ void COMPUTER::setLevel(int level)
 		sprintf_s(command, "INFO time_increment %d\n", increment);
 		sendCommand(command);
 	}
-	receiveResult(command, 512);
+	//receiveResult(command, 512);
 }
 
 void COMPUTER::beforeStart()
@@ -167,6 +200,7 @@ void COMPUTER::sendTurn(POSITION p)
 	char result[512] = { 0 };
 	sprintf_s(cmd, "turn %d,%d\n", p.x, p.y);
 	sendCommand(cmd);
+	m_isThinking = true;
 }
 
 bool COMPUTER::parseXY(char* cmd, POSITION* p)
@@ -183,6 +217,11 @@ bool COMPUTER::parseXY(char* cmd, POSITION* p)
 		return false;
 	}
 	return true;
+}
+
+void COMPUTER::updateThinkingStatus(bool status)
+{
+	m_isThinking = status;
 }
 
 POSITION COMPUTER::getXY()

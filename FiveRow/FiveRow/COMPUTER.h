@@ -1,6 +1,8 @@
 #pragma once
 #include "PLAYER.h"
 
+#include <thread>
+
 class COMPUTER : public PLAYER
 {
 public:
@@ -13,6 +15,9 @@ public:
 	void OnLButtonDown(POSITION p) override;
 	int getPlayerInt() override;
 
+	void turn(POSITION p);
+	bool isThinking();
+	POSITION getLastPos();
 	void takeBack(POSITION p);
 	void setLevel(int level);
 
@@ -27,6 +32,7 @@ private:
 	void initBrain();
 	void sendTurn(POSITION p);
 	bool parseXY(char* cmd, POSITION* p);
+	void updateThinkingStatus(bool status);
 	POSITION getXY();
 	DWORD sendCommand(const char* cmd);
 	int receiveResult(char* ret, int size);
@@ -35,9 +41,11 @@ private:
 	const WCHAR* m_pbrain = L"brain/pbrain.exe";
 	HANDLE hOutRd;
 	HANDLE hInWr;
+	
+	bool m_isThinking = false;
+	POSITION m_lastPos{ -1,-1 };
 
-
-	int timeoutturn = 10000;
+	int timeoutturn = 1000;
 	int timeoutmatch = 2000000;
 	int maxdepth = 100;
 	int maxnode = 1000000000;

@@ -28,6 +28,11 @@ enum {
 	COMPUTER
 };
 
+enum {
+	PLAYER_PLAYER = 0,
+	PLAYER_AI
+};
+
 enum {	
 	PLAYER_FIRST = 1,
 	COMPUTER_FIRST
