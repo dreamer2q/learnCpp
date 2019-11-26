@@ -1,7 +1,7 @@
 #include "UI_BOARD.h"
 
 
-UI_BOARD::UI_BOARD(Gdiplus::Rect& rc):m_DrawRect(rc)
+UI_BOARD::UI_BOARD(Gdiplus::Rect& rc):m_DrawRect(rc),m_bitBuf(rc.Width,rc.Height)
 {
 	m_bkGround = new Gdiplus::Image(TEXT("picture/board.jpg"));
 	m_chess[BLACK] = new Gdiplus::Image(TEXT("picture/black_chess.png"));
@@ -23,6 +23,12 @@ void UI_BOARD::setMap(MAP* map)
 	m_map = map;
 }
 
+void UI_BOARD::draw(HDC hdc)
+{
+	Gdiplus::Graphics graphics(hdc);
+	graphics.DrawImage(&m_bitBuf, m_DrawRect);
+}
+
 void UI_BOARD::drawMap(HDC hdc)
 {
 	Gdiplus::Bitmap bk(m_DrawRect.Width,m_DrawRect.Height);
@@ -35,15 +41,22 @@ void UI_BOARD::drawMap(HDC hdc)
 
 	drawMapChess(gbuf);
 
-	if (m_TipCircle.x >= 0) {
-		POSITION p = encodeXY(m_TipCircle);
-		Gdiplus::Rect rcChess(p.x+2, p.y+2, m_Sep, m_Sep);
-		Gdiplus::Image* img = m_chess[EMPTY];
-		gbuf.DrawImage(img, rcChess);
-	}
+
 
 	Gdiplus::Graphics graphics(hdc);
 	graphics.DrawImage(&bk,m_DrawRect);
+}
+
+void UI_BOARD::updateBoard()
+{
+	Gdiplus::Graphics gbuf(&m_bitBuf);
+
+	Gdiplus::Rect rc(m_DrawRect);
+	rc.Width = rc.Height;
+	gbuf.DrawImage(m_bkGround, rc);
+
+	drawMapChess(gbuf);
+
 }
 
 void UI_BOARD::drawChess(POSITION p,int index, Gdiplus::Graphics& graphics)
@@ -61,6 +74,7 @@ void UI_BOARD::drawChess(POSITION p,int index, Gdiplus::Graphics& graphics)
 	Gdiplus::Font mfont(L"Arial",16);
 	Gdiplus::PointF pf(ep.x+12-5*lstrlenW(num),ep.y+7);
 	Gdiplus::Color color;
+
 	if (m_map->getSumSteps() == index) {
 		color.SetFromCOLORREF(Gdiplus::Color::Blue);
 	}else if(m_map->boardIndex(p.x, p.y) == WHITE) {
@@ -68,6 +82,7 @@ void UI_BOARD::drawChess(POSITION p,int index, Gdiplus::Graphics& graphics)
 	}else {
 		color.SetFromCOLORREF(Gdiplus::Color::White);
 	}
+
 	Gdiplus::SolidBrush mbrush(color);
 	graphics.DrawString(num, lstrlenW(num), &mfont,pf,&mbrush);
 }
@@ -81,9 +96,17 @@ void UI_BOARD::drawMapChess(Gdiplus::Graphics& graphics)
 	}
 }
 
-void UI_BOARD::setTipCircle(POSITION p)
+void UI_BOARD::drawTipCircle(HDC hdc, POSITION p)
 {
-	m_TipCircle = p;
+	if (p.x >= 0) {
+		POSITION ep = encodeXY(p);
+		Gdiplus::Rect rcChess(ep.x, ep.y, m_Sep, m_Sep);
+		Gdiplus::Graphics graphics(hdc);
+		graphics.DrawImage(m_chess[EMPTY], rcChess);
+	}
+	else {
+		draw(hdc);
+	}
 }
 
 POSITION UI_BOARD::encodeXY(POSITION p)
