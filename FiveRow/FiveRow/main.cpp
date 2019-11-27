@@ -102,8 +102,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 			PostQuitMessage(0);
 			break;
 		case IDM_TAKEBACK:
-			
-			//break;
+			takeBack();
+			break;
 		default:
 			MessageBoxA(hwnd, "To be implemented!", "INFO", MB_OK | MB_ICONINFORMATION);
 			break;
@@ -134,7 +134,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 			OnLButtonDown(hdc, x, y);
 		}
 		else {
-			MessageBoxA(hwnd, "游戏未开始", "GAME", MB_OK | MB_ICONINFORMATION);
+			msgNotStarted();
 		}
 		ReleaseDC(hwnd, hdc);
 	}
@@ -228,6 +228,8 @@ void initNew() {
 	g_player = new class PERSON();
 	g_computer = new class COMPUTER();
 	g_board->setMap(g_map);
+
+	initMusic();
 }
 
 void freeNew()
@@ -236,18 +238,26 @@ void freeNew()
 	delete g_board;
 	delete g_player;
 	delete g_computer;
+
+	closeMusic();
 }
 
 void applySetting(HWND hDlg)
 {
+	char cmd[128] = { 0 };
 	for (int i = 0; i < 4; i++) {
 		if (IsDlgButtonChecked(hDlg, IDC_R_LEVEL1 + i)) {
 			g_setting.level = i + 1;
+			wsprintfA(cmd, "SetLevel => %d\n", g_setting.level);
+			OutputDebugStringA(cmd);
 			break;
 		}
 	}
 	g_setting.bkMusic = IsDlgButtonChecked(hDlg, IDC_CK_BKMUSIC);
 	g_setting.bkEffect = IsDlgButtonChecked(hDlg, IDC_CK_EFMUSIC);
+	if (g_started) {
+		updateBkMusic();
+	}
 }
 
 void startGame(int mode, int firstPlayer)
@@ -263,11 +273,39 @@ void startGame(int mode, int firstPlayer)
 		g_map->putChess(p);
 		g_board->updateBoard();
 	}
+	playBkMusic();
 }
 
 void endGame()
 {
 	g_started = false;
+}
+
+void takeBack()
+{
+	if (g_started) {
+		if (!g_status) {
+			if (g_map->getSumSteps() >= 2) {
+				int ret;
+				ret = MessageBoxA(g_main_hwnd, "你想要悔棋吗？", "悔棋", MB_YESNO | MB_ICONQUESTION);
+				if (IDYES == ret) {
+					auto p = g_map->takeBack();
+					g_computer->takeBack(p);
+					p = g_map->takeBack();
+					g_computer->takeBack(p);
+					g_board->updateBoard();
+					SendMessage(g_main_hwnd, WM_PAINT, 0, 0);
+					return;
+				}
+			}
+		}
+	}
+	MessageBoxA(g_main_hwnd, "现在不能悔棋啦~", "GAME", MB_OK | MB_ICONINFORMATION);
+}
+
+void msgNotStarted()
+{
+	MessageBoxA(g_main_hwnd,"游戏未开始","GAME",MB_OK | MB_ICONINFORMATION);	
 }
 
 void OnPaint(HDC hdc) {
@@ -280,8 +318,17 @@ void checkWinner() {
 		return;
 	}
 	char tmp[100] = { 0 };
+	stopBkMusic();
 	if (g_status != -1) {
 		wsprintfA(tmp, "%s获胜\n", g_status == WHITE ? "白棋" : "黑棋");
+		if (g_setting.mode == PLAYER_PLAYER) {
+			playWinMusic();
+		}else if (g_map->getCurPlayer() == PLAYER) {
+			playLoseMusic();
+		}
+		else {
+			playWinMusic();
+		}
 	}
 	else {
 		wsprintfA(tmp, "平局");
@@ -301,6 +348,7 @@ void CALLBACK computerTimerProc(HDC hdc)
 			if (g_map->getCurPlayer() == COMPUTER) {
 				POSITION p = g_computer->getLastPos();
 				g_map->putChess(p);
+				playPutchessMusic();
 				g_board->updateBoard();
 				g_board->draw(hdc);
 				KillTimer(g_main_hwnd, COMPUTER_MAIN_TIMER);
@@ -325,16 +373,21 @@ void OnLButtonDown(HDC hdc, int wx, int wy) {  //PLAYER_PLAYER
 			if (!g_map->boardIndex(x, y)) {
 				if (PLAYER_PLAYER == g_setting.mode) {
 					g_map->putChess(p);
+					playPutchessMusic();
 				}
 				else {
 					if (g_map->getCurPlayer() == PLAYER) {
 						g_map->putChess(p);
+						playPutchessMusic();
 						g_computer->OnLButtonDown(p);
 						SetTimer(g_main_hwnd, COMPUTER_MAIN_TIMER, 100, NULL);
 					}
 					else {
 						if (g_computer->isThinking()) {
 							showThinking();
+						}
+						else {
+							computerTimerProc(hdc);
 						}
 					}
 				}

@@ -21,6 +21,7 @@ public:
 	POSITION getLastPos();
 	void takeBack(POSITION p);
 	void setLevel(int level);
+	void setInfo(EngineInfo info,int value);
 
 	//
 	//void setLevel(int level);
@@ -46,10 +47,5 @@ private:
 	bool m_isThinking = false;
 	POSITION m_lastPos{ -1,-1 };
 
-	int timeoutturn = 1000;
-	int timeoutmatch = 2000000;
-	int maxdepth = 100;
-	int maxnode = 1000000000;
-	int increment = 0;
 };
 

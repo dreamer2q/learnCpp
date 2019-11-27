@@ -76,82 +76,66 @@ void COMPUTER::takeBack(POSITION p)
 
 void COMPUTER::setLevel(int level)
 {
-	char command[512] = { 0 };
-	if (level == 1)
+	int maxNode = 1000;
+	int maxDepth = 50;
+	int timeoutTurn = 2000;
+	int timeoutMatch = 15 * 60 * 1000;
+	int timeIncrement = 0;
+	int timeLeft = timeoutMatch;
+	switch (level)
 	{
-		sprintf_s(command, "INFO timeout_turn %d\n", timeoutturn);
-		sendCommand(command);
-		sprintf_s(command, "INFO timeout_match %d\n", timeoutmatch);
-		sendCommand(command);
-		sprintf_s(command, "INFO time_left %d\n", timeoutmatch);
-		sendCommand(command);
-		sprintf_s(command, "INFO max_node %d\n", maxnode); //now it should not be -1
-		sendCommand(command);
-		sprintf_s(command, "INFO max_depth %d\n", maxdepth);
-		sendCommand(command);
-		sprintf_s(command, "INFO time_increment %d\n", increment);
-		sendCommand(command);
+	case 1:
+		//default level
+		break;
+	case 2:
+		timeoutTurn = 10000;
+		maxNode <<= 1;
+		maxDepth = 100;
+		break;
+	case 3:
+		timeoutTurn = 20000;
+		maxNode <<= 2;
+		maxDepth = 150;
+		break;
+	case 4:
+		timeoutTurn = 30000;
+		maxNode <<= 3;
+		maxDepth = 200;
+		break;
 	}
-	else
+	setInfo(INFO_MAX_DEPTH, maxDepth);
+	setInfo(INFO_MAX_NODE, maxNode);
+	setInfo(INFO_TIMEOUT_MATCH, timeoutMatch);
+	setInfo(INFO_TIMEOUT_TURN, timeoutTurn);
+	setInfo(INFO_TIME_LEFT, timeLeft);
+	setInfo(INFO_TIME_INCREMENT, timeIncrement);
+}
+
+void COMPUTER::setInfo(EngineInfo info, int value)
+{
+	char cmd[512] = { 0 };
+	switch (info)
 	{
-		switch (level)
-		{
-		case 0:
-			sprintf_s(command, "INFO max_node %d\n", -1);
-			sendCommand(command);
-			break;
-		case 2:
-			sprintf_s(command, "INFO max_node %d\n", 10000);
-			sendCommand(command);
-			break;
-		case 3:
-			sprintf_s(command, "INFO max_node %d\n", 20000);
-			sendCommand(command);
-			break;
-		case 4:
-			sprintf_s(command, "INFO max_node %d\n", 30000); //if the speed is 500k, then it will take at most 60s
-			sendCommand(command);
-			break;
-		case 5:
-			sprintf_s(command, "INFO max_node %d\n", 60000);
-			sendCommand(command);
-			break;
-		case 6:
-			sprintf_s(command, "INFO max_node %d\n", 120000);
-			sendCommand(command);
-			break;
-		case 7:
-			sprintf_s(command, "INFO max_node %d\n", 240000);
-			sendCommand(command);
-			break;
-		case 8:
-			sprintf_s(command, "INFO max_node %d\n", 1920000);
-			sendCommand(command);
-			break;
-		case 9:
-			sprintf_s(command, "INFO max_node %d\n", 38400000);
-			sendCommand(command);
-			break;
-		case 10:
-			sprintf_s(command, "INFO max_node %d\n", 500000000);
-			sendCommand(command);
-			break;
-		}
-		int timeoutmatch = 100000000;
-		int timeoutturn = 2000000;
-		int increment = 0;
-		sprintf_s(command, "INFO timeout_match %d\n", timeoutmatch);
-		sendCommand(command);
-		sprintf_s(command, "INFO time_left %d\n", timeoutmatch);
-		sendCommand(command);
-		sprintf_s(command, "INFO timeout_turn %d\n", timeoutturn);
-		sendCommand(command);
-		sprintf_s(command, "INFO max_depth %d\n", MAPWIDTH*MAPWIDTH);
-		sendCommand(command);
-		sprintf_s(command, "INFO time_increment %d\n", increment);
-		sendCommand(command);
+	case INFO_MAX_DEPTH:
+		wsprintfA(cmd, "INFO max_depth %d\n", value);
+		break;
+	case INFO_MAX_NODE:
+		wsprintfA(cmd, "INFO max_node %d\n", value);
+		break;
+	case INFO_TIMEOUT_MATCH:
+		wsprintfA(cmd, "INFO timeout_match %d\n", value);
+		break;
+	case INFO_TIMEOUT_TURN:
+		wsprintfA(cmd, "INFO timeout_turn %d\n", value);
+		break;
+	case INFO_TIME_LEFT:
+		wsprintfA(cmd, "INFO time_left %d\n", value);
+		break;
+	case INFO_TIME_INCREMENT:
+		wsprintfA(cmd, "INFO time_increment %d\n", value);
+		break;
 	}
-	//receiveResult(command, 512);
+	sendCommand(cmd);
 }
 
 void COMPUTER::beforeStart()

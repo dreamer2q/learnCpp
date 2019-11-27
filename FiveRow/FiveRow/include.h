@@ -8,7 +8,9 @@
 #include <windows.h>
 #include <ObjIdl.h>
 #include <gdiplus.h>
+#include <MMSystem.h>
 
+#pragma comment(lib,"winmm.lib")
 #pragma comment(lib,"Gdiplus.lib")
 
 #define MAXSTR 256
@@ -38,6 +40,24 @@ enum {
 	PLAYER_FIRST = 1,
 	COMPUTER_FIRST
 };
+
+typedef enum {
+	INFO_TIMEOUT_TURN,
+	INFO_TIMEOUT_MATCH,
+	INFO_TIME_LEFT,
+	INFO_MAX_NODE,
+	INFO_MAX_DEPTH,
+	INFO_TIME_INCREMENT
+} EngineInfo;
+
+typedef struct {
+	int firstToPlay;
+	int level;
+	int mode;
+	bool bkMusic;
+	bool bkEffect;
+} SETTING;
+
 
 typedef struct {
 	int x;

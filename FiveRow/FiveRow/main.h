@@ -1,12 +1,6 @@
 #pragma once
+#include "music.h"
 
-typedef struct {
-	int firstToPlay;
-	int level;
-	int mode;
-	bool bkMusic;
-	bool bkEffect;
-} SETTING;
 
 WCHAR g_szWndClass[MAXSTR];
 WCHAR g_szTitle[MAXSTR];
@@ -46,6 +40,7 @@ void freeNew();
 void applySetting(HWND hDlg);
 void startGame(int mode,int firstPlayer);
 void endGame();
-
+void takeBack();
+void msgNotStarted();
 
 
