@@ -1,6 +1,7 @@
 #pragma once
 #include "music.h"
 
+#define WM_FLASH WM_NULL
 
 WCHAR g_szWndClass[MAXSTR];
 WCHAR g_szTitle[MAXSTR];
@@ -10,7 +11,7 @@ HWND g_main_hwnd;
 
 class UI_BOARD* g_board;
 class MAP* g_map;
-class PLAYER* g_player;
+class PERSON* g_player[2];
 class COMPUTER* g_computer;
 int g_status = 0;
 bool g_started = false;
@@ -33,7 +34,8 @@ void OnLButtonDown(HDC hdc, int wx, int wy);
 void OnMouseOver(HDC hdc, int wx, int wy);
 void checkWinner();
 void showThinking();
-void CALLBACK computerTimerProc(HDC hdc);
+//void CALLBACK computerTimerProc(HDC hdc);
+void computerCallback(POSITION p);
 void initData();
 void initNew();
 void freeNew();
@@ -42,5 +44,7 @@ void startGame(int mode,int firstPlayer);
 void endGame();
 void takeBack();
 void msgNotStarted();
+void procPlayerPlayer(POSITION p);
+void procPlayerComputer(POSITION p);
 
 

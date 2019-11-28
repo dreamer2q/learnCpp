@@ -15,6 +15,11 @@ void MAP::setFirstPlayer(int player)
 	m_CurPlayer = player;
 }
 
+void MAP::setMode(int mode)
+{
+	m_GameMode = mode;
+}
+
 bool MAP::putChess(POSITION p)
 {
 	return putChess(p, getCurPlayer());
@@ -35,7 +40,7 @@ bool MAP::putChess(POSITION p, int player)
 POSITION MAP::takeBack()
 {
 	POSITION p = delMove();
-	boardIndex(p) = NOBODY;
+	boardIndex(p) = EMPTY;
 	nextPlayer();
 	return p;
 }
@@ -65,11 +70,8 @@ int& MAP::boardIndex(POSITION p)
 
 void MAP::nextPlayer()
 {
-	if (m_CurPlayer == NOBODY) {
-		m_CurPlayer = m_FirstPlayer;
-	}
-	else if (m_CurPlayer == PLAYER) {
-		m_CurPlayer = COMPUTER;
+	if (m_CurPlayer == PLAYER) {
+		m_CurPlayer = (m_GameMode == PLAYER_PLAYER ? PLAYER2 : COMPUTER);
 	}
 	else {
 		m_CurPlayer = PLAYER;

@@ -31,29 +31,45 @@ void UI_BOARD::draw(HDC hdc)
 
 void UI_BOARD::drawMap(HDC hdc)
 {
-	Gdiplus::Bitmap bk(m_DrawRect.Width,m_DrawRect.Height);
 
-	Gdiplus::Graphics gbuf(&bk);
-	
-	Gdiplus::Rect rc(m_DrawRect);
-	rc.Width = rc.Height;
-	gbuf.DrawImage(m_bkGround, rc);
-
-	drawMapChess(gbuf);
-
-	Gdiplus::Graphics graphics(hdc);
-	graphics.DrawImage(&bk,m_DrawRect);
 }
 
 void UI_BOARD::updateBoard()
 {
 	Gdiplus::Graphics gbuf(&m_bitBuf);
-
+	//draw background
 	Gdiplus::Rect rc(m_DrawRect);
 	rc.Width = rc.Height;
 	gbuf.DrawImage(m_bkGround, rc);
-
+	//draw chess
 	drawMapChess(gbuf);
+}
+
+void UI_BOARD::updateInfo()
+{
+	Gdiplus::Graphics graphics(&m_bitBuf);
+	Gdiplus::Rect rc(m_DrawRect.Height,0, m_DrawRect.Width - m_DrawRect.Height,m_DrawRect.Height);
+
+	Gdiplus::Bitmap bufInfo(rc.Width, rc.Height);
+	Gdiplus::Rect brc(0,0,rc.Width,rc.Height);
+	Gdiplus::Graphics g(&bufInfo);
+
+	g.FillRectangle(Gdiplus::SolidBrush(Gdiplus::Color::LightCyan).Clone(), brc);
+
+
+	Gdiplus::Pen pen(Gdiplus::Color(255,0,0),2);
+	
+
+	//brc = Gdiplus::Rect(10, 10, 128, 128);
+	//g.DrawRectangle(&pen,brc);
+
+
+	if (m_player[0]) {
+		g.DrawImage(m_player[0]->getPlayerPortrait(), Gdiplus::Rect(10, 10, 128, 128));
+		g.DrawImage(m_player[1]->getPlayerPortrait(), Gdiplus::Rect(10, 300, 128, 128));
+	}
+
+	graphics.DrawImage(&bufInfo, rc);
 }
 
 void UI_BOARD::drawChess(POSITION p,int index, Gdiplus::Graphics& graphics)
@@ -105,9 +121,12 @@ void UI_BOARD::drawTipCircle(HDC hdc, POSITION p)
 		Gdiplus::Graphics graphics(hdc);
 		graphics.DrawImage(&bufbitmap, 0, 0);
 	}
-	else {
-		draw(hdc);
-	}
+}
+
+void UI_BOARD::setPlayer(class PLAYER* p1,class PLAYER* p2)
+{
+	m_player[0] = p1;
+	m_player[1] = p2;
 }
 
 POSITION UI_BOARD::encodeXY(POSITION p)

@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 
-COMPUTER::COMPUTER()
+COMPUTER::COMPUTER(PCWSTR imgPath, MAP* map):PLAYER(imgPath, map)
 {
 	if (!loadEngine()) {
 		MessageBox(NULL, TEXT("Load Engine Error"), TEXT("ERROR"), MB_OK | MB_ICONERROR);
@@ -10,26 +10,16 @@ COMPUTER::COMPUTER()
 	}
 }
 
-POSITION COMPUTER::play()
+void COMPUTER::play(POSITION p)
 {
-	if (!isThinking()) {
-		return getLastPos();
+	if (m_isThinking) {
+		return;
 	}
-	else {
-		return POSITION{ -1,-1 };
-	}
-}
-
-void COMPUTER::OnLButtonDown(POSITION p)
-{
-
 	auto func = [&](POSITION pos)->void {
 		this->turn(pos);
 	};
-	std::thread thr(func,p);
+	std::thread thr(func, p);
 	thr.detach();
-
-	//sendTurn(p);
 }
 
 int COMPUTER::getPlayerInt()
@@ -39,13 +29,15 @@ int COMPUTER::getPlayerInt()
 
 void COMPUTER::turn(POSITION p)
 {
+	startRecodingTime();
 	char cmd[128] = { 0 };
-	char result[512] = { 0 };
 	sprintf_s(cmd, "turn %d,%d\n", p.x, p.y);
 	sendCommand(cmd);
 	m_isThinking = true;
 	m_lastPos = getXY();
 	m_isThinking = false;
+	m_callback(m_lastPos);
+	endRecordingTime();
 }
 
 bool COMPUTER::isThinking()
@@ -53,12 +45,17 @@ bool COMPUTER::isThinking()
 	return m_isThinking;
 }
 
-POSITION COMPUTER::firstStep()
+void COMPUTER::playFirstStep()
 {
+	startRecodingTime();
 	char cmd[128] = { 0 };
 	sprintf_s(cmd, "begin\n");
 	sendCommand(cmd);
-	return getXY();
+	m_isThinking = true;
+	m_lastPos = getXY();
+	m_isThinking = false;
+	m_callback(m_lastPos);
+	endRecordingTime();
 }
 
 POSITION COMPUTER::getLastPos()
@@ -138,6 +135,11 @@ void COMPUTER::setInfo(EngineInfo info, int value)
 	sendCommand(cmd);
 }
 
+void COMPUTER::setCallback(COMPUTER_CALLBACK callback)
+{
+	COMPUTER::m_callback = callback;
+}
+
 void COMPUTER::beforeStart()
 {
 	initBrain();
@@ -184,15 +186,6 @@ void COMPUTER::initBrain()
 	char buf[512] = { 0 };
 	sendCommand("start 15\n");
 	receiveResult(buf, 512);
-}
-
-void COMPUTER::sendTurn(POSITION p)
-{
-	char cmd[128] = { 0 };
-	char result[512] = { 0 };
-	sprintf_s(cmd, "turn %d,%d\n", p.x, p.y);
-	sendCommand(cmd);
-	m_isThinking = true;
 }
 
 bool COMPUTER::parseXY(char* cmd, POSITION* p)

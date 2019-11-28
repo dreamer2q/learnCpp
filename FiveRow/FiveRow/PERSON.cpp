@@ -1,13 +1,8 @@
 #include "PERSON.h"
 
-POSITION PERSON::play()
+void PERSON::play(POSITION p)
 {
-	return m_OnLButtonDownPosition;
-}
-
-void PERSON::OnLButtonDown(POSITION p)
-{
-	m_OnLButtonDownPosition = p;
+	m_map->putChess(p);
 }
 
 int PERSON::getPlayerInt()

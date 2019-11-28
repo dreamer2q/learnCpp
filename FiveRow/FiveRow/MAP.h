@@ -10,7 +10,8 @@ public:
 
 	void init();
 	void setFirstPlayer(int player);
-	
+	void setMode(int mode);
+
 	bool putChess(POSITION p);
 	bool putChess(POSITION p, int player);
 	POSITION takeBack();
@@ -31,6 +32,7 @@ private:
 	POSITION delMove();
 
 	POSITION m_Moves[MAPWIDTH * MAPWIDTH];
+	int m_GameMode;
 	int m_CurMoveIndex = -1;
 	int m_Board[MAPWIDTH][MAPWIDTH];
 	int m_CurPlayer = NOBODY;

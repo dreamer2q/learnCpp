@@ -26,9 +26,10 @@ enum {
 };
 
 enum {
-	NOBODY = 0,
-	PLAYER,
-	COMPUTER
+	PLAYER = 0,
+	PLAYER2,
+	COMPUTER,
+	NOBODY
 };
 
 enum {

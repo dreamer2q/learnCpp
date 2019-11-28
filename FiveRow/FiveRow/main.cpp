@@ -23,7 +23,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,HINSTANCE prevInstance,LPWSTR lpCmdLin
 		DispatchMessage(&msg);
 	}
 
-	freeNew();
+	//freeNew();
 	Gdiplus::GdiplusShutdown(gdiToken);
 
 	return (int)msg.wParam;
@@ -76,6 +76,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		g_main_hwnd = hwnd;
 		initNew();
 		g_board->updateBoard();
+		g_board->updateInfo();
 	}
 	break;
 	case WM_COMMAND:
@@ -118,11 +119,19 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		EndPaint(hwnd, &ps);
 	}
 	break;
-	case WM_TIMER:
+	case WM_FLASH:
 	{
 		HDC hdc = GetDC(hwnd);
-		computerTimerProc(hdc);
-		ReleaseDC(hwnd, hdc);
+		playPutchessMusic();
+		OnPaint(hdc);
+		ReleaseDC(hwnd,hdc);
+	}
+	break;
+	case WM_TIMER:
+	{
+		//HDC hdc = GetDC(hwnd);
+		//computerTimerProc(hdc);
+		//ReleaseDC(hwnd, hdc);
 	}
 		break;
 	case WM_LBUTTONDOWN:
@@ -130,12 +139,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		int x = LOWORD(lParam);
 		int y = HIWORD(lParam);
 		HDC hdc = GetDC(hwnd);
-		if (g_started) {
-			OnLButtonDown(hdc, x, y);
-		}
-		else {
-			msgNotStarted();
-		}
+		OnLButtonDown(hdc, x, y);
 		ReleaseDC(hwnd, hdc);
 	}
 	break;
@@ -144,9 +148,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		int x = LOWORD(lParam);
 		int y = HIWORD(lParam);
 		HDC hdc = GetDC(hwnd);
-		if (g_started) {
-			OnMouseOver(hdc, x, y);
-		}
+		OnMouseOver(hdc, x, y);
 		ReleaseDC(hwnd, hdc);
 	}
 	break;
@@ -211,9 +213,21 @@ void initData() {
 
 	g_map->init();
 	g_map->setFirstPlayer(g_setting.firstToPlay);
+	g_map->setMode(g_setting.mode);
 	g_computer->setLevel(g_setting.level);
 	g_computer->beforeStart();
 	
+	if (g_setting.mode == PLAYER_PLAYER) {
+		g_board->setPlayer(g_player[PLAYER], g_player[PLAYER2]);
+	}
+	else if (g_setting.firstToPlay == PLAYER) {
+		g_board->setPlayer(g_player[PLAYER], g_computer);
+	}
+	else {
+		g_board->setPlayer(g_computer, g_player[PLAYER]);
+	}
+
+	g_board->updateInfo();
 	g_board->updateBoard();
 }
 
@@ -222,12 +236,15 @@ void initNew() {
 	RECT rcClient;
 	GetClientRect(g_main_hwnd, &rcClient);
 	Gdiplus::Rect rc(rcClient.left, rcClient.top, rcClient.right, rcClient.bottom);
-
-	g_board = new UI_BOARD(rc);
+	
 	g_map = new MAP();
-	g_player = new class PERSON();
-	g_computer = new class COMPUTER();
+	g_board = new UI_BOARD(rc);
 	g_board->setMap(g_map);
+
+	g_player[PLAYER] = new class PERSON(TEXT("picture/player.png"),g_map);
+	g_player[PLAYER2] = new class PERSON(TEXT("picture/player2.png"), g_map);
+	g_computer = new class COMPUTER(TEXT("picture/yixin.png"), g_map);
+	g_computer->setCallback((COMPUTER_CALLBACK)computerCallback);
 
 	initMusic();
 }
@@ -269,10 +286,9 @@ void startGame(int mode, int firstPlayer)
 	initData();
 
 	if (mode == PLAYER_AI && firstPlayer == COMPUTER) {
-		auto p = g_computer->firstStep();
-		g_map->putChess(p);
-		g_board->updateBoard();
+		g_computer->playFirstStep();
 	}
+
 	playBkMusic();
 }
 
@@ -290,9 +306,13 @@ void takeBack()
 				ret = MessageBoxA(g_main_hwnd, "你想要悔棋吗？", "悔棋", MB_YESNO | MB_ICONQUESTION);
 				if (IDYES == ret) {
 					auto p = g_map->takeBack();
-					g_computer->takeBack(p);
+					if (g_setting.mode == PLAYER_AI) {
+						g_computer->takeBack(p);
+					}
 					p = g_map->takeBack();
-					g_computer->takeBack(p);
+					if (g_setting.mode == PLAYER_AI) {
+						g_computer->takeBack(p);
+					}
 					g_board->updateBoard();
 					SendMessage(g_main_hwnd, WM_PAINT, 0, 0);
 					return;
@@ -313,6 +333,9 @@ void OnPaint(HDC hdc) {
 }
 
 void checkWinner() {
+	if (!g_started) {
+		return;
+	}
 	g_status = g_map->hasWinner();
 	if (!g_status) {
 		return;
@@ -333,86 +356,85 @@ void checkWinner() {
 	else {
 		wsprintfA(tmp, "平局");
 	}
+	endGame();
 	MessageBoxA(g_main_hwnd, tmp, "游戏结束", MB_OK | MB_ICONINFORMATION);
-	g_started = false;
 }
 
 void showThinking() {
-	MessageBoxA(g_main_hwnd,"Computer还在思考！","思考",MB_OK | MB_ICONINFORMATION);
+	MessageBoxA(g_main_hwnd,"弱智AI还在计算！","AI",MB_OK | MB_ICONINFORMATION);
 }
 
-void CALLBACK computerTimerProc(HDC hdc)
+void computerCallback(POSITION p) 
 {
-	if (!g_status) {
-		if (!g_computer->isThinking()) {
-			if (g_map->getCurPlayer() == COMPUTER) {
-				POSITION p = g_computer->getLastPos();
-				g_map->putChess(p);
-				playPutchessMusic();
-				g_board->updateBoard();
-				g_board->draw(hdc);
-				KillTimer(g_main_hwnd, COMPUTER_MAIN_TIMER);
-				checkWinner();
-			}
-		}
-	}
+	g_map->putChess(p);
+	g_board->updateBoard();
+	SendMessage(g_main_hwnd, WM_FLASH,0, 0);
+	g_player[PLAYER]->startRecodingTime();
+	checkWinner();
 }
 
-void OnLButtonDown(HDC hdc, int wx, int wy) {  //PLAYER_PLAYER
-
+void OnLButtonDown(HDC hdc, int wx, int wy) {
+	if (g_status || !g_started) {
+		return;
+	}
 	int x = (wx) / 40;
 	int y = (wy) / 40;
 	//debug
 	CHAR str[100];
-	wsprintfA(str, "Chess(%d,%d) => %d\n", x, y,g_status);
+	wsprintfA(str, "Chess(%d,%d) => %d\n", x, y, g_status);
 	OutputDebugStringA(str);
 
 	POSITION p{ x,y };
-	if (g_status == 0) { //in game
-		if (isInMap(x,y)) {
-			if (!g_map->boardIndex(x, y)) {
-				if (PLAYER_PLAYER == g_setting.mode) {
-					g_map->putChess(p);
-					playPutchessMusic();
-				}
-				else {
-					if (g_map->getCurPlayer() == PLAYER) {
-						g_map->putChess(p);
-						playPutchessMusic();
-						g_computer->OnLButtonDown(p);
-						SetTimer(g_main_hwnd, COMPUTER_MAIN_TIMER, 100, NULL);
-					}
-					else {
-						if (g_computer->isThinking()) {
-							showThinking();
-						}
-						else {
-							computerTimerProc(hdc);
-						}
-					}
-				}
-				g_board->updateBoard();
-				g_board->draw(hdc);
-			}
+	if (isInMap(x, y) && !g_map->boardIndex(x, y)) {
+		if (g_setting.mode == PLAYER_PLAYER) {
+			procPlayerPlayer(p);
+		}
+		else {
+			procPlayerComputer(p);
+		}
+		g_board->updateBoard();
+		g_board->draw(hdc);
+		checkWinner();
+	}
+}
+
+void procPlayerPlayer(POSITION p) {
+	playPutchessMusic();
+	g_player[g_map->getCurPlayer()]->endRecordingTime();
+	g_player[g_map->getCurPlayer()]->play(p);
+	g_player[g_map->getCurPlayer()]->startRecodingTime();
+}
+
+void procPlayerComputer(POSITION p) {
+	if (g_map->getCurPlayer() == COMPUTER) {
+		if (g_computer->isThinking()) {
+			showThinking();
 		}
 	}
-	checkWinner();
+	else {
+		playPutchessMusic();
+		g_player[PLAYER]->play(p);
+		g_player[PLAYER]->endRecordingTime();
+		g_computer->play(p);
+	}
 }
 
 void OnMouseOver(HDC hdc,int wx, int wy) {
+	if (!g_started) {
+		return;
+	}
 	int x = (wx) / 40;
 	int y = (wy) / 40;
 
-	POSITION p{ -1,-1 };
+	POSITION p{ x,y };
 	if (!g_status) {
 		if (!g_computer->isThinking()) {
-			if (isInMap(x, y)) {
+			if (isInMap(p)) {
 				if (!g_map->boardIndex(x, y)) {
-					p = POSITION{ x,y };
+					g_board->drawTipCircle(hdc, p);
 				}
 			}
 		}
 	}
-	g_board->drawTipCircle(hdc, p);
 }
 

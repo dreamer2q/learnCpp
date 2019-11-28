@@ -1,27 +1,36 @@
 #pragma once
-#include "include.h"
+
+#include "MAP.h"
 
 void formatTime(DWORD time,LPWSTR lpResult);
 
 class PLAYER
 {
 public:
-	PLAYER();
-	PLAYER(DWORD totalTime);
-	
+	PLAYER() = delete;
+	PLAYER(PCWSTR imgPath,MAP* map);
 	~PLAYER();
 	
-	void updateTime();
+	void reset(DWORD total);
+	void startRecodingTime();
+	void endRecordingTime();
+	LPCWSTR getPlayerName();
+	void setPlayerName(LPCWSTR name);
 	DWORD getLeftTime();
+	Gdiplus::Image* getPlayerPortrait();
 	
-	virtual POSITION play() = 0;
-	virtual void OnLButtonDown(POSITION p) = 0;
+	virtual void play(POSITION p) = 0;
 	virtual int getPlayerInt() = 0;
 
+protected:
+	MAP* m_map;
 private:
 	DWORD m_StartTime;
 	DWORD m_TotalTime;
+	DWORD m_ClapsTime;
 	DWORD m_LeftTime;
+	LPWSTR m_PlayerName;
+	Gdiplus::Image *m_playerPortrait = NULL;
 };
 
 
