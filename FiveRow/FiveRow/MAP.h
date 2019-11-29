@@ -10,8 +10,9 @@ public:
 
 	void init();
 	void setFirstPlayer(int player);
+	int getFirstPlayer();
 	void setMode(int mode);
-
+	int getMode();
 	bool putChess(POSITION p);
 	bool putChess(POSITION p, int player);
 	POSITION takeBack();

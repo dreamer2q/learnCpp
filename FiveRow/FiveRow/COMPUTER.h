@@ -36,7 +36,6 @@ private:
 	int receiveResult(char* ret, int size);
 
 	
-	
 	const WCHAR* m_pbrain = L"brain/pbrain.exe";
 	HANDLE hOutRd;
 	HANDLE hInWr;

@@ -2,6 +2,7 @@
 #include "music.h"
 
 #define WM_FLASH WM_NULL
+#define PLAYER_INFO_UPDATE 10001
 
 WCHAR g_szWndClass[MAXSTR];
 WCHAR g_szTitle[MAXSTR];
@@ -20,8 +21,8 @@ SETTING g_setting{
 	PLAYER,
 	2,
 	PLAYER_PLAYER,
-	true,
-	true
+	false,
+	false
 };		//loading default setting
 
 ATOM MyRegisterClass(HINSTANCE);
@@ -34,8 +35,9 @@ void OnLButtonDown(HDC hdc, int wx, int wy);
 void OnMouseOver(HDC hdc, int wx, int wy);
 void checkWinner();
 void showThinking();
-//void CALLBACK computerTimerProc(HDC hdc);
+void CALLBACK drawInfoTimerProc(HWND hwnd,UINT message,UINT_PTR timerId,DWORD elaps);
 void computerCallback(POSITION p);
+
 void initData();
 void initNew();
 void freeNew();
@@ -46,5 +48,6 @@ void takeBack();
 void msgNotStarted();
 void procPlayerPlayer(POSITION p);
 void procPlayerComputer(POSITION p);
+
 
 

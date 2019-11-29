@@ -25,6 +25,7 @@ public:
 protected:
 	MAP* m_map;
 private:
+	bool m_isRecording;
 	DWORD m_StartTime;
 	DWORD m_TotalTime;
 	DWORD m_ClapsTime;

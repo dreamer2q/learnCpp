@@ -1,4 +1,4 @@
-
+ï»¿
 #include "UI_BOARD.h"
 #include "main.h"
 
@@ -75,8 +75,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 	{
 		g_main_hwnd = hwnd;
 		initNew();
+
 		g_board->updateBoard();
-		g_board->updateInfo();
+		//g_board->updateInfo();
 	}
 	break;
 	case WM_COMMAND:
@@ -119,7 +120,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		EndPaint(hwnd, &ps);
 	}
 	break;
-	case WM_FLASH:
+	case WM_FLASH:  //ç”µè„‘ä¸‹æ£‹åŽçš„æ‰§è¡Œ
 	{
 		HDC hdc = GetDC(hwnd);
 		playPutchessMusic();
@@ -129,6 +130,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 	break;
 	case WM_TIMER:
 	{
+		//int timerId = wParam;
+		//if (PLAYER_INFO_UPDATE == timerId) {
+		//	playerInfoUpdate();
+		//}
 		//HDC hdc = GetDC(hwnd);
 		//computerTimerProc(hdc);
 		//ReleaseDC(hwnd, hdc);
@@ -217,11 +222,17 @@ void initData() {
 	g_computer->setLevel(g_setting.level);
 	g_computer->beforeStart();
 	
+	g_player[PLAYER]->reset(15 * 60 * 1000);
+	g_player[PLAYER2]->reset(15 * 60 * 1000);
+	g_computer->reset(15 * 60 * 1000);
+
 	if (g_setting.mode == PLAYER_PLAYER) {
 		g_board->setPlayer(g_player[PLAYER], g_player[PLAYER2]);
+		g_player[PLAYER]->startRecodingTime();
 	}
 	else if (g_setting.firstToPlay == PLAYER) {
 		g_board->setPlayer(g_player[PLAYER], g_computer);
+		g_player[PLAYER]->startRecodingTime();
 	}
 	else {
 		g_board->setPlayer(g_computer, g_player[PLAYER]);
@@ -243,7 +254,10 @@ void initNew() {
 
 	g_player[PLAYER] = new class PERSON(TEXT("picture/player.png"),g_map);
 	g_player[PLAYER2] = new class PERSON(TEXT("picture/player2.png"), g_map);
+	g_player[PLAYER]->setPlayerName(L"çŽ©å®¶1");
+	g_player[PLAYER2]->setPlayerName(L"çŽ©å®¶2");
 	g_computer = new class COMPUTER(TEXT("picture/yixin.png"), g_map);
+	g_computer->setPlayerName(L"å¼ˆå¿ƒ");
 	g_computer->setCallback((COMPUTER_CALLBACK)computerCallback);
 
 	initMusic();
@@ -290,11 +304,14 @@ void startGame(int mode, int firstPlayer)
 	}
 
 	playBkMusic();
+	drawInfoTimerProc(g_main_hwnd, WM_TIMER, PLAYER_INFO_UPDATE, 0);
+	SetTimer(g_main_hwnd, PLAYER_INFO_UPDATE, 1000, drawInfoTimerProc);
 }
 
 void endGame()
 {
 	g_started = false;
+	KillTimer(g_main_hwnd, PLAYER_INFO_UPDATE);
 }
 
 void takeBack()
@@ -303,7 +320,7 @@ void takeBack()
 		if (!g_status) {
 			if (g_map->getSumSteps() >= 2) {
 				int ret;
-				ret = MessageBoxA(g_main_hwnd, "ÄãÏëÒª»ÚÆåÂð£¿", "»ÚÆå", MB_YESNO | MB_ICONQUESTION);
+				ret = MessageBoxA(g_main_hwnd, "ä½ æƒ³è¦æ‚”æ£‹å—ï¼Ÿ", "æ‚”æ£‹", MB_YESNO | MB_ICONQUESTION);
 				if (IDYES == ret) {
 					auto p = g_map->takeBack();
 					if (g_setting.mode == PLAYER_AI) {
@@ -319,13 +336,16 @@ void takeBack()
 				}
 			}
 		}
+		MessageBoxA(g_main_hwnd, "çŽ°åœ¨ä¸èƒ½æ‚”æ£‹å•¦~", "GAME", MB_OK | MB_ICONINFORMATION);
 	}
-	MessageBoxA(g_main_hwnd, "ÏÖÔÚ²»ÄÜ»ÚÆåÀ²~", "GAME", MB_OK | MB_ICONINFORMATION);
+	else {
+		MessageBoxA(g_main_hwnd, "è¿˜æ²¡å¼€å§‹æ¸¸æˆï¼Œä½ æƒ³å¹²å˜›ï¼Ÿ","GAME", MB_OK | MB_ICONWARNING);
+	}
 }
 
 void msgNotStarted()
 {
-	MessageBoxA(g_main_hwnd,"ÓÎÏ·Î´¿ªÊ¼","GAME",MB_OK | MB_ICONINFORMATION);	
+	MessageBoxA(g_main_hwnd,"æ¸¸æˆæœªå¼€å§‹","GAME",MB_OK | MB_ICONINFORMATION);	
 }
 
 void OnPaint(HDC hdc) {
@@ -343,7 +363,7 @@ void checkWinner() {
 	char tmp[100] = { 0 };
 	stopBkMusic();
 	if (g_status != -1) {
-		wsprintfA(tmp, "%s»ñÊ¤\n", g_status == WHITE ? "°×Æå" : "ºÚÆå");
+		wsprintfA(tmp, "%sèŽ·èƒœ\n", g_status == WHITE ? "ç™½æ£‹" : "é»‘æ£‹");
 		if (g_setting.mode == PLAYER_PLAYER) {
 			playWinMusic();
 		}else if (g_map->getCurPlayer() == PLAYER) {
@@ -354,14 +374,21 @@ void checkWinner() {
 		}
 	}
 	else {
-		wsprintfA(tmp, "Æ½¾Ö");
+		wsprintfA(tmp, "å¹³å±€");
 	}
 	endGame();
-	MessageBoxA(g_main_hwnd, tmp, "ÓÎÏ·½áÊø", MB_OK | MB_ICONINFORMATION);
+	MessageBoxA(g_main_hwnd, tmp, "æ¸¸æˆç»“æŸ", MB_OK | MB_ICONINFORMATION);
 }
 
 void showThinking() {
-	MessageBoxA(g_main_hwnd,"ÈõÖÇAI»¹ÔÚ¼ÆËã£¡","AI",MB_OK | MB_ICONINFORMATION);
+	MessageBoxA(g_main_hwnd,"å¼±æ™ºAIè¿˜åœ¨è®¡ç®—ï¼","AI",MB_OK | MB_ICONINFORMATION);
+}
+
+void CALLBACK drawInfoTimerProc(HWND hwnd, UINT message, UINT_PTR timerId, DWORD elaps)
+{
+	HDC hdc= GetDC(hwnd);
+	g_board->updateInfo();
+	g_board->draw(hdc);
 }
 
 void computerCallback(POSITION p) 
@@ -426,15 +453,16 @@ void OnMouseOver(HDC hdc,int wx, int wy) {
 	int x = (wx) / 40;
 	int y = (wy) / 40;
 
-	POSITION p{ x,y };
+	POSITION p{ -1,-1 };
 	if (!g_status) {
 		if (!g_computer->isThinking()) {
-			if (isInMap(p)) {
+			if (isInMap(x,y)) {
 				if (!g_map->boardIndex(x, y)) {
-					g_board->drawTipCircle(hdc, p);
+					p = POSITION{ x,y };
 				}
 			}
 		}
 	}
+	g_board->drawTipCircle(hdc, p);
 }
 

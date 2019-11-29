@@ -15,9 +15,19 @@ void MAP::setFirstPlayer(int player)
 	m_CurPlayer = player;
 }
 
+int MAP::getFirstPlayer()
+{
+	return m_FirstPlayer;
+}
+
 void MAP::setMode(int mode)
 {
 	m_GameMode = mode;
+}
+
+int MAP::getMode()
+{
+	return m_GameMode;
 }
 
 bool MAP::putChess(POSITION p)

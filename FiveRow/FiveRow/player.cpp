@@ -15,17 +15,21 @@ PLAYER::~PLAYER()
 void PLAYER::reset(DWORD total)
 {
 	m_TotalTime = total;
+	m_LeftTime = total;
 	m_ClapsTime = 0;
+	m_isRecording = false;
 }
 
 void PLAYER::startRecodingTime()
 {
 	m_StartTime = GetTickCount64();
+	m_isRecording = true;
 }
 
 void PLAYER::endRecordingTime()
 {
 	m_ClapsTime += GetTickCount64() - m_StartTime;
+	m_isRecording = false;
 }
 
 LPCWSTR PLAYER::getPlayerName()
@@ -44,7 +48,10 @@ void PLAYER::setPlayerName(LPCWSTR name)
 
 DWORD PLAYER::getLeftTime()
 {
-	return m_TotalTime - m_ClapsTime - (GetTickCount64() - m_StartTime);
+	if (m_isRecording) {
+		m_LeftTime =  m_TotalTime - m_ClapsTime - (GetTickCount64() - m_StartTime);
+	}
+	return m_LeftTime;
 }
 
 Gdiplus::Image* PLAYER::getPlayerPortrait()

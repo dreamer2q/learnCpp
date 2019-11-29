@@ -37,6 +37,7 @@ void COMPUTER::turn(POSITION p)
 	m_lastPos = getXY();
 	m_isThinking = false;
 	m_callback(m_lastPos);
+	setInfo(INFO_TIME_LEFT, getLeftTime());
 	endRecordingTime();
 }
 

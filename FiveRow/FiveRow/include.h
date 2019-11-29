@@ -17,7 +17,7 @@
 #define WIN_WIDTH 820
 #define WIN_HEIGHT 663
 #define MAPWIDTH 15
-#define COMPUTER_MAIN_TIMER 11101
+
 
 enum {
 	EMPTY = 0,
@@ -60,9 +60,12 @@ typedef struct {
 } SETTING;
 
 
-typedef struct {
+typedef struct POSITION_TAG{
 	int x;
 	int y;
+	bool operator==(const struct POSITION_TAG& p) {
+		return this->x == p.x && this->y == p.y;
+	};
 } POSITION;
 
 #include "resource.h"
