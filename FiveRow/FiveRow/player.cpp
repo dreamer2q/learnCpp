@@ -55,7 +55,7 @@ Gdiplus::Image* PLAYER::getPlayerPortrait()
 void formatTime(DWORD time, LPWSTR lpResult)
 {
 	if (time > 60 * 1000) {
-		wsprintfW(lpResult, L"%02d:%02d", time / 1000000, time / 1000);
+		wsprintfW(lpResult, L"%02d:%02d", time / (60*1000), (time / 1000) % 60);
 	}
 	else {
 		wsprintfW(lpResult, L"%02ds", time / 1000);

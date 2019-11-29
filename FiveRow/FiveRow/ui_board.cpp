@@ -7,7 +7,7 @@ UI_BOARD::UI_BOARD(Gdiplus::Rect& rc):m_DrawRect(rc),m_bitBuf(rc.Width,rc.Height
 	m_chess[BLACK] = new Gdiplus::Image(TEXT("picture/black_chess.png"));
 	m_chess[WHITE] = new Gdiplus::Image(TEXT("picture/white_chess.png"));
 	m_chess[EMPTY] = new Gdiplus::Image(TEXT("picture/tip_chess.png"));
-
+	m_bkRight = new Gdiplus::Image(TEXT("picture/bk.png"));
 	m_Sep = (m_DrawRect.Height / 535.0) * 33;
 }
 
@@ -40,6 +40,7 @@ void UI_BOARD::updateBoard()
 	//draw background
 	Gdiplus::Rect rc(m_DrawRect);
 	rc.Width = rc.Height;
+	gbuf.DrawImage(m_bkRight, m_DrawRect);
 	gbuf.DrawImage(m_bkGround, rc);
 	//draw chess
 	drawMapChess(gbuf);
@@ -54,20 +55,51 @@ void UI_BOARD::updateInfo()
 	Gdiplus::Rect brc(0,0,rc.Width,rc.Height);
 	Gdiplus::Graphics g(&bufInfo);
 
-	g.FillRectangle(Gdiplus::SolidBrush(Gdiplus::Color::LightCyan).Clone(), brc);
+	if (!m_player[0]) {
+		
+		//g.DrawImage(m_bkRight, Gdiplus::Rect(0,0,200,400));
+		//graphics.DrawImage(m_bkRight, m_DrawRect);
+		//return;
+	}
 
+
+	//g.FillRectangle(Gdiplus::SolidBrush(Gdiplus::Color::LightCyan).Clone(), brc);
 
 	Gdiplus::Pen pen(Gdiplus::Color(255,0,0),2);
 	
+	int Y1 = 20;
+	int Y2 = Y1 + 300;
+	brc = Gdiplus::Rect(30, Y1, 128, 128);
+	g.DrawRectangle(&pen,brc);
+	brc = Gdiplus::Rect(30, Y2, 128, 128);
+	g.DrawRectangle(&pen, brc);
 
-	//brc = Gdiplus::Rect(10, 10, 128, 128);
-	//g.DrawRectangle(&pen,brc);
+	WCHAR wName[] = L"我是傻逼吗？";
+	Gdiplus::Font mfont(L"楷体", 16);
+	Gdiplus::RectF rcF(30, Y1+128+10, 128, 25);
+	Gdiplus::StringFormat mFormat;
+	Gdiplus::SolidBrush mBrush(Gdiplus::Color::Black);
+	mFormat.SetAlignment(Gdiplus::StringAlignment::StringAlignmentCenter);
+	g.DrawString(wName, lstrlenW(wName), &mfont, rcF, &mFormat,&mBrush);
+	rcF = Gdiplus::RectF(30, Y2+138, 128, 25);
+	g.DrawString(wName, lstrlenW(wName), &mfont, rcF, &mFormat, &mBrush);
+
+	WCHAR wLeftTime[128] = { 0 };
+	formatTime(66666, wLeftTime);
+	rcF = Gdiplus::RectF(30, Y1 + 160, 128, 25);
+	g.DrawString(wLeftTime, lstrlenW(wLeftTime), &mfont,rcF, &mFormat, &mBrush);
+	rcF = Gdiplus::RectF(30, Y2 + 160, 128, 25);
+	g.DrawString(wLeftTime, lstrlenW(wName), &mfont, rcF, &mFormat, &mBrush);
+	
+	WCHAR wStat[128] = { 0 };
+	wsprintfW(wStat, L"思考中");
+	rcF = Gdiplus::RectF(30, Y1 + 185, 128, 25);
+	g.DrawString(wStat, lstrlenW(wName), &mfont, rcF, &mFormat, &mBrush);	
+	wsprintfW(wStat, L"等待");
+	rcF = Gdiplus::RectF(30, Y2 + 185, 128, 25);
+	g.DrawString(wStat, lstrlenW(wName), &mfont, rcF, &mFormat, &mBrush);
 
 
-	if (m_player[0]) {
-		g.DrawImage(m_player[0]->getPlayerPortrait(), Gdiplus::Rect(10, 10, 128, 128));
-		g.DrawImage(m_player[1]->getPlayerPortrait(), Gdiplus::Rect(10, 300, 128, 128));
-	}
 
 	graphics.DrawImage(&bufInfo, rc);
 }
@@ -121,6 +153,11 @@ void UI_BOARD::drawTipCircle(HDC hdc, POSITION p)
 		Gdiplus::Graphics graphics(hdc);
 		graphics.DrawImage(&bufbitmap, 0, 0);
 	}
+}
+
+void UI_BOARD::drawStart(HDC hdc)
+{
+
 }
 
 void UI_BOARD::setPlayer(class PLAYER* p1,class PLAYER* p2)

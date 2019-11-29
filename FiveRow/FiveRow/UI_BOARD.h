@@ -14,6 +14,7 @@ public:
 	void draw(HDC hdc);
 	void drawMap(HDC hdc);
 	void drawTipCircle(HDC hdc,POSITION p);
+	void drawStart(HDC hdc);
 
 	void updateBoard();
 	void updateInfo();
@@ -25,6 +26,7 @@ private:
 
 	POSITION encodeXY(POSITION p);
 	Gdiplus::Image* m_bkGround;
+	Gdiplus::Image* m_bkRight;
 	Gdiplus::Image* m_chess[3];
 
 	Gdiplus::Rect m_DrawRect;
