@@ -48,6 +48,7 @@ void takeBack();
 void msgNotStarted();
 void procPlayerPlayer(POSITION p);
 void procPlayerComputer(POSITION p);
+int checkTimeout();
 
 
 

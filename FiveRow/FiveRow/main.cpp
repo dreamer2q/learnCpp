@@ -356,9 +356,13 @@ void checkWinner() {
 	if (!g_started) {
 		return;
 	}
+	
 	g_status = g_map->hasWinner();
 	if (!g_status) {
-		return;
+		g_status = checkTimeout();
+		if (!g_status) {
+			return;
+		}
 	}
 	char tmp[100] = { 0 };
 	stopBkMusic();
@@ -388,7 +392,8 @@ void CALLBACK drawInfoTimerProc(HWND hwnd, UINT message, UINT_PTR timerId, DWORD
 {
 	HDC hdc= GetDC(hwnd);
 	g_board->updateInfo();
-	g_board->draw(hdc);
+	//g_board->draw(hdc);
+	g_board->drawInfo(hdc);
 }
 
 void computerCallback(POSITION p) 
@@ -444,6 +449,28 @@ void procPlayerComputer(POSITION p) {
 		g_player[PLAYER]->endRecordingTime();
 		g_computer->play(p);
 	}
+}
+
+int checkTimeout()
+{
+	const int out = 15 * 60 * 1000;
+	if (g_setting.mode == PLAYER_PLAYER) {
+		if (g_player[PLAYER]->getLeftTime() > out) {
+			return BLACK;
+		}
+		if (g_player[PLAYER2]->getLeftTime() > out) {
+			return WHITE;
+		}
+	}
+	else {
+		if (g_player[PLAYER]->getLeftTime() > out) {
+			return (COMPUTER == g_map->getFirstPlayer() ? BLACK : WHITE);
+		}
+		else if (g_computer->getLeftTime() > out) {
+			return (PLAYER == g_map->getFirstPlayer() ? BLACK : WHITE);
+		}
+	}
+	return EMPTY;
 }
 
 void OnMouseOver(HDC hdc,int wx, int wy) {

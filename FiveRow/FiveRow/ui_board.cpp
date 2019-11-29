@@ -145,6 +145,12 @@ void UI_BOARD::updateInfo()
 	graphics.DrawImage(&bufInfo,0,0);
 }
 
+void UI_BOARD::drawInfo(HDC hdc)
+{
+	Gdiplus::Graphics graphics(hdc);
+	graphics.DrawImage(&m_bitBuf2, m_DrawPlayerRc);
+}
+
 void UI_BOARD::drawChess(POSITION p,int index, Gdiplus::Graphics& graphics)
 {
 

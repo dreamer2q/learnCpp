@@ -21,7 +21,7 @@ public:
 
 	void updateBoard();
 	void updateInfo();
-	//void updateTip(POSITION p);
+	void drawInfo(HDC hdc);
 	void setPlayer(class PLAYER* p1,class PLAYER* p2);
 	void setMap(class MAP* map);
 	void setBoardTransparent(float alpha);
