@@ -37,7 +37,7 @@ private:
 	Gdiplus::Image* m_bkImg;		//背景图片
 	Gdiplus::Image* m_chess[3];		//棋子
 	Gdiplus::Rect m_DrawRect;		//整个绘图区域
-	Gdiplus::Rect m_DrawPlayerRc;		//Player绘图区域
+	Gdiplus::Rect m_DrawPlayerRc;	//Player绘图区域
 	Gdiplus::Bitmap m_bitBuf;		//棋盘位图缓存，与整个绘图区域一样大
 	Gdiplus::Bitmap m_bitBuf2;		//Player位图缓存
 	

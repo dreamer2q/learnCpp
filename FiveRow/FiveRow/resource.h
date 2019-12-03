@@ -6,6 +6,7 @@
 #define IDS_TITLE                       102
 #define IDR_MAIN_MENU                   102
 #define IDD_DLG_SETTING                 103
+#define IDS_CONFIG                      103
 #define IDD_DLG_ABOUT                   105
 #define IDC_BT_PLAYERPAYER              1004
 #define IDC_BT_EXIT                     1005

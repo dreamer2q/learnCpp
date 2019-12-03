@@ -6,6 +6,7 @@
 
 WCHAR g_szWndClass[MAXSTR];
 WCHAR g_szTitle[MAXSTR];
+WCHAR g_configFileName[MAXSTR];
 
 HINSTANCE g_hInst;
 HWND g_main_hwnd;
@@ -40,6 +41,8 @@ void computerCallback(POSITION p);
 
 void initData();
 void initNew();
+void getConfig();
+void saveConfig();
 void freeNew();
 void applySetting(HWND hDlg);
 void startGame(int mode,int firstPlayer);

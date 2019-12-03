@@ -6,6 +6,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,HINSTANCE prevInstance,LPWSTR lpCmdLin
 
 	LoadStringW(hInstance, IDS_WNDCLASS, g_szWndClass, MAXSTR);
 	LoadStringW(hInstance, IDS_TITLE, g_szTitle, MAXSTR);
+	LoadStringW(hInstance, IDS_CONFIG, g_configFileName, MAXSTR);
 
 	Gdiplus::GdiplusStartupInput gdiInput;
 	ULONG_PTR gdiToken;
@@ -261,6 +262,31 @@ void initNew() {
 	g_computer->setCallback((COMPUTER_CALLBACK)computerCallback);
 
 	initMusic();
+	getConfig();
+}
+
+void getConfig()
+{
+	WCHAR buf[32] = { 0 };
+	GetPrivateProfileString(L"Config", L"BackGroundMusic", L"true", buf, 32, g_configFileName);
+	g_setting.bkMusic = !lstrcmpW(L"true", buf);
+	GetPrivateProfileString(L"Config", L"BackGroundEffect", L"true", buf, 32, g_configFileName);
+	g_setting.bkEffect = !lstrcmpW(L"true", buf);
+	GetPrivateProfileString(L"Config", L"Level", L"2", buf, 32, g_configFileName);
+	g_setting.level = _wtoi(buf);
+
+	/*char bug[128] = { 0 };
+	wsprintfA(bug, "Background Music %d\nBackgound Effect %d\nLevel %d\n", g_setting.bkMusic, g_setting.bkEffect, g_setting.level);
+	MessageBoxA(NULL, bug, "DEBUG", MB_OK);*/
+}
+
+void saveConfig()
+{
+	WCHAR buf[32] = { 0 };
+	WritePrivateProfileString(L"Config", L"BackGroundMusic", g_setting.bkMusic ? L"true" : L"false", g_configFileName);
+	WritePrivateProfileString(L"Config", L"BackGroundEffect", g_setting.bkEffect ? L"true": L"false", g_configFileName);
+	_itow_s(g_setting.level, buf, 10);
+	WritePrivateProfileString(L"Config", L"Level", buf , g_configFileName);
 }
 
 void freeNew()
@@ -289,6 +315,7 @@ void applySetting(HWND hDlg)
 	if (g_started) {
 		updateBkMusic();
 	}
+	saveConfig();
 }
 
 void startGame(int mode, int firstPlayer)
@@ -339,13 +366,13 @@ void takeBack()
 		MessageBoxA(g_main_hwnd, "现在不能悔棋啦~", "GAME", MB_OK | MB_ICONINFORMATION);
 	}
 	else {
-		MessageBoxA(g_main_hwnd, "还没开始游戏，你想干嘛？","GAME", MB_OK | MB_ICONWARNING);
+		MessageBoxA(g_main_hwnd, "你想干嘛？","GAME", MB_OK | MB_ICONWARNING);
 	}
 }
 
 void msgNotStarted()
 {
-	MessageBoxA(g_main_hwnd,"游戏未开始","GAME",MB_OK | MB_ICONINFORMATION);	
+	MessageBoxA(g_main_hwnd,"别点人家，还没开始呢！","GAME",MB_OK | MB_ICONINFORMATION);	
 }
 
 void OnPaint(HDC hdc) {
@@ -407,6 +434,7 @@ void computerCallback(POSITION p)
 
 void OnLButtonDown(HDC hdc, int wx, int wy) {
 	if (g_status || !g_started) {
+		msgNotStarted();
 		return;
 	}
 	int x = (wx) / 40;

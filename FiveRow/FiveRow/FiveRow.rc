@@ -1,7 +1,5 @@
 // Microsoft Visual C++ generated resource script.
 //
-#pragma code_page(65001)
-
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -15,10 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// ‰∏≠Êñá(ÁÆÄ‰ΩìÔºå‰∏≠ÂõΩ) resources
+// ÷–Œƒ(ºÚÃÂ£¨÷–π˙) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -53,30 +52,30 @@ END
 
 IDR_MAIN_MENU MENU
 BEGIN
-    POPUP "Ê∏∏Êàè"
+    POPUP "”Œœ∑"
     BEGIN
-        POPUP "ÂºÄÂ±Ä"
+        POPUP "ø™æ÷"
         BEGIN
-            MENUITEM "Âü∫ÂèãÂØπÂ±Ä",                        IDM_GAYPLAY
-            POPUP "‰∫∫Êú∫ÂØπÂ±Ä"
+            MENUITEM "ª˘”—∂‘æ÷",                        IDM_GAYPLAY
+            POPUP "»Àª˙∂‘æ÷"
             BEGIN
-                MENUITEM "ÊàëÂÖàËµ∞",                         IDM_ME_FIRST
-                MENUITEM "ÁîµËÑëÂÖàËµ∞",                        IDM_COMPUTER_FIRST
+                MENUITEM "Œ“œ»◊ﬂ",                         IDM_ME_FIRST
+                MENUITEM "µÁƒ‘œ»◊ﬂ",                        IDM_COMPUTER_FIRST
             END
-            MENUITEM "ËΩΩÂÖ•ÊÆãÂ±Ä",                        IDM_LOAD_HALFBOARD
+            MENUITEM "‘ÿ»Î≤–æ÷",                        IDM_LOAD_HALFBOARD
         END
-        MENUITEM "ËÆæÁΩÆ",                          IDM_SETTING
+        MENUITEM "…Ë÷√",                          IDM_SETTING
         MENUITEM SEPARATOR
-        MENUITEM "ËΩΩÂÖ•Ê£ãË∞±",                        IDM_LOADBOARD
-        MENUITEM "ÂàõÈÄ†Ê£ãË∞±",                        IDM_CREATEBOARD
-        MENUITEM "‰øùÂ≠òÊ£ãË∞±",                        40027
+        MENUITEM "‘ÿ»Î∆Â∆◊",                        IDM_LOADBOARD
+        MENUITEM "¥¥‘Ï∆Â∆◊",                        IDM_CREATEBOARD
+        MENUITEM "±£¥Ê∆Â∆◊",                        40027
         MENUITEM SEPARATOR
-        MENUITEM "ÈÄÄÂá∫",                          IDM_EXIT
+        MENUITEM "ÕÀ≥ˆ",                          IDM_EXIT
     END
-    MENUITEM "ÊÇîÊ£ã",                          IDM_TAKEBACK
-    POPUP "Â∏ÆÂä©"
+    MENUITEM "ª⁄∆Â",                          IDM_TAKEBACK
+    POPUP "∞Ô÷˙"
     BEGIN
-        MENUITEM "ÂÖ≥‰∫é",                          IDM_ABOUT
+        MENUITEM "πÿ”⁄",                          IDM_ABOUT
         MENUITEM SEPARATOR
         MENUITEM "Github",                      IDM_GITHUB
     END
@@ -91,28 +90,28 @@ END
 IDD_DLG_SETTING DIALOGEX 0, 0, 220, 177
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_APPWINDOW
-CAPTION "ËÆæÁΩÆ"
+CAPTION "…Ë÷√"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    PUSHBUTTON      "ÂèñÊ∂à",IDC_BT_CANCEL,108,156,50,14
-    PUSHBUTTON      "‰øùÂ≠ò",IDC_BT_SAVE,44,156,50,14
-    GROUPBOX        "AIÊô∫ÈöúÁ®ãÂ∫¶",IDC_STATIC,6,7,194,90
-    CONTROL         "Êô∫Èöú",IDC_R_LEVEL1,"Button",BS_AUTORADIOBUTTON,17,22,46,10
-    CONTROL         "Âº±Êô∫",IDC_R_LEVEL2,"Button",BS_AUTORADIOBUTTON,17,39,38,11
-    CONTROL         "ÁùøÊô∫",IDC_R_LEVEL3,"Button",BS_AUTORADIOBUTTON,17,56,33,10
-    CONTROL         "ËøüÈíù",IDC_R_LEVEL4,"Button",BS_AUTORADIOBUTTON,17,74,44,10
-    GROUPBOX        "Èü≥‰πê",IDC_STATIC,6,98,195,54
-    CONTROL         "ËÉåÊôØÈü≥‰πê",IDC_CK_BKMUSIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,113,50,10
-    CONTROL         "ÁâπÊïàÈü≥‰πê",IDC_CK_EFMUSIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,130,50,10
+    PUSHBUTTON      "»°œ˚",IDC_BT_CANCEL,108,156,50,14
+    PUSHBUTTON      "±£¥Ê",IDC_BT_SAVE,44,156,50,14
+    GROUPBOX        "AI÷«’œ≥Ã∂»",IDC_STATIC,6,7,194,90
+    CONTROL         "≥ıø˙√≈æ∂",IDC_R_LEVEL1,"Button",BS_AUTORADIOBUTTON,17,22,59,10
+    CONTROL         "Ω•»Îº—æ≥",IDC_R_LEVEL2,"Button",BS_AUTORADIOBUTTON,17,39,47,11
+    CONTROL         "µ«Ã√»Î “",IDC_R_LEVEL3,"Button",BS_AUTORADIOBUTTON,17,56,49,10
+    CONTROL         "µ«∑Â‘Ïº´",IDC_R_LEVEL4,"Button",BS_AUTORADIOBUTTON,17,74,54,10
+    GROUPBOX        "“Ù¿÷",IDC_STATIC,6,98,195,54
+    CONTROL         "±≥æ∞“Ù¿÷",IDC_CK_BKMUSIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,113,50,10
+    CONTROL         "Ãÿ–ß“Ù¿÷",IDC_CK_EFMUSIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,130,50,10
 END
 
 IDD_DLG_ABOUT DIALOGEX 0, 0, 310, 177
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "ÂÖ≥‰∫é"
+CAPTION "πÿ”⁄"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Á°ÆÂÆö",IDOK,199,156,50,14
-    PUSHBUTTON      "ÂèñÊ∂à",IDCANCEL,253,156,50,14
+    DEFPUSHBUTTON   "»∑∂®",IDOK,199,156,50,14
+    PUSHBUTTON      "»°œ˚",IDCANCEL,253,156,50,14
     LTEXT           "This is about dialog",IDC_STATIC_ABOUT,8,8,287,101
 END
 
@@ -167,9 +166,10 @@ STRINGTABLE
 BEGIN
     IDS_WNDCLASS            "MYCLASS"
     IDS_TITLE               "Five Row Demo"
+    IDS_CONFIG              ".\\config.ini"
 END
 
-#endif    // ‰∏≠Êñá(ÁÆÄ‰ΩìÔºå‰∏≠ÂõΩ) resources
+#endif    // ÷–Œƒ(ºÚÃÂ£¨÷–π˙) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

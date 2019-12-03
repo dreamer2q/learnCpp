@@ -76,6 +76,7 @@ void UI_BOARD::updateInfo()
 
 	Gdiplus::Rect brc(0, 0, rc.Width, rc.Height);
 	Gdiplus::Graphics g(&bufInfo);
+	
 
 	Gdiplus::SolidBrush gbruTra(Gdiplus::Color(80, 0, 180, 25));
 	g.FillRectangle(&gbruTra, brc);
@@ -141,7 +142,9 @@ void UI_BOARD::updateInfo()
 	g.DrawString(pstat2, lstrlenW(pstat2), &mfont, rcF, &mFormat, &mBrush);
 
 	Gdiplus::Graphics graphics(&m_bitBuf2);
-	graphics.Clear(0);
+	//graphics.Clear(0);
+	graphics.Clear(Gdiplus::Color::AntiqueWhite);
+	graphics.DrawImage(&m_bitBuf, 0, 0, m_DrawPlayerRc.X, m_DrawPlayerRc.Y, m_DrawPlayerRc.Width, m_DrawPlayerRc.Height, Gdiplus::Unit::UnitPixel);
 	graphics.DrawImage(&bufInfo,0,0);
 }
 
