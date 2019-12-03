@@ -266,7 +266,8 @@ void initNew() {
 }
 
 void getConfig()
-{
+{	
+	//读取配置文件,更新全局变量
 	WCHAR buf[32] = { 0 };
 	GetPrivateProfileString(L"Config", L"BackGroundMusic", L"true", buf, 32, g_configFileName);
 	g_setting.bkMusic = !lstrcmpW(L"true", buf);
@@ -282,6 +283,7 @@ void getConfig()
 
 void saveConfig()
 {
+	//写入配置文件
 	WCHAR buf[32] = { 0 };
 	WritePrivateProfileString(L"Config", L"BackGroundMusic", g_setting.bkMusic ? L"true" : L"false", g_configFileName);
 	WritePrivateProfileString(L"Config", L"BackGroundEffect", g_setting.bkEffect ? L"true": L"false", g_configFileName);
@@ -320,6 +322,13 @@ void applySetting(HWND hDlg)
 
 void startGame(int mode, int firstPlayer)
 {
+	if (g_started) {
+		int ret = MessageBox(g_main_hwnd, L"正在游戏中，你确定要新开局吗？", L"新开局", MB_YESNO | MB_ICONQUESTION);
+		if (IDNO == ret) {
+			return;
+		}
+	}
+
 	g_setting.firstToPlay = firstPlayer;
 	g_setting.mode = mode;
 	g_started = true;
@@ -370,11 +379,6 @@ void takeBack()
 	}
 }
 
-void msgNotStarted()
-{
-	MessageBoxA(g_main_hwnd,"别点人家，还没开始呢！","GAME",MB_OK | MB_ICONINFORMATION);	
-}
-
 void OnPaint(HDC hdc) {
 	g_board->draw(hdc);
 }
@@ -411,10 +415,6 @@ void checkWinner() {
 	MessageBoxA(g_main_hwnd, tmp, "游戏结束", MB_OK | MB_ICONINFORMATION);
 }
 
-void showThinking() {
-	MessageBoxA(g_main_hwnd,"弱智AI还在计算！","AI",MB_OK | MB_ICONINFORMATION);
-}
-
 void CALLBACK drawInfoTimerProc(HWND hwnd, UINT message, UINT_PTR timerId, DWORD elaps)
 {
 	HDC hdc= GetDC(hwnd);
@@ -433,12 +433,28 @@ void computerCallback(POSITION p)
 }
 
 void OnLButtonDown(HDC hdc, int wx, int wy) {
-	if (g_status || !g_started) {
-		msgNotStarted();
-		return;
-	}
 	int x = (wx) / 40;
 	int y = (wy) / 40;
+
+	if (!g_started) {
+		if (g_status) {
+			if(isInMap(x, y)) {
+				MessageBoxA(g_main_hwnd,"游戏好像结束了呢！", "GAME", MB_OK | MB_ICONINFORMATION);
+			}
+			else {
+				MessageBoxA(g_main_hwnd, "你？！", "GAME", MB_OK | MB_ICONINFORMATION);
+			}
+		}
+		else {
+			if (isInMap(x, y)) {
+				MessageBoxA(g_main_hwnd, "棋盘上面有东西吗？", "GAME", MB_OK | MB_ICONQUESTION);
+			}
+			else {
+				MessageBoxA(g_main_hwnd, "别点人家，还没开始呢！", "GAME", MB_OK | MB_ICONINFORMATION);
+			}
+		}
+		return;
+	}
 	//debug
 	CHAR str[100];
 	wsprintfA(str, "Chess(%d,%d) => %d\n", x, y, g_status);
@@ -453,6 +469,7 @@ void OnLButtonDown(HDC hdc, int wx, int wy) {
 			procPlayerComputer(p);
 		}
 		g_board->updateBoard();
+		g_board->updateInfo();
 		g_board->draw(hdc);
 		checkWinner();
 	}
@@ -468,7 +485,7 @@ void procPlayerPlayer(POSITION p) {
 void procPlayerComputer(POSITION p) {
 	if (g_map->getCurPlayer() == COMPUTER) {
 		if (g_computer->isThinking()) {
-			showThinking();
+			MessageBoxA(g_main_hwnd, "弱智AI还在计算！", "AI", MB_OK | MB_ICONINFORMATION);
 		}
 	}
 	else {

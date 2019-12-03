@@ -35,7 +35,6 @@ void OnPaint(HDC hdc);
 void OnLButtonDown(HDC hdc, int wx, int wy);
 void OnMouseOver(HDC hdc, int wx, int wy);
 void checkWinner();
-void showThinking();
 void CALLBACK drawInfoTimerProc(HWND hwnd,UINT message,UINT_PTR timerId,DWORD elaps);
 void computerCallback(POSITION p);
 
@@ -48,7 +47,6 @@ void applySetting(HWND hDlg);
 void startGame(int mode,int firstPlayer);
 void endGame();
 void takeBack();
-void msgNotStarted();
 void procPlayerPlayer(POSITION p);
 void procPlayerComputer(POSITION p);
 int checkTimeout();
