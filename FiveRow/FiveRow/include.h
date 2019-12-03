@@ -34,7 +34,9 @@ enum {
 
 enum {
 	PLAYER_PLAYER = 0,
-	PLAYER_AI
+	PLAYER_AI,
+	ENDGAME,
+	SHOWCHESS
 };
 
 enum {	

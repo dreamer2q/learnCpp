@@ -1,5 +1,7 @@
 #include "MAP.h"
 
+#include <stdio.h>
+
 void MAP::init()
 {
 	m_CurMoveIndex = -1;
@@ -23,6 +25,12 @@ int MAP::getFirstPlayer()
 void MAP::setMode(int mode)
 {
 	m_GameMode = mode;
+	if (SHOWCHESS == mode) {
+		//init for showing steps
+		m_BoardTotalIndex = m_CurMoveIndex + 1;
+		m_CurMoveIndex = -1;
+		m_CurPlayer = m_FirstPlayer;
+	}
 }
 
 int MAP::getMode()
@@ -172,4 +180,63 @@ POSITION MAP::getLastPos()
 int MAP::hasWinner()
 {
 	return m_GameStatus;
+}
+
+bool MAP::next()
+{
+	if (SHOWCHESS == m_GameMode && m_CurMoveIndex < m_BoardTotalIndex) {
+		m_CurMoveIndex++;
+		return true;
+	}
+	return false;
+}
+
+bool MAP::prev()
+{
+	if (SHOWCHESS == m_GameMode && m_CurMoveIndex > -1) {
+		m_CurMoveIndex--;
+		return true;
+	}
+	return false;
+}
+
+bool MAP::loadBoredFromFile(const char* filename)
+{
+	FILE *fin;
+	fin = fopen(filename, "r");
+	if (!fin) {
+		return false;
+	}
+	init();
+	int firstPlayer = 0;
+	if (EOF == fscanf(fin, "%d", &firstPlayer)) {
+		fclose(fin);
+		return false;
+	}
+	setFirstPlayer(firstPlayer);
+	int x, y;
+	while (EOF != fscanf(fin, "%d,%d", &x,&y) && !hasWinner())
+	{
+		putChess(POSITION{ x,y });
+	}
+	fclose(fin);
+	return true;
+}
+
+bool MAP::saveBoredToFile(const char* filename)
+{
+	FILE* fout;
+	fout = fopen(filename, "w");
+	if (!fout) {
+		return false;
+	}
+	if (EOF == fprintf(fout, "%d\n", getFirstPlayer())) {
+		fclose(fout);
+		return false;
+	}
+	for (int i = 0; i < getSumSteps(); i++) {
+		fprintf(fout, "%d,%d\n", m_Moves[i].x, m_Moves[i].y);
+	}
+	fclose(fout);
+	return true;
 }

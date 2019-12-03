@@ -22,6 +22,12 @@ public:
 	int getSumSteps();
 	POSITION getLastPos();
 	int hasWinner();
+
+	bool next();
+	bool prev();
+	bool loadBoredFromFile(const char* filename);
+	bool saveBoredToFile(const char* filename);
+
 private:
 	bool isInBoard(POSITION p);
 	bool isEmpty(POSITION p);
@@ -33,9 +39,10 @@ private:
 	POSITION delMove();
 
 	POSITION m_Moves[MAPWIDTH * MAPWIDTH];
-	int m_GameMode;
+	int m_GameMode = PLAYER_PLAYER;
 	int m_CurMoveIndex = -1;
-	int m_Board[MAPWIDTH][MAPWIDTH];
+	int m_BoardTotalIndex = 0;
+	int m_Board[MAPWIDTH][MAPWIDTH] = { 0 };
 	int m_CurPlayer = NOBODY;
 	int m_FirstPlayer = NOBODY;
 	int m_GameStatus = 0;  // -1 draw 0 inGame 1 WHITE wins 2 BLACK wins

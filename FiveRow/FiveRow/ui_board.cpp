@@ -67,16 +67,22 @@ void UI_BOARD::updateBoard()
 //»æÖÆplayerÐÅÏ¢
 void UI_BOARD::updateInfo()
 {
-	if (!m_player[0]) {
-		return;
-	}
-
 	Gdiplus::Rect rc(m_DrawRect.Height, 0, m_DrawRect.Width - m_DrawRect.Height, m_DrawRect.Height);
 	Gdiplus::Bitmap bufInfo(rc.Width, rc.Height);
 
 	Gdiplus::Rect brc(0, 0, rc.Width, rc.Height);
 	Gdiplus::Graphics g(&bufInfo);
-	
+
+	if (m_map->getMode() == SHOWCHESS) {
+
+
+
+	}
+	else if (!m_player[0]) {
+		//Gdiplus::Graphics gf(&m_bitBuf2);
+		//gf.DrawImage(&m_bitBuf, 0, 0, m_DrawPlayerRc.X, m_DrawPlayerRc.Y, m_DrawPlayerRc.Width, m_DrawPlayerRc.Height, Gdiplus::Unit::UnitPixel);
+		return;
+	}
 
 	Gdiplus::SolidBrush gbruTra(Gdiplus::Color(80, 0, 180, 25));
 	g.FillRectangle(&gbruTra, brc);

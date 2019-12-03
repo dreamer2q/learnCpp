@@ -1,5 +1,6 @@
 #pragma once
 #include "music.h"
+#include <commdlg.h>
 
 #define WM_FLASH WM_NULL
 #define PLAYER_INFO_UPDATE 10001
@@ -50,6 +51,9 @@ void takeBack();
 void procPlayerPlayer(POSITION p);
 void procPlayerComputer(POSITION p);
 int checkTimeout();
+void loadFromFile();
+void saveToFile();
+void startFromFile();
 
 
 

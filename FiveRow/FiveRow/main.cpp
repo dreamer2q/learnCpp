@@ -95,6 +95,15 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		case IDM_GAYPLAY:
 			startGame(PLAYER_PLAYER, PLAYER);
 			break;
+		case IDM_LOADBOARD:
+			loadFromFile();
+			break;
+		case IDM_SAVEBOARD:
+			saveToFile();
+			break;
+		case IDM_LOAD_HALFBOARD:
+			startFromFile();
+			break;
 		case IDM_SETTING:
 			DialogBox(g_hInst, MAKEINTRESOURCE(IDD_DLG_SETTING), hwnd, DlgSettingProc);
 			break;
@@ -231,12 +240,20 @@ void initData() {
 		g_board->setPlayer(g_player[PLAYER], g_player[PLAYER2]);
 		g_player[PLAYER]->startRecodingTime();
 	}
-	else if (g_setting.firstToPlay == PLAYER) {
-		g_board->setPlayer(g_player[PLAYER], g_computer);
-		g_player[PLAYER]->startRecodingTime();
+	else if (g_setting.mode == PLAYER_AI) {
+		if (g_setting.firstToPlay == PLAYER) {
+			g_board->setPlayer(g_player[PLAYER], g_computer);
+			g_player[PLAYER]->startRecodingTime();
+		}
+		else {
+			g_board->setPlayer(g_computer, g_player[PLAYER]);
+		}
+	}
+	else if (g_setting.mode == SHOWCHESS) {
+		g_board->setPlayer(NULL, NULL);
 	}
 	else {
-		g_board->setPlayer(g_computer, g_player[PLAYER]);
+
 	}
 
 	g_board->updateInfo();
@@ -516,6 +533,37 @@ int checkTimeout()
 		}
 	}
 	return EMPTY;
+}
+
+void loadFromFile()
+{
+	OPENFILENAMEA ofn = { 0 };
+	char filename[MAXSTR] = { 0 };
+	ofn.lStructSize = sizeof(OPENFILENAMEA);
+	ofn.hwndOwner = g_main_hwnd;
+	ofn.lpstrFilter = "棋谱文件(*.ces)\0*.ces\0所有文件(*.*)\0*.*\0";
+	ofn.nFilterIndex = 0;
+	ofn.lpstrFile = filename;
+	ofn.nMaxFile = MAXSTR;
+	ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;//文件、目录必须存在，隐藏只读选项
+
+	if (!GetOpenFileNameA(&ofn)) {
+		return;
+	}
+	if (g_map->loadBoredFromFile(filename)) {
+		g_map->setMode(SHOWCHESS);
+
+		g_setting.firstToPlay = g_map->getFirstPlayer();
+		g_setting.mode = SHOWCHESS;
+		g_started = true;
+		g_status = 0;
+
+		initData();
+
+	}
+	else {
+		MessageBoxA(g_main_hwnd, "打开棋盘文件失败，请检查格式是否正确！", "ERROR", MB_OK | MB_ICONERROR);
+	}
 }
 
 void OnMouseOver(HDC hdc,int wx, int wy) {
