@@ -526,7 +526,7 @@ int checkTimeout()
 	}
 	else {
 		if (g_player[PLAYER]->getLeftTime() > out) {
-			return (COMPUTER == g_map->getFirstPlayer() ? BLACK : WHITE);
+			return (::COMPUTER == g_map->getFirstPlayer() ? BLACK : WHITE);
 		}
 		else if (g_computer->getLeftTime() > out) {
 			return (PLAYER == g_map->getFirstPlayer() ? BLACK : WHITE);

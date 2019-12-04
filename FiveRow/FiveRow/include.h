@@ -79,4 +79,4 @@ bool isInMap(int x, int y);
 bool isInMap(POSITION p);
 
 
-#endif // ! __INCLUDE_H__
+#endif  // ! __INCLUDE_H__

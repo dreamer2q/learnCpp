@@ -159,6 +159,11 @@ int MAP::boardIndex(int x, int y)
 	return m_Board[x][y];
 }
 
+int MAP::getTotalIndex()
+{
+	return m_BoardTotalIndex;
+}
+
 POSITION MAP::moveIndex(int index)
 {
 	return m_Moves[index];

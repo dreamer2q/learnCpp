@@ -20,6 +20,7 @@ public:
 	int boardIndex(int x, int y);
 	POSITION moveIndex(int index);
 	int getSumSteps();
+	int getTotalIndex();
 	POSITION getLastPos();
 	int hasWinner();
 

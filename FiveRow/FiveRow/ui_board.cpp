@@ -1,5 +1,5 @@
+//#include "UI_BOARD.h"
 #include "UI_BOARD.h"
-
 
 UI_BOARD::UI_BOARD(Gdiplus::Rect& rc):
 	m_DrawRect(rc),
@@ -72,83 +72,91 @@ void UI_BOARD::updateInfo()
 
 	Gdiplus::Rect brc(0, 0, rc.Width, rc.Height);
 	Gdiplus::Graphics g(&bufInfo);
-
-	if (m_map->getMode() == SHOWCHESS) {
-
-
-
-	}
-	else if (!m_player[0]) {
-		//Gdiplus::Graphics gf(&m_bitBuf2);
-		//gf.DrawImage(&m_bitBuf, 0, 0, m_DrawPlayerRc.X, m_DrawPlayerRc.Y, m_DrawPlayerRc.Width, m_DrawPlayerRc.Height, Gdiplus::Unit::UnitPixel);
-		return;
-	}
-
+	//透明掩层
 	Gdiplus::SolidBrush gbruTra(Gdiplus::Color(80, 0, 180, 25));
 	g.FillRectangle(&gbruTra, brc);
 
-	Gdiplus::TextureBrush playerBrush1(m_player[0]->getPlayerPortrait(), Gdiplus::WrapMode::WrapModeClamp);
-	Gdiplus::TextureBrush playerBrush2(m_player[1]->getPlayerPortrait(), Gdiplus::WrapMode::WrapModeClamp);
-	Gdiplus::Bitmap bmp1(128, 128);
-	Gdiplus::Bitmap bmp2(128, 128);
-	Gdiplus::Graphics g1(&bmp1);
-	Gdiplus::Graphics g2(&bmp2);
-	Gdiplus::Rect playerRect(0, 0, 128, 128);
-	g1.FillEllipse(&playerBrush1, playerRect);
-	g2.FillEllipse(&playerBrush2, playerRect);
-
-	const int Y1 = 20;
-	const int Y2 = Y1 + 300;
-	brc = Gdiplus::Rect(30, Y1, 128, 128);
-	g.DrawImage(&bmp1, brc);
-	brc = Gdiplus::Rect(30, Y2, 128, 128);
-	g.DrawImage(&bmp2, brc);
-
-	Gdiplus::Font mfont(L"宋体", 16);
-	Gdiplus::StringFormat mFormat;
-	Gdiplus::SolidBrush mBrush(Gdiplus::Color::Black);
-	mFormat.SetAlignment(Gdiplus::StringAlignment::StringAlignmentCenter);
-
-	LPCWSTR wName = m_player[0]->getPlayerName();
-	Gdiplus::RectF rcF(30, Y1 + 128 + 10, 128, 25);
-	g.DrawString(wName, lstrlenW(wName), &mfont, rcF, &mFormat, &mBrush);
-	rcF = Gdiplus::RectF(30, Y2 + 138, 128, 25);
-	wName = m_player[1]->getPlayerName();
-	g.DrawString(wName, lstrlenW(wName), &mfont, rcF, &mFormat, &mBrush);
-
-	WCHAR wLeftTime[128] = { 0 };
-	formatTime(m_player[0]->getLeftTime(), wLeftTime);
-	rcF = Gdiplus::RectF(30, Y1 + 160, 128, 25);
-	g.DrawString(wLeftTime, lstrlenW(wLeftTime), &mfont, rcF, &mFormat, &mBrush);
-	formatTime(m_player[1]->getLeftTime(), wLeftTime);
-	rcF = Gdiplus::RectF(30, Y2 + 160, 128, 25);
-	g.DrawString(wLeftTime, lstrlenW(wLeftTime), &mfont, rcF, &mFormat, &mBrush);
-
-	const WCHAR* wStat[2] = { L"等待" ,L"思考中" };
-	const WCHAR* pstat1;
-	const WCHAR* pstat2;
-	int mode = m_map->getMode();
-	if (mode == PLAYER_PLAYER) {
-		if (m_map->getCurPlayer() == PLAYER) {
-			pstat1 = wStat[1];
-			pstat2 = wStat[0];
-		}
-		else {
-			pstat1 = wStat[0];
-			pstat2 = wStat[1];
-		}
+	if (m_map->getMode() == SHOWCHESS) {
+		Gdiplus::Font font(L"Arial", 16);
+		Gdiplus::SolidBrush brush(Gdiplus::Color::RedMask);
+		Gdiplus::StringFormat format;
+		format.SetAlignment(Gdiplus::StringAlignmentCenter);
+		WCHAR info[128] = { 0 };
+		int ret = wsprintfW(info, L"2%/%3", m_map->getSumSteps(), m_map->getTotalIndex());
+		Gdiplus::RectF infoRc(rc.X, rc.Height / 2 - 10, rc.Width, 20);
+		g.DrawString(info, ret, &font, infoRc, &format, &brush);
+	}
+	else if (!m_player[0]) {
+		
 	}
 	else {
-		pstat1 = wStat[m_map->getCurPlayer() == m_player[0]->getPlayerInt()];
-		pstat2 = wStat[m_map->getCurPlayer() == m_player[1]->getPlayerInt()];
-	}
-	rcF = Gdiplus::RectF(30, Y1 + 185, 128, 25);
-	g.DrawString(pstat1, lstrlenW(pstat1), &mfont, rcF, &mFormat, &mBrush);	
-	rcF = Gdiplus::RectF(30, Y2 + 185, 128, 25);
-	g.DrawString(pstat2, lstrlenW(pstat2), &mfont, rcF, &mFormat, &mBrush);
+		//处理Player的头像，使之变成圆形
+		Gdiplus::TextureBrush playerBrush1(m_player[0]->getPlayerPortrait(), Gdiplus::WrapMode::WrapModeClamp);
+		Gdiplus::TextureBrush playerBrush2(m_player[1]->getPlayerPortrait(), Gdiplus::WrapMode::WrapModeClamp);
+		Gdiplus::Bitmap bmp1(128, 128);
+		Gdiplus::Bitmap bmp2(128, 128);
+		Gdiplus::Graphics g1(&bmp1);
+		Gdiplus::Graphics g2(&bmp2);
+		Gdiplus::Rect playerRect(0, 0, 128, 128);
+		g1.FillEllipse(&playerBrush1, playerRect);
+		g2.FillEllipse(&playerBrush2, playerRect);
 
+		//定义初始坐标
+		const int Y1 = 20;
+		const int Y2 = Y1 + 300;
+		//绘制头像
+		brc = Gdiplus::Rect(30, Y1, 128, 128);
+		g.DrawImage(&bmp1, brc);
+		brc = Gdiplus::Rect(30, Y2, 128, 128);
+		g.DrawImage(&bmp2, brc);
+
+		Gdiplus::Font mfont(L"宋体", 16);
+		Gdiplus::StringFormat mFormat;
+		Gdiplus::SolidBrush mBrush(Gdiplus::Color::Black);
+		mFormat.SetAlignment(Gdiplus::StringAlignment::StringAlignmentCenter);
+
+		LPCWSTR wName = m_player[0]->getPlayerName();
+		Gdiplus::RectF rcF(30, Y1 + 128 + 10, 128, 25);
+		g.DrawString(wName, lstrlenW(wName), &mfont, rcF, &mFormat, &mBrush);
+		rcF = Gdiplus::RectF(30, Y2 + 138, 128, 25);
+		wName = m_player[1]->getPlayerName();
+		g.DrawString(wName, lstrlenW(wName), &mfont, rcF, &mFormat, &mBrush);
+
+		WCHAR wLeftTime[128] = { 0 };
+		formatTime(m_player[0]->getLeftTime(), wLeftTime);
+		rcF = Gdiplus::RectF(30, Y1 + 160, 128, 25);
+		g.DrawString(wLeftTime, lstrlenW(wLeftTime), &mfont, rcF, &mFormat, &mBrush);
+		formatTime(m_player[1]->getLeftTime(), wLeftTime);
+		rcF = Gdiplus::RectF(30, Y2 + 160, 128, 25);
+		g.DrawString(wLeftTime, lstrlenW(wLeftTime), &mfont, rcF, &mFormat, &mBrush);
+
+		const WCHAR* wStat[2] = { L"等待" ,L"思考中" };
+		const WCHAR* pstat1;
+		const WCHAR* pstat2;
+		int mode = m_map->getMode();
+		if (mode == PLAYER_PLAYER) {
+			if (m_map->getCurPlayer() == PLAYER) {
+				pstat1 = wStat[1];
+				pstat2 = wStat[0];
+			}
+			else {
+				pstat1 = wStat[0];
+				pstat2 = wStat[1];
+			}
+		}
+		else {
+			pstat1 = wStat[m_map->getCurPlayer() == m_player[0]->getPlayerInt()];
+			pstat2 = wStat[m_map->getCurPlayer() == m_player[1]->getPlayerInt()];
+		}
+		rcF = Gdiplus::RectF(30, Y1 + 185, 128, 25);
+		g.DrawString(pstat1, lstrlenW(pstat1), &mfont, rcF, &mFormat, &mBrush);
+		rcF = Gdiplus::RectF(30, Y2 + 185, 128, 25);
+		g.DrawString(pstat2, lstrlenW(pstat2), &mfont, rcF, &mFormat, &mBrush);
+	}
+
+	
 	Gdiplus::Graphics graphics(&m_bitBuf2);
-	//graphics.Clear(0);
+	//使用一个不透明的颜色清理清理缓存图片
 	graphics.Clear(Gdiplus::Color::AntiqueWhite);
 	graphics.DrawImage(&m_bitBuf, 0, 0, m_DrawPlayerRc.X, m_DrawPlayerRc.Y, m_DrawPlayerRc.Width, m_DrawPlayerRc.Height, Gdiplus::Unit::UnitPixel);
 	graphics.DrawImage(&bufInfo,0,0);
