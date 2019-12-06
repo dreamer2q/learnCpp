@@ -78,7 +78,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		initNew();
 
 		g_board->updateBoard();
-		//g_board->updateInfo();
+		g_board->updateInfo();
+		SetTimer(hwnd, PLAYER_INFO_UPDATE, 1000, drawInfoTimerProc);
 	}
 	break;
 	case WM_COMMAND:
@@ -96,13 +97,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 			startGame(PLAYER_PLAYER, PLAYER);
 			break;
 		case IDM_LOADBOARD:
-			loadFromFile();
+			startGame(SHOWCHESS, NOBODY);
+			break;
+		case IDM_CREATEBOARD:
+			DialogBox(g_hInst, MAKEINTRESOURCE(IDD_STARTCREAT), hwnd, DlgNewCreateProc);
 			break;
 		case IDM_SAVEBOARD:
-			saveToFile();
+			saveBoardToFile();
 			break;
 		case IDM_LOAD_HALFBOARD:
-			startFromFile();
+			startGame(LOADHALF, NOBODY);
 			break;
 		case IDM_SETTING:
 			DialogBox(g_hInst, MAKEINTRESOURCE(IDD_DLG_SETTING), hwnd, DlgSettingProc);
@@ -224,40 +228,45 @@ INT_PTR CALLBACK DlgAboutProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 	return FALSE;
 }
 
+INT_PTR CALLBACK DlgNewCreateProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+	case WM_INITDIALOG:
+	{
+		CheckDlgButton(hDlg, IDC_R_HALFAIFIRST,TRUE);
+		return (INT_PTR)TRUE;
+	}
+	case WM_COMMAND:
+	{
+		int wmId = LOWORD(wParam);
+		if (wmId == IDOK) {
+			int firstPlayer = PLAYER;
+			g_setting.modeCreate = PLAYER_AI;
+			if (IsDlgButtonChecked(hDlg,IDC_R_HALFPLAYER)) {
+				firstPlayer = PLAYER;
+				g_setting.modeCreate = PLAYER_PLAYER;
+			}
+			else if (IsDlgButtonChecked(hDlg, IDC_R_HALFAIFIRST)) {
+				firstPlayer = COMPUTER;
+			}
+			EndDialog(hDlg, 1);
+			startGame(CREATECHESS, firstPlayer);
+		}
+		else if (wmId == IDCANCEL) {
+			EndDialog(hDlg, 0);
+		}
+		break;
+	}
+	default:
+		break;
+	}
+	return (INT_PTR)FALSE;
+}
+
 void initData() {
 
-	g_map->init();
-	g_map->setFirstPlayer(g_setting.firstToPlay);
-	g_map->setMode(g_setting.mode);
-	g_computer->setLevel(g_setting.level);
-	g_computer->beforeStart();
-	
-	g_player[PLAYER]->reset(15 * 60 * 1000);
-	g_player[PLAYER2]->reset(15 * 60 * 1000);
-	g_computer->reset(15 * 60 * 1000);
 
-	if (g_setting.mode == PLAYER_PLAYER) {
-		g_board->setPlayer(g_player[PLAYER], g_player[PLAYER2]);
-		g_player[PLAYER]->startRecodingTime();
-	}
-	else if (g_setting.mode == PLAYER_AI) {
-		if (g_setting.firstToPlay == PLAYER) {
-			g_board->setPlayer(g_player[PLAYER], g_computer);
-			g_player[PLAYER]->startRecodingTime();
-		}
-		else {
-			g_board->setPlayer(g_computer, g_player[PLAYER]);
-		}
-	}
-	else if (g_setting.mode == SHOWCHESS) {
-		g_board->setPlayer(NULL, NULL);
-	}
-	else {
-
-	}
-
-	g_board->updateInfo();
-	g_board->updateBoard();
 }
 
 void initNew() {
@@ -274,10 +283,12 @@ void initNew() {
 	g_player[PLAYER2] = new class PERSON(TEXT("picture/player2.png"), g_map);
 	g_player[PLAYER]->setPlayerName(L"玩家1");
 	g_player[PLAYER2]->setPlayerName(L"玩家2");
+	g_player[PLAYER]->setPlayerInt(PLAYER);
+	g_player[PLAYER2]->setPlayerInt(PLAYER2);
 	g_computer = new class COMPUTER(TEXT("picture/yixin.png"), g_map);
 	g_computer->setPlayerName(L"弈心");
 	g_computer->setCallback((COMPUTER_CALLBACK)computerCallback);
-
+	g_computer->setPlayerInt(COMPUTER);
 	initMusic();
 	getConfig();
 }
@@ -292,10 +303,6 @@ void getConfig()
 	g_setting.bkEffect = !lstrcmpW(L"true", buf);
 	GetPrivateProfileString(L"Config", L"Level", L"2", buf, 32, g_configFileName);
 	g_setting.level = _wtoi(buf);
-
-	/*char bug[128] = { 0 };
-	wsprintfA(bug, "Background Music %d\nBackgound Effect %d\nLevel %d\n", g_setting.bkMusic, g_setting.bkEffect, g_setting.level);
-	MessageBoxA(NULL, bug, "DEBUG", MB_OK);*/
 }
 
 void saveConfig()
@@ -331,69 +338,167 @@ void applySetting(HWND hDlg)
 	}
 	g_setting.bkMusic = IsDlgButtonChecked(hDlg, IDC_CK_BKMUSIC);
 	g_setting.bkEffect = IsDlgButtonChecked(hDlg, IDC_CK_EFMUSIC);
-	if (g_started) {
-		updateBkMusic();
-	}
+
+	updateBkMusic();
 	saveConfig();
 }
 
 void startGame(int mode, int firstPlayer)
 {
-	if (g_started) {
+	if (isInGame()) {
 		int ret = MessageBox(g_main_hwnd, L"正在游戏中，你确定要新开局吗？", L"新开局", MB_YESNO | MB_ICONQUESTION);
-		if (IDNO == ret) {
-			return;
+		if (IDNO == ret) return;	
+	}
+	
+	
+	//else {
+		g_map->setFirstPlayer(firstPlayer);
+		g_map->setMode(mode);
+	//}
+
+	//////////////////////////////////////
+	g_setting.mode = mode;
+	switch (mode)
+	{
+	case PLAYER_PLAYER:
+	{
+		g_map->init();
+		g_player[PLAYER]->reset(15 * 60 * 1000);
+		g_player[PLAYER2]->reset(15 * 60 * 1000);
+		g_board->setPlayer(g_player[PLAYER], g_player[PLAYER2]);
+		g_player[PLAYER]->startRecodingTime();
+	}
+		break;
+	case PLAYER_AI:
+	{
+		g_map->init();
+		g_computer->setLevel(g_setting.level);
+		g_computer->beforeStart();
+		g_computer->reset(15 * 60 * 1000);
+		g_player[PLAYER]->reset(15 * 60 * 1000);
+		if (firstPlayer == PLAYER) {
+			g_board->setPlayer(g_player[PLAYER], g_computer);
+			g_player[PLAYER]->startRecodingTime();
+		}
+		else {
+			g_board->setPlayer(g_computer, g_player[PLAYER]);
+			g_computer->playFirstStep();
 		}
 	}
+		break;
+	case SHOWCHESS:
+		//what needs to be done here???
+		break;
+	case LOADHALF:
+	{
 
-	g_setting.firstToPlay = firstPlayer;
-	g_setting.mode = mode;
-	g_started = true;
-	g_status = 0;
-	initData();
+		//前置处理，避免打开取消/失败的不友好
+		//if (mode == loadhalf || mode == showchess) {
+		//	char filename[maxstr] = { 0 };
+		//	if (!filedlg(filename, true)) return;	//取消打开文件
+		//	if (!g_map->loadboardfromfile(filename)) {
+		//		messageboxa(g_main_hwnd, "打开棋盘文件失败，请检查格式是否正确！", "error", mb_ok | mb_iconerror);
+		//		return;
+		//	}
+		//	if (mode == showchess && g_map->getmode() != showchess) {
+		//		messageboxa(g_main_hwnd, "请使用载入残局打开", "error", mb_ok | mb_iconexclamation);
+		//		return;
+		//	}
+		//}
 
-	if (mode == PLAYER_AI && firstPlayer == COMPUTER) {
-		g_computer->playFirstStep();
+		char debug[MAXSTR] = { 0 };
+		fileDlg(debug, true);
+		//g_map->loadBoardFromFile(debug);
+		
+		g_setting.mode = PLAYER_PLAYER;
+		g_map->setFirstPlayer(PLAYER_PLAYER);
+		g_map->setMode(PLAYER_PLAYER);
+		//g_setting.mode = g_map->getMode();
+		switch (g_setting.mode)
+		{
+		case PLAYER_PLAYER:
+			g_player[PLAYER]->reset(15 * 60 * 1000);
+			g_player[PLAYER2]->reset(15 * 60 * 1000);
+			g_board->setPlayer(g_player[PLAYER], g_player[PLAYER2]);
+			g_player[PLAYER]->startRecodingTime();
+			break;
+		case PLAYER_AI:
+			g_player[PLAYER]->reset(15 * 60 * 1000);
+			g_computer->reset(15 * 60 * 1000);
+			g_computer->setLevel(g_setting.level);
+
+			g_computer->loadHalf();
+
+			if (g_map->getFirstPlayer() == PLAYER) {
+				g_board->setPlayer(g_player[PLAYER], g_computer);
+			}
+			else {
+				g_board->setPlayer(g_computer, g_player[PLAYER]);
+			}
+
+			if (g_map->getCurPlayer() == COMPUTER) {
+				g_computer->playFirstStep();
+			}
+			else {
+				g_player[PLAYER]->startRecodingTime();
+			}
+			break;
+		default:
+			MessageBoxA(g_main_hwnd, "文件错误", "ERROR", MB_OK | MB_ICONERROR);
+			endGame();
+			return;
+			break;
+		}
+
+	}
+		break;
+	case CREATECHESS:
+		g_map->init();
+		break;
 	}
 
+	////////////////////////////////////////
+	g_board->updateBoard();
+	g_board->updateInfo();
 	playBkMusic();
-	drawInfoTimerProc(g_main_hwnd, WM_TIMER, PLAYER_INFO_UPDATE, 0);
-	SetTimer(g_main_hwnd, PLAYER_INFO_UPDATE, 1000, drawInfoTimerProc);
+	refreshBoard();
 }
 
 void endGame()
 {
-	g_started = false;
-	KillTimer(g_main_hwnd, PLAYER_INFO_UPDATE);
+	//KillTimer(g_main_hwnd, PLAYER_INFO_UPDATE);
+	g_setting.mode = ENDGAME;
+	stopBkMusic();
 }
 
 void takeBack()
 {
-	if (g_started) {
-		if (!g_status) {
-			if (g_map->getSumSteps() >= 2) {
-				int ret;
-				ret = MessageBoxA(g_main_hwnd, "你想要悔棋吗？", "悔棋", MB_YESNO | MB_ICONQUESTION);
-				if (IDYES == ret) {
-					auto p = g_map->takeBack();
-					if (g_setting.mode == PLAYER_AI) {
-						g_computer->takeBack(p);
-					}
-					p = g_map->takeBack();
-					if (g_setting.mode == PLAYER_AI) {
-						g_computer->takeBack(p);
-					}
-					g_board->updateBoard();
-					SendMessage(g_main_hwnd, WM_PAINT, 0, 0);
-					return;
-				}
-			}
+	if (!isInGame()) return;
+	switch (g_setting.mode)
+	{
+	case SHOWCHESS:
+		return;
+	case PLAYER_PLAYER:
+	case PLAYER_AI:
+	{
+		if (g_map->getSumSteps() < 2) return;
+		int ret = MessageBoxA(g_main_hwnd, "你想要悔棋吗？", "悔棋", MB_YESNO | MB_ICONQUESTION);
+		if (IDYES != ret) return;
+		auto p = g_map->takeBack();
+		auto p2 = g_map->takeBack();
+		if (g_setting.mode == PLAYER_AI) {
+			g_computer->takeBack(p);
+			g_computer->takeBack(p2);
 		}
-		MessageBoxA(g_main_hwnd, "现在不能悔棋啦~", "GAME", MB_OK | MB_ICONINFORMATION);
 	}
-	else {
-		MessageBoxA(g_main_hwnd, "你想干嘛？","GAME", MB_OK | MB_ICONWARNING);
+		break;
+	case CREATECHESS:
+		if(g_map->getSumSteps() < 1) return;
+		g_map->takeBack();
+		break;
 	}
+	g_board->updateBoard();
+	refreshBoard();
 }
 
 void OnPaint(HDC hdc) {
@@ -401,43 +506,40 @@ void OnPaint(HDC hdc) {
 }
 
 void checkWinner() {
-	if (!g_started) {
+
+	if (!isInGame())return;
+	switch (g_setting.mode)
+	{
+	case CREATECHESS:
+	case SHOWCHESS:
+	case LOADHALF:
 		return;
 	}
+
+	int status;
+	if (!(status = g_map->hasWinner())) if (!(status = checkTimeout())) return;
 	
-	g_status = g_map->hasWinner();
-	if (!g_status) {
-		g_status = checkTimeout();
-		if (!g_status) {
-			return;
-		}
-	}
-	char tmp[100] = { 0 };
-	stopBkMusic();
-	if (g_status != -1) {
-		wsprintfA(tmp, "%s获胜\n", g_status == WHITE ? "白棋" : "黑棋");
-		if (g_setting.mode == PLAYER_PLAYER) {
-			playWinMusic();
-		}else if (g_map->getCurPlayer() == PLAYER) {
-			playLoseMusic();
-		}
-		else {
-			playWinMusic();
-		}
-	}
-	else {
-		wsprintfA(tmp, "平局");
+	char stat[100] = { 0 };
+	switch (status)
+	{
+	case WHITE:
+	case BLACK:
+			wsprintfA(stat, "%s获胜\n", status == WHITE ? "白棋" : "黑棋");
+			break;
+	case DRAW:
+			wsprintfA(stat, "平局");
+			break;
 	}
 	endGame();
-	MessageBoxA(g_main_hwnd, tmp, "游戏结束", MB_OK | MB_ICONINFORMATION);
+	MessageBoxA(g_main_hwnd, stat, "游戏结束", MB_OK | MB_ICONINFORMATION);
 }
 
 void CALLBACK drawInfoTimerProc(HWND hwnd, UINT message, UINT_PTR timerId, DWORD elaps)
 {
 	HDC hdc= GetDC(hwnd);
 	g_board->updateInfo();
-	//g_board->draw(hdc);
 	g_board->drawInfo(hdc);
+	ReleaseDC(g_main_hwnd, hdc);
 }
 
 void computerCallback(POSITION p) 
@@ -452,44 +554,35 @@ void computerCallback(POSITION p)
 void OnLButtonDown(HDC hdc, int wx, int wy) {
 	int x = (wx) / 40;
 	int y = (wy) / 40;
+	POSITION p{ x,y };
 
-	if (!g_started) {
-		if (g_status) {
-			if(isInMap(x, y)) {
-				MessageBoxA(g_main_hwnd,"游戏好像结束了呢！", "GAME", MB_OK | MB_ICONINFORMATION);
-			}
-			else {
-				MessageBoxA(g_main_hwnd, "你？！", "GAME", MB_OK | MB_ICONINFORMATION);
-			}
-		}
-		else {
-			if (isInMap(x, y)) {
-				MessageBoxA(g_main_hwnd, "棋盘上面有东西吗？", "GAME", MB_OK | MB_ICONQUESTION);
-			}
-			else {
-				MessageBoxA(g_main_hwnd, "别点人家，还没开始呢！", "GAME", MB_OK | MB_ICONINFORMATION);
-			}
-		}
+	if (showNecessaryInfo()) {
 		return;
 	}
-	//debug
-	CHAR str[100];
-	wsprintfA(str, "Chess(%d,%d) => %d\n", x, y, g_status);
-	OutputDebugStringA(str);
 
-	POSITION p{ x,y };
-	if (isInMap(x, y) && !g_map->boardIndex(x, y)) {
-		if (g_setting.mode == PLAYER_PLAYER) {
-			procPlayerPlayer(p);
-		}
-		else {
-			procPlayerComputer(p);
-		}
-		g_board->updateBoard();
-		g_board->updateInfo();
-		g_board->draw(hdc);
-		checkWinner();
+	switch (g_map->getMode()) {
+	case SHOWCHESS:
+		procShowChess(wx, wy);
+		break;
+	case CREATECHESS:
+		if (g_map->isEmpty(p)) g_map->putChess(p);
+		break;
+	case PLAYER_PLAYER:
+		if (g_map->isEmpty(p)) procPlayerPlayer(p);
+		break;
+	case PLAYER_AI:
+		if (g_map->isEmpty(p)) procPlayerComputer(p);
+		break;
+	default:
+		MessageBoxA(g_main_hwnd, "Unkown Mode", "Error", MB_OK | MB_ICONERROR);
+		break;
 	}
+
+	
+	g_board->updateBoard();
+	g_board->updateInfo();
+	g_board->draw(hdc);
+	checkWinner();
 }
 
 void procPlayerPlayer(POSITION p) {
@@ -535,54 +628,125 @@ int checkTimeout()
 	return EMPTY;
 }
 
-void loadFromFile()
+void saveBoardToFile()
 {
-	OPENFILENAMEA ofn = { 0 };
-	char filename[MAXSTR] = { 0 };
-	ofn.lStructSize = sizeof(OPENFILENAMEA);
-	ofn.hwndOwner = g_main_hwnd;
-	ofn.lpstrFilter = "棋谱文件(*.ces)\0*.ces\0所有文件(*.*)\0*.*\0";
-	ofn.nFilterIndex = 0;
-	ofn.lpstrFile = filename;
-	ofn.nMaxFile = MAXSTR;
-	ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;//文件、目录必须存在，隐藏只读选项
-
-	if (!GetOpenFileNameA(&ofn)) {
-		return;
+	int saveMode = g_setting.mode;
+	if (g_setting.mode == CREATECHESS) {
+		saveMode = g_setting.modeCreate;
 	}
-	if (g_map->loadBoredFromFile(filename)) {
-		g_map->setMode(SHOWCHESS);
 
-		g_setting.firstToPlay = g_map->getFirstPlayer();
-		g_setting.mode = SHOWCHESS;
-		g_started = true;
-		g_status = 0;
-
-		initData();
-
+	char fileName[MAXSTR] = { 0 };
+	if (fileDlg(fileName, false)) {
+		if (g_map->saveBoardToFile(fileName,saveMode)) {
+			MessageBoxA(g_main_hwnd, "保存成功！", "SUCCESS", MB_OK | MB_ICONINFORMATION);
+		}
+		else {
+			MessageBoxA(g_main_hwnd, "保存失败！", "FAILURE", MB_OK | MB_ICONWARNING);
+		}
 	}
 	else {
-		MessageBoxA(g_main_hwnd, "打开棋盘文件失败，请检查格式是否正确！", "ERROR", MB_OK | MB_ICONERROR);
+		//用户取消
 	}
 }
 
-void OnMouseOver(HDC hdc,int wx, int wy) {
-	if (!g_started) {
+bool fileDlg(char* filename, bool isOpen)
+{
+	OPENFILENAMEA ofn = { 0 };
+	memset(&ofn, 0, sizeof(ofn));
+	//char filename[MAXSTR] = { 0 };
+	ofn.lStructSize = sizeof(OPENFILENAMEA);
+	ofn.hwndOwner = g_main_hwnd;
+	ofn.lpstrFilter = "棋谱文件(*.ces)\0*.ces\0所有文件(*.*)\0*.*\0\0";
+	ofn.nFilterIndex = 0;
+	ofn.hInstance = g_hInst;
+	ofn.lpstrFile = filename;
+	ofn.nMaxFile = MAXSTR;
+	ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;				//文件、目录必须存在，隐藏只读选项
+	ofn.lpstrDefExt = ".ces";
+	if (isOpen) {
+		return GetOpenFileNameA(&ofn);
+	}
+	else {
+		return GetSaveFileNameA(&ofn);
+	}
+	return false;
+}
+
+void procShowChess(int x, int y)
+{
+	RECT prev{ 600,0,800,300 };
+	RECT next{ 600,300,800,800 };
+	bool ret;
+
+	char debug[128] = { 0 };
+	wsprintfA(debug, "click (%d,%d) \n", x, y);
+	OutputDebugStringA(debug);
+
+	if (isInRECT(&prev, x, y)) {
+		ret = g_map->prev();
+	}
+	else if(isInRECT(&next,x,y)){
+		ret = g_map->next();
+	}
+	else {
 		return;
 	}
-	int x = (wx) / 40;
-	int y = (wy) / 40;
+	if (!ret) {
+		MessageBoxA(g_main_hwnd, "无法进行上一步/下一步查看", "失败", MB_OK | MB_ICONINFORMATION);
+		return;
+	}
+}
 
-	POSITION p{ -1,-1 };
-	if (!g_status) {
-		if (!g_computer->isThinking()) {
-			if (isInMap(x,y)) {
-				if (!g_map->boardIndex(x, y)) {
-					p = POSITION{ x,y };
-				}
-			}
-		}
+bool isInRECT(PRECT prc, int x, int y)
+{
+	return x > prc->left && x<prc->right && y < prc->bottom && y > prc->top;
+}
+
+bool showNecessaryInfo()
+{
+	switch (g_setting.mode)
+	{
+	case NOTSTARTED:
+		MessageBoxA(g_main_hwnd, "游戏未开始", "GAME", MB_OK | MB_ICONINFORMATION);
+		return true;
+	case ENDGAME:
+		MessageBoxA(g_main_hwnd, "游戏结束", "GAME", MB_OK | MB_ICONINFORMATION);
+		return true;
+	}
+	return false;
+}
+
+void OnMouseOver(HDC hdc, int wx, int wy) {
+	if (!isInGame()) {
+		return;
+	}
+
+	int x = (wx) / 40, y = (wy) / 40;
+	POSITION p{ -1,-1 };				//-1 means erase previous rectangle
+	switch (g_setting.mode)
+	{
+	case SHOWCHESS:
+		break;
+	case PLAYER_AI:
+		if (g_computer->isThinking()) break;
+	case PLAYER_PLAYER:
+		if (isInMap(x, y) && !g_map->boardIndex(x, y)) p = POSITION{ x,y };
+
+		break;
 	}
 	g_board->drawTipCircle(hdc, p);
+}
+
+bool isInGame()
+{
+	return g_setting.mode != NOTSTARTED && g_setting.mode != ENDGAME;
+}
+
+void refreshBoard()
+{
+	HDC hdc = GetDC(g_main_hwnd);
+	g_board->draw(hdc);
+	ReleaseDC(g_main_hwnd, hdc);
+	SendMessage(g_main_hwnd, WM_PAINT, 0, 0);
 }
 

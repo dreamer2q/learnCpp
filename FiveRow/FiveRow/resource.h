@@ -8,6 +8,7 @@
 #define IDD_DLG_SETTING                 103
 #define IDS_CONFIG                      103
 #define IDD_DLG_ABOUT                   105
+#define IDD_STARTCREAT                  109
 #define IDC_BT_PLAYERPAYER              1004
 #define IDC_BT_EXIT                     1005
 #define IDC_BT_PLAYERCOMPUTER           1006
@@ -22,6 +23,9 @@
 #define IDC_CK_BKMUSIC                  1017
 #define IDC_CK_EFMUSIC                  1018
 #define IDC_STATIC_ABOUT                1019
+#define IDC_R_HALFAIFIRST               1021
+#define IDC_R_HALFPLAYERFIRST           1022
+#define IDC_R_HALFPLAYER                1023
 #define ID_40001                        40001
 #define ID_40002                        40002
 #define ID_40003                        40003
@@ -58,9 +62,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        107
+#define _APS_NEXT_RESOURCE_VALUE        111
 #define _APS_NEXT_COMMAND_VALUE         40032
-#define _APS_NEXT_CONTROL_VALUE         1020
+#define _APS_NEXT_CONTROL_VALUE         1024
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

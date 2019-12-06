@@ -14,7 +14,6 @@ public:
 	void beforeStart();
 
 	void play(POSITION p) override;
-	int getPlayerInt() override;
 
 	void playFirstStep();
 	POSITION getLastPos();
@@ -24,7 +23,7 @@ public:
 	void setLevel(int level);
 	void setInfo(EngineInfo info,int value);
 	void setCallback(COMPUTER_CALLBACK callback);
-
+	void loadHalf();
 	COMPUTER_CALLBACK m_callback;
 private:
 	bool loadEngine();

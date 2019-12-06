@@ -24,14 +24,14 @@ public:
 	POSITION getLastPos();
 	int hasWinner();
 
+	bool isEmpty(POSITION p);
 	bool next();
 	bool prev();
-	bool loadBoredFromFile(const char* filename);
-	bool saveBoredToFile(const char* filename);
+	bool loadBoardFromFile(const char* filename);
+	bool saveBoardToFile(const char* filename,int mode);
 
 private:
 	bool isInBoard(POSITION p);
-	bool isEmpty(POSITION p);
 	int& boardIndex(POSITION p);
 	void nextPlayer();
 	void addMove(POSITION p);
@@ -40,7 +40,7 @@ private:
 	POSITION delMove();
 
 	POSITION m_Moves[MAPWIDTH * MAPWIDTH];
-	int m_GameMode = PLAYER_PLAYER;
+	int m_GameMode = NOTSTARTED;
 	int m_CurMoveIndex = -1;
 	int m_BoardTotalIndex = 0;
 	int m_Board[MAPWIDTH][MAPWIDTH] = { 0 };

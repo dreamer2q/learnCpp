@@ -20,6 +20,7 @@
 
 
 enum {
+	DRAW = -1,
 	EMPTY = 0,
 	WHITE,
 	BLACK
@@ -35,8 +36,11 @@ enum {
 enum {
 	PLAYER_PLAYER = 0,
 	PLAYER_AI,
-	ENDGAME,
-	SHOWCHESS
+	SHOWCHESS,
+	CREATECHESS,
+	LOADHALF,
+	NOTSTARTED,
+	ENDGAME
 };
 
 enum {	
@@ -54,9 +58,9 @@ typedef enum {
 } EngineInfo;
 
 typedef struct {
-	int firstToPlay;
 	int level;
 	int mode;
+	int modeCreate;				//used when mode is CREATECHESS
 	bool bkMusic;
 	bool bkEffect;
 } SETTING;
@@ -71,8 +75,6 @@ typedef struct POSITION_TAG{
 } POSITION;
 
 #include "resource.h"
-
-
 
 
 bool isInMap(int x, int y);

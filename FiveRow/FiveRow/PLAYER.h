@@ -20,11 +20,13 @@ public:
 	Gdiplus::Image* getPlayerPortrait();
 	
 	virtual void play(POSITION p) = 0;
-	virtual int getPlayerInt() = 0;
+	int getPlayerInt();
+	void setPlayerInt(int playerInt);
 
 protected:
 	MAP* m_map;
 private:
+	int m_playerInt;
 	bool m_isRecording;
 	DWORD m_StartTime;
 	DWORD m_TotalTime;

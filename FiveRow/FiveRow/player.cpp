@@ -59,6 +59,16 @@ Gdiplus::Image* PLAYER::getPlayerPortrait()
 	return m_playerPortrait;
 }
 
+int PLAYER::getPlayerInt()
+{
+	return m_playerInt;
+}
+
+void PLAYER::setPlayerInt(int playerInt)
+{
+	m_playerInt = playerInt;
+}
+
 void formatTime(DWORD time, LPWSTR lpResult)
 {
 	if (time > 60 * 1000) {
