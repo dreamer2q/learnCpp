@@ -264,11 +264,6 @@ INT_PTR CALLBACK DlgNewCreateProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 	return (INT_PTR)FALSE;
 }
 
-void initData() {
-
-
-}
-
 void initNew() {
 
 	RECT rcClient;
@@ -350,11 +345,23 @@ void startGame(int mode, int firstPlayer)
 		if (IDNO == ret) return;	
 	}
 	
-	
-	//else {
+	//前置处理，避免打开取消/失败的不友好
+	if (mode == LOADHALF || mode == SHOWCHESS) {
+		char filename[MAXSTR] = { 0 };
+		if (!fileDlg(filename, true)) return;	//取消打开文件
+		if (!g_map->loadBoardFromFile(filename)) {
+			MessageBoxA(g_main_hwnd, "打开棋盘文件失败，请检查格式是否正确！", "error",MB_OK | MB_ICONERROR);
+			return;
+		}
+		if (mode == SHOWCHESS && g_map->getMode() != SHOWCHESS) {
+			MessageBoxA(g_main_hwnd, "请使用载入残局打开", "error", MB_OK | MB_ICONEXCLAMATION);
+			return;
+		}
+	}
+	else {
 		g_map->setFirstPlayer(firstPlayer);
 		g_map->setMode(mode);
-	//}
+	}
 
 	//////////////////////////////////////
 	g_setting.mode = mode;
@@ -391,29 +398,7 @@ void startGame(int mode, int firstPlayer)
 		break;
 	case LOADHALF:
 	{
-
-		//前置处理，避免打开取消/失败的不友好
-		//if (mode == loadhalf || mode == showchess) {
-		//	char filename[maxstr] = { 0 };
-		//	if (!filedlg(filename, true)) return;	//取消打开文件
-		//	if (!g_map->loadboardfromfile(filename)) {
-		//		messageboxa(g_main_hwnd, "打开棋盘文件失败，请检查格式是否正确！", "error", mb_ok | mb_iconerror);
-		//		return;
-		//	}
-		//	if (mode == showchess && g_map->getmode() != showchess) {
-		//		messageboxa(g_main_hwnd, "请使用载入残局打开", "error", mb_ok | mb_iconexclamation);
-		//		return;
-		//	}
-		//}
-
-		char debug[MAXSTR] = { 0 };
-		fileDlg(debug, true);
-		//g_map->loadBoardFromFile(debug);
-		
-		g_setting.mode = PLAYER_PLAYER;
-		g_map->setFirstPlayer(PLAYER_PLAYER);
-		g_map->setMode(PLAYER_PLAYER);
-		//g_setting.mode = g_map->getMode();
+		g_setting.mode = g_map->getMode();
 		switch (g_setting.mode)
 		{
 		case PLAYER_PLAYER:
@@ -467,7 +452,7 @@ void startGame(int mode, int firstPlayer)
 void endGame()
 {
 	//KillTimer(g_main_hwnd, PLAYER_INFO_UPDATE);
-	g_setting.mode = ENDGAME;
+	g_map->setMode(g_setting.mode = ENDGAME);
 	stopBkMusic();
 }
 
@@ -661,8 +646,10 @@ bool fileDlg(char* filename, bool isOpen)
 	ofn.hInstance = g_hInst;
 	ofn.lpstrFile = filename;
 	ofn.nMaxFile = MAXSTR;
-	ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;				//文件、目录必须存在，隐藏只读选项
+	//这里踩了一个很大的坑，不知道文件对话框会改变目录，导致Gdiplus的图片无法显示，这里加上OFN_NOCHANGEDIR修复。
+	ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_EXPLORER | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;				//文件、目录必须存在，隐藏只读选项
 	ofn.lpstrDefExt = ".ces";
+
 	if (isOpen) {
 		return GetOpenFileNameA(&ofn);
 	}

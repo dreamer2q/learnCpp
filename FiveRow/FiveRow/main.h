@@ -44,7 +44,6 @@ void checkWinner();
 void CALLBACK drawInfoTimerProc(HWND hwnd,UINT message,UINT_PTR timerId,DWORD elaps);
 void computerCallback(POSITION p);
 
-void initData();
 void initNew();
 void getConfig();
 void saveConfig();

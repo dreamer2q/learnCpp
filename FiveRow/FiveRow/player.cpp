@@ -2,6 +2,11 @@
 
 PLAYER::PLAYER(PCWSTR imgPath,MAP* map)
 {
+	//WCHAR currDir[512] = { 0 };
+	//GetCurrentDirectory(512, currDir);
+	//lstrcatW(currDir, L"/");
+	//lstrcatW(currDir, imgPath);
+	//m_playerPortrait = new Gdiplus::Image(currDir);
 	m_playerPortrait = new Gdiplus::Image(imgPath);
 	m_map = map;
 	reset(15 * 60 * 1000);
