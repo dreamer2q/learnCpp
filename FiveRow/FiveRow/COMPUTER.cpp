@@ -22,11 +22,6 @@ void COMPUTER::play(POSITION p)
 	thr.detach();
 }
 
-int COMPUTER::getPlayerInt()
-{
-	return ::COMPUTER;
-}
-
 void COMPUTER::turn(POSITION p)
 {
 	startRecodingTime();
@@ -141,6 +136,23 @@ void COMPUTER::setCallback(COMPUTER_CALLBACK callback)
 	COMPUTER::m_callback = callback;
 }
 
+void COMPUTER::loadHalf()
+{
+	if (m_map->getSumSteps() < 1) return;
+
+	initBrain();
+	char cmd[128] = { 0 };
+	POSITION p;
+	sendCommand("yxboard\n");
+	int offset = m_map->getFirstPlayer() == ::COMPUTER;
+	for (int i = 0; i < m_map->getSumSteps(); i++) {
+		p = m_map->moveIndex(i);
+		wsprintfA(cmd, "%d,%d,%d\n", p.x, p.y, (i + offset) % 2 ? 1 : 2);
+		sendCommand(cmd);
+	}
+	sendCommand("done\n");
+}
+
 void COMPUTER::beforeStart()
 {
 	initBrain();
@@ -191,25 +203,28 @@ void COMPUTER::initBrain()
 
 bool COMPUTER::parseXY(char* cmd, POSITION* p)
 {
-	char* comma = strstr(cmd, ",");
-	int x=-1, y=-1;
-	int length = strlen(cmd);
-	if (comma) {
-		if (length > 6) {
-			comma -= 2;
+	char* str = cmd;
+	int x = -1, y = -1;
+	
+	while (strlen(str) > 0) {
+		if (!strncmp(str, "MESSAGE", 7)) {
+			str = strstr(str, "\n") + 1;
+			continue;
 		}
 		else {
-			comma = cmd;
+			char* comma = strstr(str, ",");
+			if (comma) {
+				sscanf_s(str, "%d,%d", &x, &y);
+				char debug[128] = { 0 };
+				sprintf_s(debug, 64, "ParseXY-> %d,%d\n", x, y);
+				OutputDebugStringA(debug); //For debug
+				*p = POSITION{ x,y };
+				return true;
+			}
 		}
-		sscanf_s(comma, "%d,%d", &x, &y);
-		sprintf_s(cmd, 64, "ParseXY-> %d,%d\n", x, y);
-		OutputDebugStringA(cmd); //For debug
-		*p = POSITION{ x,y };
+		
 	}
-	else {
-		return false;
-	}
-	return true;
+	return false;
 }
 
 void COMPUTER::updateThinkingStatus(bool status)
@@ -238,13 +253,20 @@ DWORD COMPUTER::sendCommand(const char* cmd)
 	OutputDebugStringA(cmd);
 	OutputDebugStringA("------------------\n");
 	if (!WriteFile(hInWr, cmd, strlen(cmd) * sizeof(char), &nWritten, NULL)) {
+		OutputDebugStringA("WriteFile failed\n");
 		return -1;
 	}
+	if (strlen(cmd) != nWritten) {
+		OutputDebugStringA("SendCommand failed\n");
+		return -1;
+	}
+	Sleep(10);		//这里为何要延迟呢？
 	return nWritten;
 }
 
 int COMPUTER::receiveResult(char* ret, int size)
 {
+	//memset(ret, size, 0);
 	DWORD nRead;
 	if (!ReadFile(hOutRd, ret, size, &nRead, NULL)) {
 		OutputDebugStringA("ReadFile failed");

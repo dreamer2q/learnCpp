@@ -2,6 +2,11 @@
 
 PLAYER::PLAYER(PCWSTR imgPath,MAP* map)
 {
+	//WCHAR currDir[512] = { 0 };
+	//GetCurrentDirectory(512, currDir);
+	//lstrcatW(currDir, L"/");
+	//lstrcatW(currDir, imgPath);
+	//m_playerPortrait = new Gdiplus::Image(currDir);
 	m_playerPortrait = new Gdiplus::Image(imgPath);
 	m_map = map;
 	reset(15 * 60 * 1000);
@@ -9,7 +14,7 @@ PLAYER::PLAYER(PCWSTR imgPath,MAP* map)
 
 PLAYER::~PLAYER()
 {
-	delete m_playerPortrait;
+	//delete m_playerPortrait;
 }
 
 void PLAYER::reset(DWORD total)
@@ -57,6 +62,16 @@ DWORD PLAYER::getLeftTime()
 Gdiplus::Image* PLAYER::getPlayerPortrait()
 {
 	return m_playerPortrait;
+}
+
+int PLAYER::getPlayerInt()
+{
+	return m_playerInt;
+}
+
+void PLAYER::setPlayerInt(int playerInt)
+{
+	m_playerInt = playerInt;
 }
 
 void formatTime(DWORD time, LPWSTR lpResult)

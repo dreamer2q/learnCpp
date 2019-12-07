@@ -5,7 +5,7 @@
 void MAP::init()
 {
 	m_CurMoveIndex = -1;
-	m_CurPlayer = NOBODY;
+	m_CurPlayer = m_FirstPlayer;
 	m_GameStatus = 0;
 	memset(m_Moves, 0, sizeof(m_Moves));
 	memset(m_Board, 0, sizeof(m_Board));
@@ -25,12 +25,7 @@ int MAP::getFirstPlayer()
 void MAP::setMode(int mode)
 {
 	m_GameMode = mode;
-	if (SHOWCHESS == mode) {
-		//init for showing steps
-		m_BoardTotalIndex = m_CurMoveIndex + 1;
-		m_CurMoveIndex = -1;
-		m_CurPlayer = m_FirstPlayer;
-	}
+
 }
 
 int MAP::getMode()
@@ -159,6 +154,11 @@ int MAP::boardIndex(int x, int y)
 	return m_Board[x][y];
 }
 
+int MAP::getTotalIndex()
+{
+	return m_BoardTotalIndex;
+}
+
 POSITION MAP::moveIndex(int index)
 {
 	return m_Moves[index];
@@ -193,50 +193,70 @@ bool MAP::next()
 
 bool MAP::prev()
 {
-	if (SHOWCHESS == m_GameMode && m_CurMoveIndex > -1) {
+	if (SHOWCHESS == m_GameMode && m_CurMoveIndex > 0) {
 		m_CurMoveIndex--;
 		return true;
 	}
 	return false;
 }
 
-bool MAP::loadBoredFromFile(const char* filename)
+bool MAP::loadBoardFromFile(const char* filename)
 {
-	FILE *fin;
-	fin = fopen(filename, "r");
-	if (!fin) {
+	OutputDebugStringA("debug begin\n");
+	FILE* fin = NULL;
+	int err = fopen_s(&fin, filename, "r");
+	if (err) {
 		return false;
 	}
-	init();
-	int firstPlayer = 0;
-	if (EOF == fscanf(fin, "%d", &firstPlayer)) {
+	int firstPlayer, fmode;
+	if (EOF == fscanf_s(fin, "%d|%d", &firstPlayer, &fmode)) {
 		fclose(fin);
 		return false;
 	}
+	init();
+
 	setFirstPlayer(firstPlayer);
+	setMode(fmode);
+
+	//debug
+	char debug[128] = { 0 };
+	wsprintfA(debug, "Playerfirst => %d\nMode => %d\n", firstPlayer, fmode);
+	OutputDebugStringA(debug);
+
 	int x, y;
-	while (EOF != fscanf(fin, "%d,%d", &x,&y) && !hasWinner())
+	while (EOF != fscanf_s(fin, "%d,%d", &x, &y) && !hasWinner())
 	{
 		putChess(POSITION{ x,y });
+		wsprintfA(debug, "parseFromFile => %d,%d\n", x, y);
+		OutputDebugStringA(debug);
 	}
+
+	//init for showing steps
+	if (fmode == SHOWCHESS) {
+		m_BoardTotalIndex = m_CurMoveIndex;
+		m_CurMoveIndex = 0;
+		m_CurPlayer = m_FirstPlayer;
+	}
+
 	fclose(fin);
 	return true;
 }
 
-bool MAP::saveBoredToFile(const char* filename)
+bool MAP::saveBoardToFile(const char* filename,int mode)
 {
-	FILE* fout;
-	fout = fopen(filename, "w");
-	if (!fout) {
+	FILE* fout = NULL;
+	int ret = fopen_s(&fout,filename, "w");
+	if (ret) {
 		return false;
 	}
-	if (EOF == fprintf(fout, "%d\n", getFirstPlayer())) {
+	if (EOF == fprintf(fout, "%d|%d\n", getFirstPlayer(),mode)) {
 		fclose(fout);
 		return false;
 	}
 	for (int i = 0; i < getSumSteps(); i++) {
 		fprintf(fout, "%d,%d\n", m_Moves[i].x, m_Moves[i].y);
 	}
+
 	fclose(fout);
 	return true;
 }

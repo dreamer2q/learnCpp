@@ -9,7 +9,6 @@ public:
 
 	void play(POSITION p) override;
 	//void OnLButtonDown(POSITION p) override;
-	int getPlayerInt() override;
 
 private:
 	//POSITION m_OnLButtonDownPosition;

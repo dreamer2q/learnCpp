@@ -1,5 +1,5 @@
+//#include "UI_BOARD.h"
 #include "UI_BOARD.h"
-
 
 UI_BOARD::UI_BOARD(Gdiplus::Rect& rc):
 	m_DrawRect(rc),
@@ -7,13 +7,32 @@ UI_BOARD::UI_BOARD(Gdiplus::Rect& rc):
 	m_bitBuf(rc.Width,rc.Height),
 	m_bitBuf2(rc.Width-rc.Height,rc.Height)
 {
-	m_bkBord = new Gdiplus::Image(TEXT("picture/board.jpg"));
-	m_chess[BLACK] = new Gdiplus::Image(TEXT("picture/black_chess.png"));
-	m_chess[WHITE] = new Gdiplus::Image(TEXT("picture/white_chess.png"));
-	m_chess[EMPTY] = new Gdiplus::Image(TEXT("picture/tip_chess.png"));
-	m_bkImg = new Gdiplus::Image(TEXT("picture/bk.png"));
+	WCHAR currDir[256] = { 0 };
+	GetCurrentDirectory(256, currDir);
+	WCHAR Files[][256] = {
+		L"\\picture\\board.jpg",
+		L"\\picture\\black_chess.png",
+		L"\\picture\\white_chess.png",
+		L"\\picture\\tip_chess.png",
+		L"\\picture\\bk.png"
+	};
+
+	WstrRcatN(Files[0], 256, 5, currDir);
+
+	if (!isFileExistN(Files[0], 256, 5)) {
+		MessageBoxA(NULL, "文件缺失", "错误", MB_OK | MB_ICONERROR);
+		exit(-1);
+	}
+
+	m_bkBord = new Gdiplus::Image(Files[0]);
+	m_chess[BLACK] = new Gdiplus::Image(Files[1]);
+	m_chess[WHITE] = new Gdiplus::Image(Files[2]);
+	m_chess[EMPTY] = new Gdiplus::Image(Files[3]);
+	m_bkImg = new Gdiplus::Image(Files[4]);
 	m_Sep = (m_DrawRect.Height / 535.0) * 33;
 	m_boardAlpha = 0.8;
+
+	m_player[0] = m_player[1] = NULL;
 }
 
 UI_BOARD::~UI_BOARD()
@@ -67,89 +86,150 @@ void UI_BOARD::updateBoard()
 //绘制player信息
 void UI_BOARD::updateInfo()
 {
-	Gdiplus::Rect rc(m_DrawRect.Height, 0, m_DrawRect.Width - m_DrawRect.Height, m_DrawRect.Height);
-	Gdiplus::Bitmap bufInfo(rc.Width, rc.Height);
+	Gdiplus::Rect globalRect(m_DrawRect.Height, 0, m_DrawRect.Width - m_DrawRect.Height, m_DrawRect.Height);
+	Gdiplus::Bitmap bufInfo(globalRect.Width, globalRect.Height);
 
-	Gdiplus::Rect brc(0, 0, rc.Width, rc.Height);
+	Gdiplus::Rect infoRect(0, 0, globalRect.Width, globalRect.Height);
 	Gdiplus::Graphics g(&bufInfo);
+	//透明掩层
+	
+	Gdiplus::SolidBrush transparentBrush(Gdiplus::Color(80, 0, 180, 25));
+	g.FillRectangle(&transparentBrush, infoRect);
 
-	if (m_map->getMode() == SHOWCHESS) {
+	//绘图参数，可复用的
+	Gdiplus::SolidBrush brush(Gdiplus::Color::Black);
+	Gdiplus::StringFormat format;
+	format.SetAlignment(Gdiplus::StringAlignmentCenter);
 
+	//string buffer
+	WCHAR info[512] = { 0 };
 
-
-	}
-	else if (!m_player[0]) {
-		//Gdiplus::Graphics gf(&m_bitBuf2);
-		//gf.DrawImage(&m_bitBuf, 0, 0, m_DrawPlayerRc.X, m_DrawPlayerRc.Y, m_DrawPlayerRc.Width, m_DrawPlayerRc.Height, Gdiplus::Unit::UnitPixel);
-		return;
-	}
-
-	Gdiplus::SolidBrush gbruTra(Gdiplus::Color(80, 0, 180, 25));
-	g.FillRectangle(&gbruTra, brc);
-
-	Gdiplus::TextureBrush playerBrush1(m_player[0]->getPlayerPortrait(), Gdiplus::WrapMode::WrapModeClamp);
-	Gdiplus::TextureBrush playerBrush2(m_player[1]->getPlayerPortrait(), Gdiplus::WrapMode::WrapModeClamp);
-	Gdiplus::Bitmap bmp1(128, 128);
-	Gdiplus::Bitmap bmp2(128, 128);
-	Gdiplus::Graphics g1(&bmp1);
-	Gdiplus::Graphics g2(&bmp2);
-	Gdiplus::Rect playerRect(0, 0, 128, 128);
-	g1.FillEllipse(&playerBrush1, playerRect);
-	g2.FillEllipse(&playerBrush2, playerRect);
-
-	const int Y1 = 20;
-	const int Y2 = Y1 + 300;
-	brc = Gdiplus::Rect(30, Y1, 128, 128);
-	g.DrawImage(&bmp1, brc);
-	brc = Gdiplus::Rect(30, Y2, 128, 128);
-	g.DrawImage(&bmp2, brc);
-
-	Gdiplus::Font mfont(L"宋体", 16);
-	Gdiplus::StringFormat mFormat;
-	Gdiplus::SolidBrush mBrush(Gdiplus::Color::Black);
-	mFormat.SetAlignment(Gdiplus::StringAlignment::StringAlignmentCenter);
-
-	LPCWSTR wName = m_player[0]->getPlayerName();
-	Gdiplus::RectF rcF(30, Y1 + 128 + 10, 128, 25);
-	g.DrawString(wName, lstrlenW(wName), &mfont, rcF, &mFormat, &mBrush);
-	rcF = Gdiplus::RectF(30, Y2 + 138, 128, 25);
-	wName = m_player[1]->getPlayerName();
-	g.DrawString(wName, lstrlenW(wName), &mfont, rcF, &mFormat, &mBrush);
-
-	WCHAR wLeftTime[128] = { 0 };
-	formatTime(m_player[0]->getLeftTime(), wLeftTime);
-	rcF = Gdiplus::RectF(30, Y1 + 160, 128, 25);
-	g.DrawString(wLeftTime, lstrlenW(wLeftTime), &mfont, rcF, &mFormat, &mBrush);
-	formatTime(m_player[1]->getLeftTime(), wLeftTime);
-	rcF = Gdiplus::RectF(30, Y2 + 160, 128, 25);
-	g.DrawString(wLeftTime, lstrlenW(wLeftTime), &mfont, rcF, &mFormat, &mBrush);
-
-	const WCHAR* wStat[2] = { L"等待" ,L"思考中" };
-	const WCHAR* pstat1;
-	const WCHAR* pstat2;
-	int mode = m_map->getMode();
-	if (mode == PLAYER_PLAYER) {
-		if (m_map->getCurPlayer() == PLAYER) {
-			pstat1 = wStat[1];
-			pstat2 = wStat[0];
+	auto mode = m_map->getMode();
+	if (mode == NOTSTARTED) {
+		static ULONGLONG startTime = GetTickCount64();
+		ULONGLONG currTime = GetTickCount64();
+		switch ((currTime - startTime) / 5000 % 5)
+		{
+		case 0:
+			wsprintfW(info, L"欢迎~\n我是Miku\n你是新人吗？\n\n哈\n让我给介绍一下玩法吧");
+			break;
+		case 1:
+			wsprintfW(info, L"来和我下一局五子棋吧？\n\n点击左上角“游戏”->“开局”\n选择你喜欢的模式\n快点开始游戏吧~\n");
+			break;
+		case 2:
+			wsprintfW(info, L"不要小瞧我哦\n我可是很厉害的呢!\n\n调皮~");
+			break;
+		case 3:
+			wsprintfW(info, L"在“游戏”菜单下面选择\n创建棋谱\n保存后可以使用“载入残局”打开棋谱\n\n你可以自由发挥哦");
+			break;
+		case 4:
+			wsprintfW(info, L"我是不是话有些多呢？\n就到这里好了\n\n更多功能尽情期待~");
+			break;
 		}
-		else {
-			pstat1 = wStat[0];
-			pstat2 = wStat[1];
-		}
+		Gdiplus::Font font(L"楷体", 16);
+		Gdiplus::RectF infoRc(0, globalRect.Height / 2 - 120, globalRect.Width, 400);
+		g.DrawString(info, lstrlenW(info), &font, infoRc, &format, &brush);
 	}
-	else {
+	else if (mode == ENDGAME) {
+		Gdiplus::Font font(L"宋体", 20);
+		wsprintfW(info, L"游戏结束\n\n\n\n获胜者");
+		Gdiplus::RectF infoRc(0, globalRect.Height / 2 - 200, globalRect.Width, 200);	
+		g.DrawString(info, lstrlenW(info), &font, infoRc, &format, &brush);
+
+		int status = m_map->hasWinner();
+		wsprintfW(info, L"%s", m_player[status == BLACK ? 0 : 1]->getPlayerName());
+		Gdiplus::Font font2(L"楷体", 24);
+		brush.SetColor(Gdiplus::Color::Red);
+		infoRc.Y = globalRect.Height / 2;
+		g.DrawString(info, lstrlenW(info), &font2, infoRc, &format, &brush);
+		
+		//5sec 后消失
+		auto func = [&]()->void{
+			Sleep(8000);
+			if ( m_map->getMode() == ENDGAME ) {
+				m_map->setMode(NOTSTARTED);
+			}
+		};
+		std::thread th(func);
+		th.detach();
+	}
+	else if (mode == SHOWCHESS) {
+		Gdiplus::Font font(L"Arial", 16);
+		WCHAR info[128] = { 0 };
+		int ret = wsprintfW(info, L"%d/%d", m_map->getSumSteps(), m_map->getTotalIndex()+1);                                                              
+		Gdiplus::RectF infoRc(0, globalRect.Height / 2 - 10, globalRect.Width, 20);
+		
+		g.DrawString(info, ret, &font, infoRc, &format, &brush);
+
+		g.DrawString(L"上一步", 3, &font, Gdiplus::PointF(50, 200), &brush);
+		g.DrawString(L"下一步", 3, &font, Gdiplus::PointF(50, 400), &brush);
+	}
+	else if (mode == CREATECHESS) {
+		Gdiplus::Font font(L"楷体", 16);
+
+		wsprintfW(info, L"尽情玩耍吧\n别忘记最后保存哦");
+
+		Gdiplus::RectF infoRc(0, globalRect.Height / 2 - 50, globalRect.Width, 100);
+		g.DrawString(info, lstrlenW(info), &font, infoRc, &format, &brush);
+	}
+	else if (mode == PLAYER_AI || mode == PLAYER_PLAYER){
+
+		if (!m_player[0])	return;
+		
+		//处理Player的头像，使之变成圆形
+		Gdiplus::TextureBrush playerBrush1(m_player[0]->getPlayerPortrait(), Gdiplus::WrapMode::WrapModeClamp);
+		Gdiplus::TextureBrush playerBrush2(m_player[1]->getPlayerPortrait(), Gdiplus::WrapMode::WrapModeClamp);
+		
+		Gdiplus::Bitmap bmp1(128, 128);
+		Gdiplus::Bitmap bmp2(128, 128);
+
+		Gdiplus::Graphics g1(&bmp1);
+		Gdiplus::Graphics g2(&bmp2);
+		Gdiplus::Rect playerRect(0, 0, 128, 128);
+		g1.FillEllipse(&playerBrush1, playerRect);
+		g2.FillEllipse(&playerBrush2, playerRect);
+
+		//定义初始坐标
+		const int Y1 = 20;
+		const int Y2 = Y1 + 300;
+		//绘制头像
+		infoRect = Gdiplus::Rect(30, Y1, 128, 128);
+		g.DrawImage(&bmp1, infoRect);
+		infoRect = Gdiplus::Rect(30, Y2, 128, 128);
+		g.DrawImage(&bmp2, infoRect);
+		
+		//角色名字
+		Gdiplus::Font mfont(L"宋体", 16);
+		LPCWSTR wName = m_player[0]->getPlayerName();
+		Gdiplus::RectF rcF(30, Y1 + 128 + 10, 128, 25);
+		g.DrawString(wName, lstrlenW(wName), &mfont, rcF, &format, &brush);
+		rcF = Gdiplus::RectF(30, Y2 + 138, 128, 25);
+		wName = m_player[1]->getPlayerName();
+		g.DrawString(wName, lstrlenW(wName), &mfont, rcF, &format, &brush);
+		//剩余时间
+		WCHAR wLeftTime[128] = { 0 };
+		formatTime(m_player[0]->getLeftTime(), wLeftTime);
+		rcF = Gdiplus::RectF(30, Y1 + 160, 128, 25);
+		g.DrawString(wLeftTime, lstrlenW(wLeftTime), &mfont, rcF, &format, &brush);
+		formatTime(m_player[1]->getLeftTime(), wLeftTime);
+		rcF = Gdiplus::RectF(30, Y2 + 160, 128, 25);
+		g.DrawString(wLeftTime, lstrlenW(wLeftTime), &mfont, rcF, &format, &brush);
+		//状态
+		const WCHAR* wStat[] = { L"等待" ,L"思考中" };
+		const WCHAR* pstat1;
+		const WCHAR* pstat2;
+		
 		pstat1 = wStat[m_map->getCurPlayer() == m_player[0]->getPlayerInt()];
 		pstat2 = wStat[m_map->getCurPlayer() == m_player[1]->getPlayerInt()];
+		
+		rcF = Gdiplus::RectF(30, Y1 + 185, 128, 25);
+		g.DrawString(pstat1, lstrlenW(pstat1), &mfont, rcF, &format, &brush);
+		rcF = Gdiplus::RectF(30, Y2 + 185, 128, 25);
+		g.DrawString(pstat2, lstrlenW(pstat2), &mfont, rcF, &format, &brush);
 	}
-	rcF = Gdiplus::RectF(30, Y1 + 185, 128, 25);
-	g.DrawString(pstat1, lstrlenW(pstat1), &mfont, rcF, &mFormat, &mBrush);	
-	rcF = Gdiplus::RectF(30, Y2 + 185, 128, 25);
-	g.DrawString(pstat2, lstrlenW(pstat2), &mfont, rcF, &mFormat, &mBrush);
 
 	Gdiplus::Graphics graphics(&m_bitBuf2);
-	//graphics.Clear(0);
-	graphics.Clear(Gdiplus::Color::AntiqueWhite);
+	graphics.Clear(Gdiplus::Color::Black);					//使用一个不透明的颜色清理清理缓存图片
 	graphics.DrawImage(&m_bitBuf, 0, 0, m_DrawPlayerRc.X, m_DrawPlayerRc.Y, m_DrawPlayerRc.Width, m_DrawPlayerRc.Height, Gdiplus::Unit::UnitPixel);
 	graphics.DrawImage(&bufInfo,0,0);
 }

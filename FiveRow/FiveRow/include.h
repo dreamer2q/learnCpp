@@ -20,6 +20,7 @@
 
 
 enum {
+	DRAW = -1,
 	EMPTY = 0,
 	WHITE,
 	BLACK
@@ -28,15 +29,18 @@ enum {
 enum {
 	PLAYER = 0,
 	PLAYER2,
-	COMPUTER,
+	COMPUTER,		//Do not modify this, otherwise code won't work properly!
 	NOBODY
 };
 
 enum {
 	PLAYER_PLAYER = 0,
 	PLAYER_AI,
-	ENDGAME,
-	SHOWCHESS
+	SHOWCHESS,
+	CREATECHESS,
+	LOADHALF,
+	NOTSTARTED,
+	ENDGAME
 };
 
 enum {	
@@ -54,13 +58,17 @@ typedef enum {
 } EngineInfo;
 
 typedef struct {
-	int firstToPlay;
 	int level;
 	int mode;
+	int modeCreate;				//used when mode is CREATECHESS
 	bool bkMusic;
 	bool bkEffect;
 } SETTING;
 
+typedef struct {
+	WCHAR ConfigFile[MAXSTR];
+	WCHAR Players[COMPUTER + 1][MAXSTR];		//COMPUTER represent 2, COMPUTER must not be modified£¡
+} CONFIG;
 
 typedef struct POSITION_TAG{
 	int x;
@@ -73,10 +81,10 @@ typedef struct POSITION_TAG{
 #include "resource.h"
 
 
-
-
 bool isInMap(int x, int y);
 bool isInMap(POSITION p);
-
-
-#endif // ! __INCLUDE_H__
+bool isFileExist(LPCWSTR filename);
+bool isFileExistN(LPCWSTR filename,int size, int N);
+int WstrRcat(LPWSTR dest, LPCWSTR source);
+int WstrRcatN(LPWSTR destN, int size, int N, LPCWSTR source);
+#endif  // ! __INCLUDE_H__
