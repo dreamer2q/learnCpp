@@ -4,7 +4,7 @@
 #include <commdlg.h>
 
 //»º±øÖ®¼Æ
-#define WM_FLASH WM_NULL
+#define WM_PLAYER_MUSIC WM_NULL
 //TIMER ID
 #define PLAYER_INFO_UPDATE 10001
 

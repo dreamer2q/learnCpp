@@ -9,7 +9,7 @@ class COMPUTER : public PLAYER
 {
 public:
 	COMPUTER(PCWSTR imgPath, MAP* map);
-	//~COMPUTER();
+	~COMPUTER();
 
 	void beforeStart();
 

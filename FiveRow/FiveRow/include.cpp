@@ -37,17 +37,9 @@ bool isFileExistN(LPCWSTR filename, int size, int N)
 
 int WstrRcat(LPWSTR dest, LPCWSTR source)
 {
-	OutputDebugStringW(L"Begin Wstrcat\n");
-	OutputDebugStringW(dest);
-	OutputDebugStringA("\n");
-	OutputDebugStringW(source);
 	LPWSTR buffer = new WCHAR[lstrlenW(dest)+lstrlenW(source)+1];
 	int n = wsprintfW(buffer, L"%s%s", source, dest);
 	lstrcpyW(dest, buffer);
-	OutputDebugStringA("\n");
-	OutputDebugStringW(dest);
-	OutputDebugStringA("\n");
-	OutputDebugStringA("------------\n\n");
 	delete []buffer;
 	return n;
 }

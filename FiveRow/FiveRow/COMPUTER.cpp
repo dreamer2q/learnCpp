@@ -10,6 +10,13 @@ COMPUTER::COMPUTER(PCWSTR imgPath, MAP* map):PLAYER(imgPath, map)
 	}
 }
 
+COMPUTER::~COMPUTER()
+{
+	//this command is very important because it sends the command to the brain to exit itself, otherwise it won't quit and stay in the memory (troublesome)
+	//make sure ~COMPUTER() is called before exitting.
+	sendCommand("end\n\n");
+}
+
 void COMPUTER::play(POSITION p)
 {
 	if (m_isThinking) {
@@ -69,6 +76,7 @@ void COMPUTER::takeBack(POSITION p)
 
 void COMPUTER::setLevel(int level)
 {
+	
 	int maxNode = 1000;
 	int maxDepth = 50;
 	int timeoutTurn = 2000;
@@ -79,6 +87,11 @@ void COMPUTER::setLevel(int level)
 	{
 	case 1:
 		//default level
+		//to make the AI stupid enough to lose to ordinary people
+		/*我太蠢了，我不配和AI下棋，这个难度为了照顾像我这样的玩家而设置的。*/
+		timeoutTurn = 1000;
+		maxDepth = 2;
+		maxNode = 50;
 		break;
 	case 2:
 		timeoutTurn = 10000;

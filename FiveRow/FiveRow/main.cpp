@@ -133,24 +133,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		EndPaint(hwnd, &ps);
 	}
 	break;
-	case WM_FLASH:  //电脑下棋后的执行
-	{
-		HDC hdc = GetDC(hwnd);
+	case WM_PLAYER_MUSIC:  
+		//电脑下棋后的执行
 		playPutchessMusic();
-		OnPaint(hdc);
-		ReleaseDC(hwnd,hdc);
-	}
-	break;
-	case WM_TIMER:
-	{
-		//int timerId = wParam;
-		//if (PLAYER_INFO_UPDATE == timerId) {
-		//	playerInfoUpdate();
-		//}
-		//HDC hdc = GetDC(hwnd);
-		//computerTimerProc(hdc);
-		//ReleaseDC(hwnd, hdc);
-	}
 		break;
 	case WM_LBUTTONDOWN:
 	{
@@ -181,6 +166,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		ReleaseDC(hwnd, hdc);
 	}
 	break;
+	case WM_ERASEBKGND:
+		//避免闪烁
+		return TRUE;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
@@ -235,7 +223,7 @@ INT_PTR CALLBACK DlgAboutProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 	{
 		HWND staticHwnd = GetDlgItem(hDlg, IDC_STATIC_ABOUT);
 		WCHAR strAbout[512] = { 0 };
-		wsprintfW(strAbout, L"五指棋\n\n游戏引擎：\nYixin\n\n参与开发人员：\nJack Li\nBob\nZiskan\nBilly\n\nGithub：\ngithub.com/dreamer2q/learnCpp \n\n此程序仅用于学习与交流");
+		wsprintfW(strAbout, L"五指棋\n\n游戏引擎：\nYixin2017 Engine\n\n参与开发人员：\nJack Li\nBob\nZiskan\nBilly\n\nGithub：\ngithub.com/dreamer2q/learnCpp \n\n此程序仅用于学习与交流");
 		SetWindowText(staticHwnd, strAbout);
 		return TRUE;
 	}
@@ -350,7 +338,7 @@ void freeNew()
 	//delete g_map;
 	//delete g_board;
 	//delete g_player;
-	//delete g_computer;
+	delete g_computer;
 
 	closeMusic();
 	KillTimer(g_main_hwnd, PLAYER_INFO_UPDATE);
@@ -581,7 +569,8 @@ void computerCallback(POSITION p)
 {
 	g_map->putChess(p);
 	g_board->updateBoard();
-	SendMessage(g_main_hwnd, WM_FLASH,0, 0);
+	InvalidateRgn(g_main_hwnd, NULL, FALSE);
+	SendMessage(g_main_hwnd, WM_PLAYER_MUSIC,0, 0);
 	g_player[PLAYER]->startRecodingTime();
 	checkWinner();
 }

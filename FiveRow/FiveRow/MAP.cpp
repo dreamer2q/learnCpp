@@ -40,7 +40,7 @@ bool MAP::putChess(POSITION p)
 
 bool MAP::putChess(POSITION p, int player)
 {
-	if (isEmpty(p)) {
+	if (isEmpty(p) && !m_GameStatus) {
 		boardIndex(p) = (player==m_FirstPlayer?BLACK:WHITE);
 		nextPlayer();
 		addMove(p);
