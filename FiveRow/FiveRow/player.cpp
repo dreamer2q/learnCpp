@@ -14,7 +14,7 @@ PLAYER::PLAYER(PCWSTR imgPath,MAP* map)
 
 PLAYER::~PLAYER()
 {
-	delete m_playerPortrait;
+	//delete m_playerPortrait;
 }
 
 void PLAYER::reset(DWORD total)

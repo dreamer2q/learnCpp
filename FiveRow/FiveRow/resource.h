@@ -7,8 +7,14 @@
 #define IDR_MAIN_MENU                   102
 #define IDD_DLG_SETTING                 103
 #define IDS_CONFIG                      103
+#define IDS_PLAYER1                     104
 #define IDD_DLG_ABOUT                   105
+#define IDS_PLAYER2                     105
+#define IDS_PLAYER_AI                   106
 #define IDD_STARTCREAT                  109
+#define IDI_ICON_APP                    114
+#define IDR_MENU1                       115
+#define IDR_POPUP_MENU                  115
 #define IDC_BT_PLAYERPAYER              1004
 #define IDC_BT_EXIT                     1005
 #define IDC_BT_PLAYERCOMPUTER           1006
@@ -26,6 +32,9 @@
 #define IDC_R_HALFAIFIRST               1021
 #define IDC_R_HALFPLAYERFIRST           1022
 #define IDC_R_HALFPLAYER                1023
+#define IDC_EDIT_PLAYER1                1026
+#define IDC_EDIT_PLAYER2                1027
+#define IDC_EDIT_PLAYER_AI              1028
 #define ID_40001                        40001
 #define ID_40002                        40002
 #define ID_40003                        40003
@@ -57,14 +66,21 @@
 #define IDM_TAKEBACK                    40029
 #define IDM_ABOUT                       40030
 #define IDM_GITHUB                      40031
+#define ID_40033                        40033
+#define IDM_POPUP                       40034
+#define ID_40035                        40035
+#define ID_40036                        40036
+#define ID_40037                        40037
+#define ID_40038                        40038
+#define ID_40039                        40039
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        111
-#define _APS_NEXT_COMMAND_VALUE         40032
-#define _APS_NEXT_CONTROL_VALUE         1024
+#define _APS_NEXT_RESOURCE_VALUE        116
+#define _APS_NEXT_COMMAND_VALUE         40040
+#define _APS_NEXT_CONTROL_VALUE         1027
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

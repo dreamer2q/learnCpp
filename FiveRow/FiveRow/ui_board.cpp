@@ -7,11 +7,28 @@ UI_BOARD::UI_BOARD(Gdiplus::Rect& rc):
 	m_bitBuf(rc.Width,rc.Height),
 	m_bitBuf2(rc.Width-rc.Height,rc.Height)
 {
-	m_bkBord = new Gdiplus::Image(TEXT("picture/board.jpg"));
-	m_chess[BLACK] = new Gdiplus::Image(TEXT("picture/black_chess.png"));
-	m_chess[WHITE] = new Gdiplus::Image(TEXT("picture/white_chess.png"));
-	m_chess[EMPTY] = new Gdiplus::Image(TEXT("picture/tip_chess.png"));
-	m_bkImg = new Gdiplus::Image(TEXT("picture/bk.png"));
+	WCHAR currDir[256] = { 0 };
+	GetCurrentDirectory(256, currDir);
+	WCHAR Files[][256] = {
+		L"\\picture\\board.jpg",
+		L"\\picture\\black_chess.png",
+		L"\\picture\\white_chess.png",
+		L"\\picture\\tip_chess.png",
+		L"\\picture\\bk.png"
+	};
+
+	WstrRcatN(Files[0], 256, 5, currDir);
+
+	if (!isFileExistN(Files[0], 256, 5)) {
+		MessageBoxA(NULL, "文件缺失", "错误", MB_OK | MB_ICONERROR);
+		exit(-1);
+	}
+
+	m_bkBord = new Gdiplus::Image(Files[0]);
+	m_chess[BLACK] = new Gdiplus::Image(Files[1]);
+	m_chess[WHITE] = new Gdiplus::Image(Files[2]);
+	m_chess[EMPTY] = new Gdiplus::Image(Files[3]);
+	m_bkImg = new Gdiplus::Image(Files[4]);
 	m_Sep = (m_DrawRect.Height / 535.0) * 33;
 	m_boardAlpha = 0.8;
 
@@ -128,7 +145,7 @@ void UI_BOARD::updateInfo()
 		
 		//5sec 后消失
 		auto func = [&]()->void{
-			Sleep(5000);
+			Sleep(8000);
 			if ( m_map->getMode() == ENDGAME ) {
 				m_map->setMode(NOTSTARTED);
 			}
