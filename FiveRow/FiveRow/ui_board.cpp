@@ -59,6 +59,7 @@ void UI_BOARD::draw(HDC hdc)
 	g.DrawImage(&m_bitBuf, 0, 0);
 	g.DrawImage(&m_bitBuf2,m_DrawPlayerRc);
 	Gdiplus::Graphics graphics(hdc);
+	//»­Í¼Ð§¹û
 	graphics.DrawImage(&buf, m_DrawRect);
 }
 

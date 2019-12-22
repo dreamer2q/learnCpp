@@ -22,11 +22,13 @@ void COMPUTER::play(POSITION p)
 	if (m_isThinking) {
 		return;
 	}
+	//！创建一个线程 lambda 函数
 	auto func = [&](POSITION pos)->void {
 		this->turn(pos);
 	};
 	std::thread thr(func, p);
 	thr.detach();
+	//
 }
 
 void COMPUTER::turn(POSITION p)

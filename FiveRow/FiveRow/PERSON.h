@@ -2,6 +2,11 @@
 
 #include "PLAYER.h"
 
+/*
+玩家类，继承PLAYER类
+
+实现玩家的操作
+*/
 class PERSON:public PLAYER
 {
 public:

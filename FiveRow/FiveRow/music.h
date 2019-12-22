@@ -4,6 +4,8 @@
 
 extern SETTING g_setting;
 
+
+//ÓÎÏ·ÉùÒô
 void initMusic();
 void closeMusic();
 void playPutchessMusic();

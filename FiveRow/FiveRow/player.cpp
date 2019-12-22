@@ -21,7 +21,7 @@ void PLAYER::reset(DWORD total)
 {
 	m_TotalTime = total;
 	m_LeftTime = total;
-	m_ClapsTime = 0;
+	m_ElapsTime = 0;
 	m_isRecording = false;
 }
 
@@ -33,7 +33,7 @@ void PLAYER::startRecodingTime()
 
 void PLAYER::endRecordingTime()
 {
-	m_ClapsTime += GetTickCount64() - m_StartTime;
+	m_ElapsTime += GetTickCount64() - m_StartTime;
 	m_isRecording = false;
 }
 
@@ -54,7 +54,7 @@ void PLAYER::setPlayerName(LPCWSTR name)
 DWORD PLAYER::getLeftTime()
 {
 	if (m_isRecording) {
-		m_LeftTime =  m_TotalTime - m_ClapsTime - (GetTickCount64() - m_StartTime);
+		m_LeftTime =  m_TotalTime - m_ElapsTime - (GetTickCount64() - m_StartTime);
 	}
 	return m_LeftTime;
 }

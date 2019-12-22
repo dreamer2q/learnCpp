@@ -9,7 +9,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,HINSTANCE prevInstance,LPWSTR lpCmdLin
 
 	Gdiplus::GdiplusStartupInput gdiInput;
 	ULONG_PTR gdiToken;
-	GdiplusStartup(&gdiToken, &gdiInput, NULL);
+	GdiplusStartup(&gdiToken, &gdiInput, NULL);//init
 
 	MyRegisterClass(hInstance);
 	
@@ -24,7 +24,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,HINSTANCE prevInstance,LPWSTR lpCmdLin
 	}
 
 	freeNew();
-	Gdiplus::GdiplusShutdown(gdiToken);
+	Gdiplus::GdiplusShutdown(gdiToken);//
 
 	return (int)msg.wParam;
 }
@@ -284,8 +284,8 @@ void initNew() {
 	
 	getConfig();
 
-	g_map = new MAP();
-	g_board = new UI_BOARD(rc);
+	g_map = new MAP();//游戏的所有数据
+	g_board = new UI_BOARD(rc);//处理所有画图
 	g_board->setMap(g_map);
 
 	g_player[PLAYER] = new class PERSON(TEXT("picture/player.png"),g_map);
@@ -569,7 +569,8 @@ void computerCallback(POSITION p)
 {
 	g_map->putChess(p);
 	g_board->updateBoard();
-	InvalidateRgn(g_main_hwnd, NULL, FALSE);
+	InvalidateRgn(g_main_hwnd, NULL, TRUE);
+	//playBkMusic
 	SendMessage(g_main_hwnd, WM_PLAYER_MUSIC,0, 0);
 	g_player[PLAYER]->startRecodingTime();
 	checkWinner();
