@@ -73,7 +73,7 @@ typedef struct {
 typedef struct POSITION_TAG{
 	int x;
 	int y;
-	bool operator==(const POSITION& p) {
+	bool operator==(const POSITION_TAG& p) {
 		return this->x == p.x && this->y == p.y;
 	};
 } POSITION;

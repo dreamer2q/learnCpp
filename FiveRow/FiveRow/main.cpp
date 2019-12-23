@@ -24,7 +24,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,HINSTANCE prevInstance,LPWSTR lpCmdLin
 	}
 
 	freeNew();
-	Gdiplus::GdiplusShutdown(gdiToken);//
+	Gdiplus::GdiplusShutdown(gdiToken);
 
 	return (int)msg.wParam;
 }
