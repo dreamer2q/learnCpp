@@ -7,11 +7,28 @@ UI_BOARD::UI_BOARD(Gdiplus::Rect& rc):
 	m_bitBuf(rc.Width,rc.Height),
 	m_bitBuf2(rc.Width-rc.Height,rc.Height)
 {
-	m_bkBord = new Gdiplus::Image(TEXT("picture/board.jpg"));
-	m_chess[BLACK] = new Gdiplus::Image(TEXT("picture/black_chess.png"));
-	m_chess[WHITE] = new Gdiplus::Image(TEXT("picture/white_chess.png"));
-	m_chess[EMPTY] = new Gdiplus::Image(TEXT("picture/tip_chess.png"));
-	m_bkImg = new Gdiplus::Image(TEXT("picture/bk.png"));
+	WCHAR currDir[256] = { 0 };
+	GetCurrentDirectory(256, currDir);
+	WCHAR Files[][256] = {
+		L"\\picture\\board.jpg",
+		L"\\picture\\black_chess.png",
+		L"\\picture\\white_chess.png",
+		L"\\picture\\tip_chess.png",
+		L"\\picture\\bk.png"
+	};
+
+	WstrRcatN(Files[0], 256, 5, currDir);
+
+	if (!isFileExistN(Files[0], 256, 5)) {
+		MessageBoxA(NULL, "文件缺失", "错误", MB_OK | MB_ICONERROR);
+		exit(-1);
+	}
+
+	m_bkBord = new Gdiplus::Image(Files[0]);
+	m_chess[BLACK] = new Gdiplus::Image(Files[1]);
+	m_chess[WHITE] = new Gdiplus::Image(Files[2]);
+	m_chess[EMPTY] = new Gdiplus::Image(Files[3]);
+	m_bkImg = new Gdiplus::Image(Files[4]);
 	m_Sep = (m_DrawRect.Height / 535.0) * 33;
 	m_boardAlpha = 0.8;
 
@@ -89,10 +106,52 @@ void UI_BOARD::updateInfo()
 
 	auto mode = m_map->getMode();
 	if (mode == NOTSTARTED) {
-
+		static ULONGLONG startTime = GetTickCount64();
+		ULONGLONG currTime = GetTickCount64();
+		switch ((currTime - startTime) / 5000 % 5)
+		{
+		case 0:
+			wsprintfW(info, L"欢迎~\n我是Miku\n你是新人吗？\n\n哈\n让我给介绍一下玩法吧");
+			break;
+		case 1:
+			wsprintfW(info, L"来和我下一局五子棋吧？\n\n点击左上角“游戏”->“开局”\n选择你喜欢的模式\n快点开始游戏吧~\n");
+			break;
+		case 2:
+			wsprintfW(info, L"不要小瞧我哦\n我可是很厉害的呢!\n\n调皮~");
+			break;
+		case 3:
+			wsprintfW(info, L"在“游戏”菜单下面选择\n创建棋谱\n保存后可以使用“载入残局”打开棋谱\n\n你可以自由发挥哦");
+			break;
+		case 4:
+			wsprintfW(info, L"我是不是话有些多呢？\n就到这里好了\n\n更多功能尽情期待~");
+			break;
+		}
+		Gdiplus::Font font(L"楷体", 16);
+		Gdiplus::RectF infoRc(0, globalRect.Height / 2 - 120, globalRect.Width, 400);
+		g.DrawString(info, lstrlenW(info), &font, infoRc, &format, &brush);
 	}
 	else if (mode == ENDGAME) {
+		Gdiplus::Font font(L"宋体", 20);
+		wsprintfW(info, L"游戏结束\n\n\n\n获胜者");
+		Gdiplus::RectF infoRc(0, globalRect.Height / 2 - 200, globalRect.Width, 200);	
+		g.DrawString(info, lstrlenW(info), &font, infoRc, &format, &brush);
 
+		int status = m_map->hasWinner();
+		wsprintfW(info, L"%s", m_player[status == BLACK ? 0 : 1]->getPlayerName());
+		Gdiplus::Font font2(L"楷体", 24);
+		brush.SetColor(Gdiplus::Color::Red);
+		infoRc.Y = globalRect.Height / 2;
+		g.DrawString(info, lstrlenW(info), &font2, infoRc, &format, &brush);
+		
+		//5sec 后消失
+		auto func = [&]()->void{
+			Sleep(8000);
+			if ( m_map->getMode() == ENDGAME ) {
+				m_map->setMode(NOTSTARTED);
+			}
+		};
+		std::thread th(func);
+		th.detach();
 	}
 	else if (mode == SHOWCHESS) {
 		Gdiplus::Font font(L"Arial", 16);

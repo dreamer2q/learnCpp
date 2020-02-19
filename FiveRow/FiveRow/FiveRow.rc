@@ -76,8 +76,22 @@ BEGIN
     POPUP "帮助"
     BEGIN
         MENUITEM "关于",                          IDM_ABOUT
+    END
+END
+
+IDR_POPUP_MENU MENU
+BEGIN
+    POPUP "弹出菜单"
+    BEGIN
+        MENUITEM "悔棋",                          IDM_TAKEBACK
         MENUITEM SEPARATOR
-        MENUITEM "Github",                      IDM_GITHUB
+        POPUP "新开局"
+        BEGIN
+            MENUITEM "我先走",                         IDM_ME_FIRST
+            MENUITEM "电脑先",                         IDM_COMPUTER_FIRST
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "保存棋谱",                        IDM_SAVEBOARD
     END
 END
 
@@ -87,32 +101,37 @@ END
 // Dialog
 //
 
-IDD_DLG_SETTING DIALOGEX 0, 0, 220, 177
+IDD_DLG_SETTING DIALOGEX 0, 0, 205, 254
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-EXSTYLE WS_EX_APPWINDOW
 CAPTION "设置"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    PUSHBUTTON      "取消",IDC_BT_CANCEL,108,156,50,14
-    PUSHBUTTON      "保存",IDC_BT_SAVE,44,156,50,14
+    PUSHBUTTON      "取消",IDC_BT_CANCEL,113,235,50,14
+    PUSHBUTTON      "保存",IDC_BT_SAVE,46,235,50,14
     GROUPBOX        "AI智障程度",IDC_STATIC,6,7,194,90
     CONTROL         "初窥门径",IDC_R_LEVEL1,"Button",BS_AUTORADIOBUTTON,17,22,59,10
     CONTROL         "渐入佳境",IDC_R_LEVEL2,"Button",BS_AUTORADIOBUTTON,17,39,47,11
     CONTROL         "登堂入室",IDC_R_LEVEL3,"Button",BS_AUTORADIOBUTTON,17,56,49,10
     CONTROL         "登峰造极",IDC_R_LEVEL4,"Button",BS_AUTORADIOBUTTON,17,74,54,10
-    GROUPBOX        "音乐",IDC_STATIC,6,98,195,54
+    GROUPBOX        "音乐",IDC_STATIC,0,98,195,54
     CONTROL         "背景音乐",IDC_CK_BKMUSIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,113,50,10
     CONTROL         "特效音乐",IDC_CK_EFMUSIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,130,50,10
+    GROUPBOX        "名称",IDC_STATIC,0,156,194,76
+    LTEXT           "玩家2",IDC_STATIC,12,195,36,18
+    LTEXT           "玩家1",IDC_STATIC,12,175,40,18
+    LTEXT           "电脑",IDC_STATIC,12,213,36,12
+    EDITTEXT        IDC_EDIT_PLAYER1,39,172,56,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PLAYER_AI,39,210,55,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PLAYER2,39,191,55,14,ES_AUTOHSCROLL
 END
 
-IDD_DLG_ABOUT DIALOGEX 0, 0, 310, 177
+IDD_DLG_ABOUT DIALOGEX 0, 0, 147, 165
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "关于"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,199,156,50,14
-    PUSHBUTTON      "取消",IDCANCEL,253,156,50,14
-    LTEXT           "This is about dialog",IDC_STATIC_ABOUT,8,8,287,101
+    DEFPUSHBUTTON   "确定",IDOK,46,144,50,14
+    CTEXT           "This is about dialog",IDC_STATIC_ABOUT,4,9,135,129
 END
 
 IDD_STARTCREAT DIALOGEX 0, 0, 139, 105
@@ -138,16 +157,15 @@ GUIDELINES DESIGNINFO
 BEGIN
     IDD_DLG_SETTING, DIALOG
     BEGIN
-        RIGHTMARGIN, 214
-        BOTTOMMARGIN, 149
+        RIGHTMARGIN, 199
+        BOTTOMMARGIN, 249
     END
 
     IDD_DLG_ABOUT, DIALOG
     BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 303
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 170
+        RIGHTMARGIN, 145
+        TOPMARGIN, 8
+        BOTTOMMARGIN, 158
     END
 
     IDD_STARTCREAT, DIALOG
@@ -184,14 +202,27 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON_APP            ICON                    "logo.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // String Table
 //
 
 STRINGTABLE
 BEGIN
     IDS_WNDCLASS            "MYCLASS"
-    IDS_TITLE               "Five Row Demo"
+    IDS_TITLE               "五指棋"
     IDS_CONFIG              ".\\config.ini"
+    IDS_PLAYER1             "玩家1"
+    IDS_PLAYER2             "玩家2"
+    IDS_PLAYER_AI           "弈心"
 END
 
 #endif    // 中文(简体，中国) resources

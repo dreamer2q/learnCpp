@@ -138,16 +138,19 @@ void COMPUTER::setCallback(COMPUTER_CALLBACK callback)
 
 void COMPUTER::loadHalf()
 {
+	if (m_map->getSumSteps() < 1) return;
+
 	initBrain();
 	char cmd[128] = { 0 };
 	POSITION p;
+	sendCommand("yxboard\n");
+	int offset = m_map->getFirstPlayer() == ::COMPUTER;
 	for (int i = 0; i < m_map->getSumSteps(); i++) {
 		p = m_map->moveIndex(i);
-		wsprintfA(cmd, "play %d,%d\n\0", p.x, p.y);
+		wsprintfA(cmd, "%d,%d,%d\n", p.x, p.y, (i + offset) % 2 ? 1 : 2);
 		sendCommand(cmd);
-		Sleep(1);
-		getXY();
 	}
+	sendCommand("done\n");
 }
 
 void COMPUTER::beforeStart()
@@ -257,7 +260,7 @@ DWORD COMPUTER::sendCommand(const char* cmd)
 		OutputDebugStringA("SendCommand failed\n");
 		return -1;
 	}
-	Sleep(50);
+	Sleep(10);		//这里为何要延迟呢？
 	return nWritten;
 }
 

@@ -11,7 +11,6 @@
 //全局变量定义
 WCHAR g_szWndClass[MAXSTR];
 WCHAR g_szTitle[MAXSTR];
-WCHAR g_configFileName[MAXSTR];
 
 HINSTANCE g_hInst;
 HWND g_main_hwnd;
@@ -29,6 +28,14 @@ SETTING g_setting{
 	false,						//bkMusic
 	false						//bkEffect
 };								//default setting
+CONFIG g_config{
+	L".\\config.ini",
+	{
+		L"玩家1",
+		L"玩家2",
+		L"弈心"
+	}
+};
 
 //函数声明
 ATOM MyRegisterClass(HINSTANCE);
@@ -44,7 +51,6 @@ void checkWinner();
 void CALLBACK drawInfoTimerProc(HWND hwnd,UINT message,UINT_PTR timerId,DWORD elaps);
 void computerCallback(POSITION p);
 
-void initData();
 void initNew();
 void getConfig();
 void saveConfig();
