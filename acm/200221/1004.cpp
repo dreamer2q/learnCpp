@@ -19,7 +19,8 @@ void add(char *key) {
             map[i].value++;
             return;
         } else if(t == NULL) {
-            char *k = (char *)malloc(strlen(key) * sizeof(char));
+            //这里注意一下，strlen返回的长度需要加1，这个还是我看了书本才意识到自己写的BUG。
+            char *k = (char *)malloc((strlen(key)+1) * sizeof(char));
             if (k == NULL) {
                 //printf("error\n");
                 while (true)
