@@ -38,9 +38,9 @@ int main() {
     scanf("%d", &n);
     while (n--) {
         int i;
-    scanf("%d", &i);
+        scanf("%d", &i);
         printf("%d\n", a[i % 20]);
     }
 
     return 0;
-    }
+}
