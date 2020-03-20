@@ -5,6 +5,7 @@
 
 typedef struct {
     int ddl, score;
+    bool flag;
 } homework;
 
 homework hw[NUM];
@@ -25,6 +26,7 @@ int main() {
         }
         for (int i = 0; i < n; i++) {
             scanf("%d", &hw[i].score);
+            hw[i].flag = true;
         }
         std::sort(hw, hw + n, cmp);
         int ans = 0;
@@ -32,9 +34,16 @@ int main() {
         for (int i = 0; i < n; i++) {
             if (hw[i].ddl > day) {
                 day++;
-            } else {
-                ans += hw[i].score;
+                continue;
             }
+            int pos = i;
+            for (int j = 0; j < i; j++) {
+                if (hw[j].score < hw[pos].score && hw[j].flag) {
+                    pos = j;
+                }
+            }
+            hw[pos].flag = false;
+            ans += hw[pos].score;
         }
         printf("%d\n", ans);
     }
