@@ -1,23 +1,20 @@
-
 #include <iostream>
 
-
-/**
- * 
- * 
- * 
- * 
- * 
- * 
- *
- */
+using namespace std;
 
 int main() {
-    auto a = 0, b = 0;
+    unsigned u = 10;
+    int i = -42;
 
-    std::cout << "Enter two numbers:";
+    cout << i + u << endl;
+
+    int init1(1);
+    int init2{2};
+    int init3 = {3};
+    int init4 = 4;
+    int _ = 1;
 
 
-    std::cin >> a;
+
     return 0;
 }
