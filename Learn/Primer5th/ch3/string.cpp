@@ -1,24 +1,43 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
-using std::cin;
-using std::cout;
-using std::endl;
-using std::string;
+using namespace std;
 
 int main() {
-    string s1 = "this is a string";
-    string s2 = s1;
-    string s3;
-    string s4(10, 'c');
 
-    size_t l1 = s1.size();
-    cout << l1 << endl;
+    int a[10][10] = {};
 
-    while (std::getline(cin, s3)) {
-        cout << s3;
+    int i = 0;
+    for (auto& row : a) {
+        for (auto& e : row) {
+            e = i++;
+        }
     }
-    cout << "over" << endl;
+
+    for (size_t i = 0; i < 10; i++) {
+        for (size_t j = 0; j < 10; j++) {
+            cout << a[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+
+    for (int(*t)[10] = begin(a); t != end(a); t++) {
+        for (int* c = begin(*t); c != end(*t); c++) {
+            cout << *c << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+
+    for (int(*t)[10] = a; t != a + 10; t++) {
+        for (int* c = *t; c != *t + 10; c++) {
+            cout << *c << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
 
     return 0;
 }
