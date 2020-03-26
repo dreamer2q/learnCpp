@@ -58,6 +58,7 @@
         "list": "cpp",
         "optional": "cpp",
         "xhash": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "random": "cpp"
     }
 }
