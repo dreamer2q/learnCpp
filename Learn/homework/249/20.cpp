@@ -41,6 +41,8 @@ class simpleCircle {
 int main() {
     simpleCircle r(10);
 
+
+
     cout << "radius: " << r.getRadius() << endl;
     cout << "area: " << r.getArea() << endl;
     r.setRadius(20);
