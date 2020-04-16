@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+
 using namespace std;
 
 void print_msg(initializer_list<string> lst) {
@@ -29,10 +30,14 @@ auto func(int i) -> int (*)[10] {
     return &gArr;
 };
 
+
 int main() {
+
     print_msg({"message1", "this is a message two"});
 
     (*func(0))[0] = 1;
+
+    cout << "?" << endl;
 
     return 0;
 }

@@ -2,22 +2,8 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "cpp.exe build active file",
-            "command": "C:\\MinGW\\bin\\cpp.exe",
-            "args": [
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
-            ],
-            "options": {
-                "cwd": "C:\\MinGW\\bin"
-            }
-        },
-        {
-            "type": "shell",
             "label": "g++.exe build active file",
-            "command": "C:\\MinGW\\bin\\g++.exe",
+            "command": "D:\\software\\mingw64\\mingw64\\bin\\g++.exe",
             "args": [
                 "-g",
                 "${file}",
@@ -25,7 +11,7 @@
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],
             "options": {
-                "cwd": "C:\\MinGW\\bin"
+                "cwd": "D:\\software\\mingw64\\mingw64\\bin"
             }
         }
     ],

@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.go2": "go",
         "algorithm": "cpp",
         "cctype": "cpp",
         "chrono": "cpp",
@@ -59,6 +60,23 @@
         "optional": "cpp",
         "xhash": "cpp",
         "xtree": "cpp",
-        "random": "cpp"
-    }
+        "random": "cpp",
+        "deque": "cpp",
+        "fstream": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "sstream": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "atomic": "cpp",
+        "*.tcc": "cpp",
+        "clocale": "cpp",
+        "cstdarg": "cpp",
+        "ctime": "cpp",
+        "cwctype": "cpp",
+        "string_view": "cpp",
+        "cinttypes": "cpp",
+        "cassert": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "Enabled"
 }
