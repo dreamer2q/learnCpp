@@ -76,7 +76,8 @@
         "cwctype": "cpp",
         "string_view": "cpp",
         "cinttypes": "cpp",
-        "cassert": "cpp"
+        "cassert": "cpp",
+        "complex": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled"
 }
