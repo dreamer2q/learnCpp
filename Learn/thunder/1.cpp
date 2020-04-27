@@ -1,71 +1,71 @@
 
 /*
-±¾¿Î³ÌËµÃ÷ÍøÖ·
+æœ¬è¯¾ç¨‹è¯´æ˜Žç½‘å€
 https://www.zhihu.com/question/389457315/answer/1170354190
 
-±¾¿Î³ÌÊÓÆµÒ³Ãæ
+æœ¬è¯¾ç¨‹è§†é¢‘é¡µé¢
 https://www.bilibili.com/video/BV1rt4y127ak/
 
-ÓÉÓÚ´ó×÷ÒµµÄÒªÇó£¬ÎÒÃÇÕâÐ©³ÌÐò¶¼»áÊ¹ÓÃ C++ 11 µÄ±ê×¼À´±àÐ´
+ç”±äºŽå¤§ä½œä¸šçš„è¦æ±‚ï¼Œæˆ‘ä»¬è¿™äº›ç¨‹åºéƒ½ä¼šä½¿ç”¨ C++ 11 çš„æ ‡å‡†æ¥ç¼–å†™
 
 
-Ç°Á½¸ö×÷Òµ£¬ÎÒÃÇÊ¹ÓÃÔÚÏß±àÒëÆ÷À´Íê³É£¬Ê¡È´ÅäÖÃ»·¾³µÄÊ±¼ä
-°´ÕÕÒÔÏÂ²½ÖèÊ¹ÓÃÔÚÏß±àÒëÆ÷
-1£¬´ò¿ªÍøÕ¾ https://www.tutorialspoint.com/compile_cpp11_online.php
-2£¬×ó²àÊÇ´úÂëÊäÈë¿ò£¬É¾³ýËùÓÐÄÚÈÝ
-3£¬°Ñ±¾ÎÄ¼þÍêÕûµØ¸´ÖÆµ½×ó²à´úÂëÊäÈë¿òÖÐ
-4£¬µã»÷Ò³Ãæ×óÉÏ½ÇµÄ Execute °´Å¥¼´¿ÉÔËÐÐ³ÌÐò²¢ÔÚÓÒ²àÏÔÊ¾½á¹û
+å‰ä¸¤ä¸ªä½œä¸šï¼Œæˆ‘ä»¬ä½¿ç”¨åœ¨çº¿ç¼–è¯‘å™¨æ¥å®Œæˆï¼Œçœå´é…ç½®çŽ¯å¢ƒçš„æ—¶é—´
+æŒ‰ç…§ä»¥ä¸‹æ­¥éª¤ä½¿ç”¨åœ¨çº¿ç¼–è¯‘å™¨
+1ï¼Œæ‰“å¼€ç½‘ç«™ https://www.tutorialspoint.com/compile_cpp11_online.php
+2ï¼Œå·¦ä¾§æ˜¯ä»£ç è¾“å…¥æ¡†ï¼Œåˆ é™¤æ‰€æœ‰å†…å®¹
+3ï¼ŒæŠŠæœ¬æ–‡ä»¶å®Œæ•´åœ°å¤åˆ¶åˆ°å·¦ä¾§ä»£ç è¾“å…¥æ¡†ä¸­
+4ï¼Œç‚¹å‡»é¡µé¢å·¦ä¸Šè§’çš„ Execute æŒ‰é’®å³å¯è¿è¡Œç¨‹åºå¹¶åœ¨å³ä¾§æ˜¾ç¤ºç»“æžœ
 
 
-ÔÚ C++ ÖÐ£¬³ÌÐòµÄÈë¿ÚÊÇÇ¿ÖÆµÄ int main() º¯Êý
-ËüÔÚ±¾ÎÄ¼þµÄÄ©Î²
+åœ¨ C++ ä¸­ï¼Œç¨‹åºçš„å…¥å£æ˜¯å¼ºåˆ¶çš„ int main() å‡½æ•°
+å®ƒåœ¨æœ¬æ–‡ä»¶çš„æœ«å°¾
 
 
-C++ ÖÐÐèÒª°üº¬Í·ÎÄ¼þÀ´Ê¹ÓÃÒ»Ð©¿â
-vector ÊÇÊý×é¹¦ÄÜ
-iostream ÊÇÊäÈëÊä³ö¹¦ÄÜ
+C++ ä¸­éœ€è¦åŒ…å«å¤´æ–‡ä»¶æ¥ä½¿ç”¨ä¸€äº›åº“
+vector æ˜¯æ•°ç»„åŠŸèƒ½
+iostream æ˜¯è¾“å…¥è¾“å‡ºåŠŸèƒ½
 */
 #include <iostream>
 #include <string>
 #include <vector>
 
 /*
-Äã»òÐí»áÔÚÐí¶àµØ·½¿´µ½·´¶Ô using namespace std; µÄÉùÒô
-ÒªÇóÏÔÊ½µØÊ¹ÓÃ using std::out; ÕâÑùµÄÓï¾ä
-µ«Êµ¼ÊÉÏÁ½ÅÉ¶¼ÓÐ¸÷×ÔµÄÀíÓÉ£¬ÕâÀïÖ»³ÂÊö£¬²»½âÊÍ²»Õ¾¶Ó
-×ÜµÄÀ´Ëµ£¬ÔÚ .cpp ÎÄ¼þÖÐÓÃ using namespace std; ÊÇ´ó¶àÊýÊéÉÏ»á½ÌµÄ·½·¨
-Òò´ËÕâÀï¾ÍÕâÑùÓÃ
+ä½ æˆ–è®¸ä¼šåœ¨è®¸å¤šåœ°æ–¹çœ‹åˆ°åå¯¹ using namespace std; çš„å£°éŸ³
+è¦æ±‚æ˜¾å¼åœ°ä½¿ç”¨ using std::out; è¿™æ ·çš„è¯­å¥
+ä½†å®žé™…ä¸Šä¸¤æ´¾éƒ½æœ‰å„è‡ªçš„ç†ç”±ï¼Œè¿™é‡Œåªé™ˆè¿°ï¼Œä¸è§£é‡Šä¸ç«™é˜Ÿ
+æ€»çš„æ¥è¯´ï¼Œåœ¨ .cpp æ–‡ä»¶ä¸­ç”¨ using namespace std; æ˜¯å¤§å¤šæ•°ä¹¦ä¸Šä¼šæ•™çš„æ–¹æ³•
+å› æ­¤è¿™é‡Œå°±è¿™æ ·ç”¨
 
-¶ÔÓÚ²»ÁË½â C++ µÄÍ¬Ñ§£¬ÕâÀïÉÔ×÷½âÊÍ
-C++ µÄ±ê×¼¿âµÄÈ«³Ì´ó¸ÅÈçÏÂ
+å¯¹äºŽä¸äº†è§£ C++ çš„åŒå­¦ï¼Œè¿™é‡Œç¨ä½œè§£é‡Š
+C++ çš„æ ‡å‡†åº“çš„å…¨ç¨‹å¤§æ¦‚å¦‚ä¸‹
 std::cout
 std::endl
 std::string
 ...
-ÕâÑùÐ´¾ÍÌ«³¤ÁË£¬ÓÚÊÇÓÃÏÂÃæµÄÃû×ÖÀ´Ê¡ÂÔ std:: Õâ¸öÇ°×ºÃû×Ö
+è¿™æ ·å†™å°±å¤ªé•¿äº†ï¼ŒäºŽæ˜¯ç”¨ä¸‹é¢çš„åå­—æ¥çœç•¥ std:: è¿™ä¸ªå‰ç¼€åå­—
 using namespace std;
 */
 
 using namespace std;
 
 /*
-_print ºÍ log ÕâÁ½¸öº¯Êý
-ÏÖÔÚ²»ÐèÒª¿´¶®Ð´·¨
-ÔÝÊ±Ö»Ðèµ±×÷¹¤¾ßÊ¹ÓÃ±ãÊÇ
-Ô­±¾ÔÚ C++ ÖÐÐèÒªÊ¹ÓÃ cout À´Êä³ö£¬ÈçÏÂ
+_print å’Œ log è¿™ä¸¤ä¸ªå‡½æ•°
+çŽ°åœ¨ä¸éœ€è¦çœ‹æ‡‚å†™æ³•
+æš‚æ—¶åªéœ€å½“ä½œå·¥å…·ä½¿ç”¨ä¾¿æ˜¯
+åŽŸæœ¬åœ¨ C++ ä¸­éœ€è¦ä½¿ç”¨ cout æ¥è¾“å‡ºï¼Œå¦‚ä¸‹
 cout << "hello" << " " << "world" << endl;
 
-µ«ÊÇÕâÑùÊµÔÚ²»ÊÇºÜ·½±ã£¬ÇÒÄãÒÔºó»áÐ´ºÜ¶àÃÅÆäËûÓïÑÔ
-Ã¿ÃÅÓïÑÔ¶¼ÓÐ¸÷×Ô²»Í¬µÄÊä³ö·½Ê½
-¹Ê¶øÎÒÃÇÍ³Ò»·â×°Ò»¸ö log º¯ÊýÀ´Êä³ö£¬ÓÃ·¨ÈçÏÂ
+ä½†æ˜¯è¿™æ ·å®žåœ¨ä¸æ˜¯å¾ˆæ–¹ä¾¿ï¼Œä¸”ä½ ä»¥åŽä¼šå†™å¾ˆå¤šé—¨å…¶ä»–è¯­è¨€
+æ¯é—¨è¯­è¨€éƒ½æœ‰å„è‡ªä¸åŒçš„è¾“å‡ºæ–¹å¼
+æ•…è€Œæˆ‘ä»¬ç»Ÿä¸€å°è£…ä¸€ä¸ª log å‡½æ•°æ¥è¾“å‡ºï¼Œç”¨æ³•å¦‚ä¸‹
 log("hello", " ", "world");
 
-ÕâÒ²ÊÇÔÚ¡¶¡¼¿ì±à³Ì¡½µÄÃâ·Ñ±à³ÌÈëÃÅ¿Î¡·ÖÐ½ÌµÄ·½Ê½
+è¿™ä¹Ÿæ˜¯åœ¨ã€Šã€–å¿«ç¼–ç¨‹ã€—çš„å…è´¹ç¼–ç¨‹å…¥é—¨è¯¾ã€‹ä¸­æ•™çš„æ–¹å¼
 https://www.bilibili.com/video/av82386417
 
-Õâ·Ý×÷ÒµÒªÇóÄãÓÐÒ»ÃÅÓïÑÔµÄ±à³Ì»ù´¡
-Èç¹ûÃ»ÓÐ£¬½¨Òé¹Û¿´ÉÏÃæµÄ¡¶¡¼¿ì±à³Ì¡½µÄÃâ·Ñ±à³ÌÈëÃÅ¿Î¡·À´Íê³ÉÕâ¸ö»ù´¡
-ËüÒ»¹²ÓÐ 5 ½Ú
+è¿™ä»½ä½œä¸šè¦æ±‚ä½ æœ‰ä¸€é—¨è¯­è¨€çš„ç¼–ç¨‹åŸºç¡€
+å¦‚æžœæ²¡æœ‰ï¼Œå»ºè®®è§‚çœ‹ä¸Šé¢çš„ã€Šã€–å¿«ç¼–ç¨‹ã€—çš„å…è´¹ç¼–ç¨‹å…¥é—¨è¯¾ã€‹æ¥å®Œæˆè¿™ä¸ªåŸºç¡€
+å®ƒä¸€å…±æœ‰ 5 èŠ‚
 */
 template <class T>
 void _print(T arg) {
@@ -78,28 +78,28 @@ void log(Args... args) {
     cout << endl;
 }
 
-// ×÷ÒµÕýÊ½¿ªÊ¼
+// ä½œä¸šæ­£å¼å¼€å§‹
 //
-// Àý×Ó 1
-// ÇóÊý×éµÄºÍ
+// ä¾‹å­ 1
+// æ±‚æ•°ç»„çš„å’Œ
 /*
-ÔÚ C++ ÖÐ£¬º¯Êý±ØÐë±ê×¢·µ»ØÖµÀàÐÍ£¬±äÁ¿¡¢²ÎÊý±ØÐë±ê×¢ÀàÐÍ
-sum º¯ÊýÊÇÒ»¸ö·µ»Ø float ÀàÐÍµÄº¯Êý
-ËüµÄ²ÎÊýÃûÊÇ array£¬ÀàÐÍÊÇ vector<float> &
-ÆäÖÐ vector<float> ±íÊ¾ÀàÐÍÊÇ ¡°´æ´¢ float ÔªËØµÄÊý×é¡±
-& ·ûºÅ±íÊ¾²ÎÊý array ÊÇÒ»¸ö ¡°ÒýÓÃ¡±
+åœ¨ C++ ä¸­ï¼Œå‡½æ•°å¿…é¡»æ ‡æ³¨è¿”å›žå€¼ç±»åž‹ï¼Œå˜é‡ã€å‚æ•°å¿…é¡»æ ‡æ³¨ç±»åž‹
+sum å‡½æ•°æ˜¯ä¸€ä¸ªè¿”å›ž float ç±»åž‹çš„å‡½æ•°
+å®ƒçš„å‚æ•°åæ˜¯ arrayï¼Œç±»åž‹æ˜¯ vector<float> &
+å…¶ä¸­ vector<float> è¡¨ç¤ºç±»åž‹æ˜¯ â€œå­˜å‚¨ float å…ƒç´ çš„æ•°ç»„â€
+& ç¬¦å·è¡¨ç¤ºå‚æ•° array æ˜¯ä¸€ä¸ª â€œå¼•ç”¨â€
 
-¡°ÒýÓÃ¡± ÊÇÒ»¸ö C++ ÖÐµÄÐÂ¸ÅÄî£¬ËüÊµ¼ÊÉÏÊÇÒ»¸ö C ÓïÑÔÖÐÖ¸ÕëµÄÓï·¨ÌÇ
-ÎÒÃÇÔÝÊ±²»ÓÃ¹ØÐÄÕâ¸ö£¬ÔÚºóÐøµÄ×÷ÒµÖÐ»áÑ§µ½Ëü
-ÏÖÔÚ¼Ç×¡ËùÓÐ vector ÀàÐÍ¶¼Ê¹ÓÃ & À´ÐÞÊÎ±äÁ¿¼´¿É
+â€œå¼•ç”¨â€ æ˜¯ä¸€ä¸ª C++ ä¸­çš„æ–°æ¦‚å¿µï¼Œå®ƒå®žé™…ä¸Šæ˜¯ä¸€ä¸ª C è¯­è¨€ä¸­æŒ‡é’ˆçš„è¯­æ³•ç³–
+æˆ‘ä»¬æš‚æ—¶ä¸ç”¨å…³å¿ƒè¿™ä¸ªï¼Œåœ¨åŽç»­çš„ä½œä¸šä¸­ä¼šå­¦åˆ°å®ƒ
+çŽ°åœ¨è®°ä½æ‰€æœ‰ vector ç±»åž‹éƒ½ä½¿ç”¨ & æ¥ä¿®é¥°å˜é‡å³å¯
  */
 float sum(vector<float> &array) {
-    // ÏÈÉèÖÃÒ»¸ö±äÁ¿ s ÓÃÀ´´æÊý×éµÄºÍ
+    // å…ˆè®¾ç½®ä¸€ä¸ªå˜é‡ s ç”¨æ¥å­˜æ•°ç»„çš„å’Œ
     float s = 0;
-    // .size() º¯ÊýµÄ·µ»ØÖµÊÇ size_t
-    // ËùÒÔÕâÀïµÄ±äÁ¿ i Ò²ÊÇ size_t£¨Äã¿ÉÒÔµ±×÷ int£©
+    // .size() å‡½æ•°çš„è¿”å›žå€¼æ˜¯ size_t
+    // æ‰€ä»¥è¿™é‡Œçš„å˜é‡ i ä¹Ÿæ˜¯ size_tï¼ˆä½ å¯ä»¥å½“ä½œ intï¼‰
     size_t i = 0;
-    // array.size() ÇóµÃ vector µÄ´óÐ¡
+    // array.size() æ±‚å¾— vector çš„å¤§å°
     while (i < array.size()) {
         float n = array[i];
         s = s + n;
@@ -109,19 +109,19 @@ float sum(vector<float> &array) {
 }
 
 /*
-°´ÕÕ¡¶¡¼¿ì±à³Ì¡½µÄÃâ·Ñ±à³ÌÈëÃÅ¿Î¡·µÄ±ê×¼
-ÎÒÃÇÕâÀïÌá¹©Ò»¸ö¼òÒ×µÄ²âÊÔ·½°¸£¨¹¦ÄÜ¸üÇ¿µÄ²âÊÔ·½°¸ÔÚºóÐøµÄ×÷ÒµÖÐ»á¸ø³ö£©
+æŒ‰ç…§ã€Šã€–å¿«ç¼–ç¨‹ã€—çš„å…è´¹ç¼–ç¨‹å…¥é—¨è¯¾ã€‹çš„æ ‡å‡†
+æˆ‘ä»¬è¿™é‡Œæä¾›ä¸€ä¸ªç®€æ˜“çš„æµ‹è¯•æ–¹æ¡ˆï¼ˆåŠŸèƒ½æ›´å¼ºçš„æµ‹è¯•æ–¹æ¡ˆåœ¨åŽç»­çš„ä½œä¸šä¸­ä¼šç»™å‡ºï¼‰
 
-ensure º¯ÊýµÚÒ»¸ö²ÎÊý
-Èç¹ûÎª true Ôò»áÊä³ö ¡°²âÊÔ³É¹¦¡±
-Èç¹ûÎª false Ôò»áÊä³ö message
-ÕâÑùÎÒÃÇ¾Í¿ÉÒÔÖªµÀÊÇ·ñ²âÊÔ³É¹¦£¬ÒÔ¼°¾ßÌåÄÄ¸ö²âÊÔÊ§°ÜÁË
+ensure å‡½æ•°ç¬¬ä¸€ä¸ªå‚æ•°
+å¦‚æžœä¸º true åˆ™ä¼šè¾“å‡º â€œæµ‹è¯•æˆåŠŸâ€
+å¦‚æžœä¸º false åˆ™ä¼šè¾“å‡º message
+è¿™æ ·æˆ‘ä»¬å°±å¯ä»¥çŸ¥é“æ˜¯å¦æµ‹è¯•æˆåŠŸï¼Œä»¥åŠå…·ä½“å“ªä¸ªæµ‹è¯•å¤±è´¥äº†
 
-¶ÔÃ¿Ò»¸öº¯Êý£¬¶¼Ó¦±àÐ´Ò»¸ö test º¯Êý£¬ÕâÑù¿ÉÒÔÌá¸ß¿ª·¢Ð§ÂÊ
+å¯¹æ¯ä¸€ä¸ªå‡½æ•°ï¼Œéƒ½åº”ç¼–å†™ä¸€ä¸ª test å‡½æ•°ï¼Œè¿™æ ·å¯ä»¥æé«˜å¼€å‘æ•ˆçŽ‡
 */
 void ensure(bool condition, const string &message) {
     if (condition) {
-        log("²âÊÔ³É¹¦");
+        log("æµ‹è¯•æˆåŠŸ");
     } else {
         log(message);
     }
@@ -137,114 +137,210 @@ void testSum(void) {
     ensure(s2 == 21, "sum test error 2");
 }
 
-// ×÷Òµ 1
-// ²ÎÊýÊÇÒ»¸öÖ»°üº¬Êý×ÖµÄ array
-// Çó array µÄ³Ë»ý
-// º¯Êý¶¨ÒåÈçÏÂ
+// ä½œä¸š 1
+// å‚æ•°æ˜¯ä¸€ä¸ªåªåŒ…å«æ•°å­—çš„ array
+// æ±‚ array çš„ä¹˜ç§¯
+// å‡½æ•°å®šä¹‰å¦‚ä¸‹
 
-// ÌáÊ¾£º
-//     Í¨¹ý±éÀúÊý×é£¬È»ºóÀÛ³ËµÄ·½Ê½¼ÆËãÊý×éµÄ³Ë»ý£¬²Î¿¼Àý×Ó 1
+// æç¤ºï¼š
+//     é€šè¿‡éåŽ†æ•°ç»„ï¼Œç„¶åŽç´¯ä¹˜çš„æ–¹å¼è®¡ç®—æ•°ç»„çš„ä¹˜ç§¯ï¼Œå‚è€ƒä¾‹å­ 1
 //
-// ·Ö²½ÌáÊ¾£º
-//     1. ÏÈÉèÖÃÒ»¸ö±äÁ¿ s ÓÃÀ´´æÊý×éµÄ³Ë»ý£¬³õÊ¼ÖµÎª 1
-//     2. ±éÀúÊý×é£¬ÓÃ±äÁ¿ n ±£´æÔªËØµÄÖµ
-//     3. ÀÛ³ËÃ¿´ÎµÄ±äÁ¿ n µ½±äÁ¿ s
-//     4. Ñ­»·½áÊøºó£¬±äÁ¿ s ÀïÃæ´æµÄÊÇÊý×éÖÐËùÓÐÔªËØµÄ³Ë»ý
-//     5. ·µ»Ø±äÁ¿ s£¨ºÜÖØÒª£¬Ò»¶¨Òª return s£©
+// åˆ†æ­¥æç¤ºï¼š
+//     1. å…ˆè®¾ç½®ä¸€ä¸ªå˜é‡ s ç”¨æ¥å­˜æ•°ç»„çš„ä¹˜ç§¯ï¼Œåˆå§‹å€¼ä¸º 1
+//     2. éåŽ†æ•°ç»„ï¼Œç”¨å˜é‡ n ä¿å­˜å…ƒç´ çš„å€¼
+//     3. ç´¯ä¹˜æ¯æ¬¡çš„å˜é‡ n åˆ°å˜é‡ s
+//     4. å¾ªçŽ¯ç»“æŸåŽï¼Œå˜é‡ s é‡Œé¢å­˜çš„æ˜¯æ•°ç»„ä¸­æ‰€æœ‰å…ƒç´ çš„ä¹˜ç§¯
+//     5. è¿”å›žå˜é‡ sï¼ˆå¾ˆé‡è¦ï¼Œä¸€å®šè¦ return sï¼‰
 
-float product(vector<float> &array) {
+double product(vector<float> &array) {
+    double ret = 1;
+    for (const auto e : array) {
+        ret *= e;
+    }
+    return ret;
 }
 
-// ×÷Òµ 2
-// ·µ»ØÒ»¸öÊý×ÖµÄ¾ø¶ÔÖµ
-// º¯Êý¶¨ÒåÈçÏÂ
-//
-// ²Î¿¼ÈëÃÅ¿ÎÇó¾ø¶ÔÖµµÄ´úÂëÀ´ÊµÏÖ
-// 1. Èç¹û n < 0£¬¾Í°Ñ n µÄÖµ¸³Öµ³É -n
-// 2. ·µ»Ø n µÄÖµ£¨ºÜÖØÒª£¬Ò»¶¨Òª return n£©
-float abs(float n) {
+void testProduct() {
+    vector<float> v1 = {1, 2, 3, 4};
+    ensure(product(v1) - 24 < 1e-6, "test product error 1");
+    vector<float> v2 = {0.1, 0.2, 0.3};
+    ensure(product(v2) - 0.006 < 1e-6, "test product error 2");
 }
 
-// ×÷Òµ 3
-// ²ÎÊýÊÇÒ»¸öÖ»°üº¬Êý×ÖµÄÊý×é
-// Çó Êý×é ÖÐËùÓÐÊý×ÖµÄÆ½¾ùÊý
+// ä½œä¸š 2
+// è¿”å›žä¸€ä¸ªæ•°å­—çš„ç»å¯¹å€¼
+// å‡½æ•°å®šä¹‰å¦‚ä¸‹
 //
-// º¯Êý¶¨ÒåÈçÏÂ
-// ÇóÊý×éµÄÆ½¾ùÊý¾ÍÊÇÏÈÇó³öÊý×éÖÐÔªËØµÄ×ÜºÍ£¬È»ºó³ýÒÔÊý×éµÄ³¤¶È£¨¼´ÔªËØµÄ¸öÊý£©
-// 1. Ê¹ÓÃÀý×Ó 1 ÖÐµÄ sum º¯ÊýÀ´¼ÆËãÊý×éÖÐËùÓÐÔªËØµÄ×ÜºÍ
-// 2. Ê¹ÓÃ size º¯Êý¼ÆËã³öÊý×éÖÐÔªËØµÄ¸öÊý
-// 3. Ê¹ÓÃÊý×éÖÐÔªËØµÄ×ÜºÍ³ýÒÔÊý×éÖÐÔªËØµÄ¸öÊý£¬µÃµ½Æ½¾ùÊý
-// 4. ·µ»ØÆ½¾ùÊý
+// å‚è€ƒå…¥é—¨è¯¾æ±‚ç»å¯¹å€¼çš„ä»£ç æ¥å®žçŽ°
+// 1. å¦‚æžœ n < 0ï¼Œå°±æŠŠ n çš„å€¼èµ‹å€¼æˆ -n
+// 2. è¿”å›ž n çš„å€¼ï¼ˆå¾ˆé‡è¦ï¼Œä¸€å®šè¦ return nï¼‰
+float fabs(float n) {
+    return n > 0 ? n : -n;
+}
+
+void testFabs() {
+    vector<float> test{0, -.9, 100, -.0001};
+    vector<float> want{0, .9, 100, .0001};
+    for (int i = 0; i < test.size(); i++) {
+        char buf[0xff];
+        sprintf(buf, "test fabs error on %f", test[i]);
+        ensure(want[i] == fabs(test[i]), buf);
+    }
+}
+
+// ä½œä¸š 3
+// å‚æ•°æ˜¯ä¸€ä¸ªåªåŒ…å«æ•°å­—çš„æ•°ç»„
+// æ±‚ æ•°ç»„ ä¸­æ‰€æœ‰æ•°å­—çš„å¹³å‡æ•°
+//
+// å‡½æ•°å®šä¹‰å¦‚ä¸‹
+// æ±‚æ•°ç»„çš„å¹³å‡æ•°å°±æ˜¯å…ˆæ±‚å‡ºæ•°ç»„ä¸­å…ƒç´ çš„æ€»å’Œï¼Œç„¶åŽé™¤ä»¥æ•°ç»„çš„é•¿åº¦ï¼ˆå³å…ƒç´ çš„ä¸ªæ•°ï¼‰
+// 1. ä½¿ç”¨ä¾‹å­ 1 ä¸­çš„ sum å‡½æ•°æ¥è®¡ç®—æ•°ç»„ä¸­æ‰€æœ‰å…ƒç´ çš„æ€»å’Œ
+// 2. ä½¿ç”¨ size å‡½æ•°è®¡ç®—å‡ºæ•°ç»„ä¸­å…ƒç´ çš„ä¸ªæ•°
+// 3. ä½¿ç”¨æ•°ç»„ä¸­å…ƒç´ çš„æ€»å’Œé™¤ä»¥æ•°ç»„ä¸­å…ƒç´ çš„ä¸ªæ•°ï¼Œå¾—åˆ°å¹³å‡æ•°
+// 4. è¿”å›žå¹³å‡æ•°
 float average(vector<float> &array) {
+    auto s = sum(array);
+    return s / array.size();
 }
 
-// ×÷Òµ 4
-// ²ÎÊýÊÇÒ»¸öÖ»°üº¬Êý×ÖµÄ Êý×é
-// Çó Êý×é ÖÐ×îÐ¡µÄÊý×Ö
+void testAverage() {
+    vector<float> test{1, 2, 3, 4};
+    ensure(average(test) - 2.5 < 1e-6, "test average error");
+}
+
+// ä½œä¸š 4
+// å‚æ•°æ˜¯ä¸€ä¸ªåªåŒ…å«æ•°å­—çš„ æ•°ç»„
+// æ±‚ æ•°ç»„ ä¸­æœ€å°çš„æ•°å­—
 //
-// ÏÈÑ¡Êý×éÖÐµÄµÚÒ»¸öÔªËØ×÷Îª s µÄ³õÊ¼Öµ
-// È»ºó±éÀúÊý×é£¬½«Ã¿Ò»¸öÔªËØ¶¼Óë³õÊ¼Öµ±È½Ï
-// Èç¹ûÔªËØµÄÖµ±È³õÊ¼ÖµÐ¡£¬¾Í°ÑÄÇ¸öÔªËØÉèÖÃÎª s µÄÖµ
-// ×îºó·µ»Ø s µÄÖµ
-// 1. ½«Êý×éÖÐµÚÒ»¸öÔªËØµÄÖµ¸³Öµ¸ø s ×÷Îª³õÊ¼Öµ
-// 2. ±éÀúÊý×é£¬ÓÃ±äÁ¿ n ±£´æÔªËØµÄÖµ
-// 3. ±È½Ï n Óë s µÄÖµ£¬Èç¹û n < s£¬¾Í°Ñ n µÄÖµ¸³Öµ¸ø s
-// 4. Ñ­»·½áÊøºó£¬±äÁ¿ s ÀïÃæ´æµÄÊÇÊý×éÖÐ×îÐ¡µÄÊý×Ö
-// 5. ·µ»Ø±äÁ¿ s£¨ºÜÖØÒª£¬Ò»¶¨Òª return s£©
+// å…ˆé€‰æ•°ç»„ä¸­çš„ç¬¬ä¸€ä¸ªå…ƒç´ ä½œä¸º s çš„åˆå§‹å€¼
+// ç„¶åŽéåŽ†æ•°ç»„ï¼Œå°†æ¯ä¸€ä¸ªå…ƒç´ éƒ½ä¸Žåˆå§‹å€¼æ¯”è¾ƒ
+// å¦‚æžœå…ƒç´ çš„å€¼æ¯”åˆå§‹å€¼å°ï¼Œå°±æŠŠé‚£ä¸ªå…ƒç´ è®¾ç½®ä¸º s çš„å€¼
+// æœ€åŽè¿”å›ž s çš„å€¼
+// 1. å°†æ•°ç»„ä¸­ç¬¬ä¸€ä¸ªå…ƒç´ çš„å€¼èµ‹å€¼ç»™ s ä½œä¸ºåˆå§‹å€¼
+// 2. éåŽ†æ•°ç»„ï¼Œç”¨å˜é‡ n ä¿å­˜å…ƒç´ çš„å€¼
+// 3. æ¯”è¾ƒ n ä¸Ž s çš„å€¼ï¼Œå¦‚æžœ n < sï¼Œå°±æŠŠ n çš„å€¼èµ‹å€¼ç»™ s
+// 4. å¾ªçŽ¯ç»“æŸåŽï¼Œå˜é‡ s é‡Œé¢å­˜çš„æ˜¯æ•°ç»„ä¸­æœ€å°çš„æ•°å­—
+// 5. è¿”å›žå˜é‡ sï¼ˆå¾ˆé‡è¦ï¼Œä¸€å®šè¦ return sï¼‰
 float min(vector<float> &array) {
+    int m = 0;
+    for (int i = 1; i < array.size(); i++) {
+        if (array[i] < array[m])
+            m = i;
+    }
+    return array[m];
 }
 
-// ×÷Òµ 5
-// ²ÎÊýÊÇÒ»¸öÊý×Ö n
-// ·µ»ØÒÔÏÂÐòÁÐµÄ½á¹û
+void testMin() {
+    vector<float> test = {-1, -1, -4, 10};
+    ensure(min(test) + 4 < 1e-6, "test min error");
+}
+
+// ä½œä¸š 5
+// å‚æ•°æ˜¯ä¸€ä¸ªæ•°å­— n
+// è¿”å›žä»¥ä¸‹åºåˆ—çš„ç»“æžœ
 // 1 - 2 + 3 - 4 + 5 ... n
 
-// Ê×ÏÈ¿ÉÒÔ°ÑÐòÁÐ¿´³ÉÊÇÒ»¸öÊý×é£¬ÕâÑù¾Í¿ÉÒÔÑ­»· n ´Î¡£
-// ¹Û²ìÐòÁÐ¿ÉÒÔ·¢ÏÖÒ»¸ö¹æÂÉ£ºÆæÊýµÄÊ±ºòÊÇ¼Ó£¬Å¼ÊýµÄÊ±ºòÊÇ¼õ
+// é¦–å…ˆå¯ä»¥æŠŠåºåˆ—çœ‹æˆæ˜¯ä¸€ä¸ªæ•°ç»„ï¼Œè¿™æ ·å°±å¯ä»¥å¾ªçŽ¯ n æ¬¡ã€‚
+// è§‚å¯Ÿåºåˆ—å¯ä»¥å‘çŽ°ä¸€ä¸ªè§„å¾‹ï¼šå¥‡æ•°çš„æ—¶å€™æ˜¯åŠ ï¼Œå¶æ•°çš„æ—¶å€™æ˜¯å‡
 //
-// 1. ÏÈÉèÖÃÒ»¸ö±äÁ¿ s ÓÃÀ´´æÐòÁÐµÄºÍ£¬³õÊ¼ÖµÎª 0
-// 2. Ñ­»· n ´Î£¬´Ó 1 ¿ªÊ¼£¬µ½ n + 1 ½áÊø£¬¼´°üÀ¨ n µ«ÊÇ²»°üÀ¨ n + 1
-// 3. ÅÐ¶ÏÃ¿´ÎÑ­»·µÄÖµ¡£Èç¹ûÊÇÆæÊý£¬ÀÛ¼ÓÕâ¸öÊýµ½ s ÉÏ£¬Èç¹ûÊÇÅ¼Êý£¬ÀÛ¼õÕâ¸öÊýµ½ s ÉÏ
-// 4. Ñ­»·½áÊøºó£¬±äÁ¿ s ÀïÃæ´æµÄÊÇÐòÁÐµÄºÍ
-// 5. ·µ»Ø±äÁ¿ s£¨ºÜÖØÒª£¬Ò»¶¨Òª return s£©
+// 1. å…ˆè®¾ç½®ä¸€ä¸ªå˜é‡ s ç”¨æ¥å­˜åºåˆ—çš„å’Œï¼Œåˆå§‹å€¼ä¸º 0
+// 2. å¾ªçŽ¯ n æ¬¡ï¼Œä»Ž 1 å¼€å§‹ï¼Œåˆ° n + 1 ç»“æŸï¼Œå³åŒ…æ‹¬ n ä½†æ˜¯ä¸åŒ…æ‹¬ n + 1
+// 3. åˆ¤æ–­æ¯æ¬¡å¾ªçŽ¯çš„å€¼ã€‚å¦‚æžœæ˜¯å¥‡æ•°ï¼Œç´¯åŠ è¿™ä¸ªæ•°åˆ° s ä¸Šï¼Œå¦‚æžœæ˜¯å¶æ•°ï¼Œç´¯å‡è¿™ä¸ªæ•°åˆ° s ä¸Š
+// 4. å¾ªçŽ¯ç»“æŸåŽï¼Œå˜é‡ s é‡Œé¢å­˜çš„æ˜¯åºåˆ—çš„å’Œ
+// 5. è¿”å›žå˜é‡ sï¼ˆå¾ˆé‡è¦ï¼Œä¸€å®šè¦ return sï¼‰
 int sum1(int n) {
+    int sum = 0;
+    for (int i = 1; i <= n; i++) {
+        if (i % 2) {
+            sum += i;
+        } else {
+            sum -= i;
+        }
+    }
+    return sum;
 }
 
-// ×÷Òµ 6
-// ²ÎÊýÊÇÒ»¸öÊý×Ö n
-// ·µ»ØÒÔÏÂÐòÁÐµÄ½á¹û
+void testSum1() {
+    vector<int> test{1, 2, 3};
+    vector<int> want{1, -1, 2};
+    for (int i = 0; i < test.size(); i++) {
+        char buf[0xff];
+        sprintf(buf, "test sum1 error on %d", test[i]);
+        ensure(want[i] == sum1(test[i]), buf);
+    }
+}
+
+// ä½œä¸š 6
+// å‚æ•°æ˜¯ä¸€ä¸ªæ•°å­— n
+// è¿”å›žä»¥ä¸‹åºåˆ—çš„ç»“æžœ
 // 1 + 2 - 3 + 4 - ... n
-// »¹ÊÇ°ÑÐòÁÐ¿´³ÉÊÇÒ»¸öÊý×é£¬²»¹ý´ÓµÚ¶þ¸öÔªËØ£¨Ò²¾ÍÊÇ 2 ¿ªÊ¼±éÀú£©ÕâÑù¾Í¿ÉÒÔÑ­»· n - 1 ´Î
+// è¿˜æ˜¯æŠŠåºåˆ—çœ‹æˆæ˜¯ä¸€ä¸ªæ•°ç»„ï¼Œä¸è¿‡ä»Žç¬¬äºŒä¸ªå…ƒç´ ï¼ˆä¹Ÿå°±æ˜¯ 2 å¼€å§‹éåŽ†ï¼‰è¿™æ ·å°±å¯ä»¥å¾ªçŽ¯ n - 1 æ¬¡
 //
-// 1. ÏÈÉèÖÃÒ»¸ö±äÁ¿ s ÓÃÀ´´æÐòÁÐµÄºÍ£¬³õÊ¼ÖµÎª 1£¬ÕâÑù¾Í¿ÉÒÔ´Ó 2 ¿ªÊ¼¼ÆËãÑ­»·ÁË
-// 2. Ñ­»· n - 1 ´Î£¬´Ó 2 ¿ªÊ¼£¬µ½ n ½áÊø£¨°üÀ¨ n£©
-// 3. ÅÐ¶ÏÃ¿´ÎÑ­»·µÄÖµ¡£
-//    Èç¹ûÊÇµÚÒ»¸öÊý×Ö£¨ÕâÀïÊÇ´Ó 2 ¿ªÊ¼µÄ£©£¬¹Û²ìÊ½×ÓµÄ¹æÂÉ£¬´Ó 2 ¿ªÊ¼Ö®ºó£¬µ±Ò»¸öÊý×ÖÊÇÆæÊýÊ±£¬¾ÍÊÇ¼õÈ¥Õâ¸öÊý£¨±ÈÈçËµ 3 5 7 9...£©¡£
-//    µ±Ò»¸öÊý×ÖÊÇÅ¼ÊýÊ±£¬¾ÍÊÇ¼ÓÉÏÕâ¸öÊý£¨±ÈÈç 2 4 6 8...£©¡£
-// 4. Ñ­»·½áÊøºó£¬±äÁ¿ s ÀïÃæ´æµÄÊÇÐòÁÐµÄºÍ
-// 5. ·µ»Ø±äÁ¿ s£¨ºÜÖØÒª£¬Ò»¶¨Òª return s£©
+// 1. å…ˆè®¾ç½®ä¸€ä¸ªå˜é‡ s ç”¨æ¥å­˜åºåˆ—çš„å’Œï¼Œåˆå§‹å€¼ä¸º 1ï¼Œè¿™æ ·å°±å¯ä»¥ä»Ž 2 å¼€å§‹è®¡ç®—å¾ªçŽ¯äº†
+// 2. å¾ªçŽ¯ n - 1 æ¬¡ï¼Œä»Ž 2 å¼€å§‹ï¼Œåˆ° n ç»“æŸï¼ˆåŒ…æ‹¬ nï¼‰
+// 3. åˆ¤æ–­æ¯æ¬¡å¾ªçŽ¯çš„å€¼ã€‚
+//    å¦‚æžœæ˜¯ç¬¬ä¸€ä¸ªæ•°å­—ï¼ˆè¿™é‡Œæ˜¯ä»Ž 2 å¼€å§‹çš„ï¼‰ï¼Œè§‚å¯Ÿå¼å­çš„è§„å¾‹ï¼Œä»Ž 2 å¼€å§‹ä¹‹åŽï¼Œå½“ä¸€ä¸ªæ•°å­—æ˜¯å¥‡æ•°æ—¶ï¼Œå°±æ˜¯å‡åŽ»è¿™ä¸ªæ•°ï¼ˆæ¯”å¦‚è¯´ 3 5 7 9...ï¼‰ã€‚
+//    å½“ä¸€ä¸ªæ•°å­—æ˜¯å¶æ•°æ—¶ï¼Œå°±æ˜¯åŠ ä¸Šè¿™ä¸ªæ•°ï¼ˆæ¯”å¦‚ 2 4 6 8...ï¼‰ã€‚
+// 4. å¾ªçŽ¯ç»“æŸåŽï¼Œå˜é‡ s é‡Œé¢å­˜çš„æ˜¯åºåˆ—çš„å’Œ
+// 5. è¿”å›žå˜é‡ sï¼ˆå¾ˆé‡è¦ï¼Œä¸€å®šè¦ return sï¼‰
 int sum2(int n) {
+    int sum = 1;
+    for (int i = 2; i <= n; i++) {
+        int t = i % 2 ? -i : i;
+        sum += t;
+    }
+    return sum;
 }
 
-// ×÷Òµ 7
+void testSum2() {
+    vector<int> test{1, 2, 3, 4};
+    vector<int> want{1, 3, 0, 4};
+    for (int i = 0; i < test.size(); i++) {
+        char buf[0xff];
+        sprintf(buf, "test sum2 error on %d", test[i]);
+        ensure(sum2(test[i]) == want[i], buf);
+    }
+}
+
+// ä½œä¸š 7
 //
-// ÊµÏÖ fac º¯Êý
-// ½ÓÊÜÒ»¸ö²ÎÊý n
-// ·µ»Ø n µÄ½×³Ë, 1 * 2 * 3 * ... * n
-// ¼ÆËã´Ó 1 µ½ n µÄ½×³Ë£¬ÖØ¸´ÁË n ´Î£¬ËùÒÔ¿ÉÒÔÓÃÑ­»·À´´¦Àí
+// å®žçŽ° fac å‡½æ•°
+// æŽ¥å—ä¸€ä¸ªå‚æ•° n
+// è¿”å›ž n çš„é˜¶ä¹˜, 1 * 2 * 3 * ... * n
+// è®¡ç®—ä»Ž 1 åˆ° n çš„é˜¶ä¹˜ï¼Œé‡å¤äº† n æ¬¡ï¼Œæ‰€ä»¥å¯ä»¥ç”¨å¾ªçŽ¯æ¥å¤„ç†
 //
-// 1. ÏÈÉèÖÃÒ»¸ö±äÁ¿ s ÓÃÀ´´æ½×³Ë£¬³õÊ¼ÖµÎª 1
-// 2. ÓÃÑ­»·°Ñ 1 µ½ n µÄÊý×ÖÏà³Ë±£´æµ½ s ÖÐ
-// 3. Ñ­»·½áÊøºó£¬±äÁ¿ s ÀïÃæ´æµÄÊÇ´Ó 1 µ½ n µÄ½×³Ë, ·µ»Ø±äÁ¿ s£¨ºÜÖØÒª£¬Ò»¶¨Òª return s£©
+// 1. å…ˆè®¾ç½®ä¸€ä¸ªå˜é‡ s ç”¨æ¥å­˜é˜¶ä¹˜ï¼Œåˆå§‹å€¼ä¸º 1
+// 2. ç”¨å¾ªçŽ¯æŠŠ 1 åˆ° n çš„æ•°å­—ç›¸ä¹˜ä¿å­˜åˆ° s ä¸­
+// 3. å¾ªçŽ¯ç»“æŸåŽï¼Œå˜é‡ s é‡Œé¢å­˜çš„æ˜¯ä»Ž 1 åˆ° n çš„é˜¶ä¹˜, è¿”å›žå˜é‡ sï¼ˆå¾ˆé‡è¦ï¼Œä¸€å®šè¦ return sï¼‰
 int fac(int n) {
+    int s = 1;
+    while (n) {
+        s *= n--;
+    }
+    return s;
 }
-
+void testFac() {
+    vector<int> test = {0, 1, 2, 3, 4};
+    vector<int> want = {1, 1, 2, 6, 24};
+    for (int i = 0; i < test.size(); i++) {
+        char buf[0xff];
+        sprintf(buf, "test fac error on %d", test[i]);
+        ensure(want[i] == fac(test[i]), buf);
+    }
+}
 //
 void test() {
     testSum();
+    testSum1();
+    testSum2();
+    testProduct();
+    testAverage();
+    testFabs();
+    testFac();
+    testMin();
 }
 
-// main º¯ÊýµÄ²ÎÊýÊÇ¹æ¶¨£¬¸´ÖÆÕ³Ìù¼´¿É
+// main å‡½æ•°çš„å‚æ•°æ˜¯è§„å®šï¼Œå¤åˆ¶ç²˜è´´å³å¯
 int main(int argc, const char *argv[]) {
     test();
 

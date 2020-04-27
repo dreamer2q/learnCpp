@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.go2": "go",
+        "error.h": "c",
+        "errno.h": "c"
+    }
+}
