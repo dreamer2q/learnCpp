@@ -8,6 +8,8 @@ https://www.zhihu.com/question/389457315/answer/1170354190
 本课程视频页面
 https://www.bilibili.com/video/BV1rt4y127ak/
 */
+#include <stdarg.h>
+
 #include <iostream>
 #include <vector>
 
@@ -24,6 +26,14 @@ void log(Args... args) {
     cout << endl;
 }
 
+string fmt(const char *format, ...) {
+    char buf[0xFF];
+    va_list ap;
+    va_start(ap, format);
+    vsprintf(buf, format, ap);
+    va_end(ap);
+    return buf;
+}
 // 作业正式开始
 //
 // 本次作业用到了 string, 主要是...
@@ -74,8 +84,7 @@ void testFind() {
 // 下面给出一个例子作为后面作业的参考
 // 返回字符串的小写形式的函数
 // 注意, 这里假设了 s 字符串全是大写字母
-string
-lowercase(const string &s) {
+string lowercase(const string &s) {
     // 这里是两个字符串, 包含了大写字母和小写字母
     // 用 const 修饰是因为它们并不会被修改
     const string lower = "abcdefghijklmnopqrstuvwxyz";
@@ -112,6 +121,15 @@ void testLowercase() {
 //     3. 累加这些大写字符之后的结果就是 s 对应的大写后的字符串
 string
 uppercase(const string &s) {
+    string str;
+    for (const auto &c : s) {
+        if (islower(c)) {
+            str.push_back(toupper(c));
+        } else {
+            str.push_back(c);
+        }
+    }
+    return str;
 }
 
 void testUppercase() {
@@ -130,6 +148,15 @@ void testUppercase() {
 //
 string
 lowercase1(const string &s) {
+    string str;
+    for (const auto &c : s) {
+        if (isupper(c)) {
+            str.push_back(tolower(c));
+        } else {
+            str.push_back(c);
+        }
+    }
+    return str;
 }
 
 void testLowercase1() {
@@ -147,6 +174,7 @@ void testLowercase1() {
 //     1. 参考作业 3
 string
 uppercase1(const string &s) {
+    return uppercase(s);
 }
 
 void testUppercase1() {
@@ -168,8 +196,23 @@ void testUppercase1() {
 // 实现步骤
 //     1. 遍历字符串 s，找出每一位元素在 lower 中的 index，然后找出 lower 中 index + 1 的元素，拼接在一起
 //     2. 注意考虑边界情况，如果计算出来 index 25(也就是字符 'z')，则取出第一位元素（也就是 'a'）
+string do_encode(const string &s, const int offset) {
+    const string key = "abcdefghijklmnopqrstuvwxyz";
+    string str;
+    for (auto c : s) {
+        if (!isalpha(c)) {
+            str.push_back(c);
+            continue;
+        }
+        c = (c - 'a' + offset + key.size()) % key.size();
+        str.push_back(key[c]);
+    }
+    return str;
+}
+
 string
 encode1(const string &s) {
+    return do_encode(s, 1);
 }
 
 void testEncode1() {
@@ -189,6 +232,7 @@ void testEncode1() {
 //     3. 注意考虑边界情况，如果计算出来的元素是 'a'，则取出 'z'
 string
 decode1(const string &s) {
+    return do_encode(s, -1);
 }
 
 void testDecode1() {
@@ -209,6 +253,7 @@ void testDecode1() {
 
 string
 encode2(const string &s, int shift) {
+    return do_encode(s, shift);
 }
 
 void testEncode2() {
@@ -229,6 +274,7 @@ void testEncode2() {
 
 string
 decode2(const string &s, int shift) {
+    return do_encode(s, -shift);
 }
 
 void testDecode2() {
@@ -251,6 +297,7 @@ void testDecode2() {
 //     3. 如果遍历出来的是小写字母，就按照作业 7 中的方式处理
 string
 encode3(const string &s, int shift) {
+    return do_encode(s, shift);
 }
 
 void testEncode3() {
@@ -272,6 +319,7 @@ void testEncode3() {
 
 string
 decode3(const string &s, int shift) {
+    return do_encode(s, -shift);
 }
 
 void testDecode3() {
@@ -296,6 +344,8 @@ void testDecode3() {
 // （这里的第五节课，是指《〖快编程〗的免费编程入门课》第五节）
 void decode4() {
     const string code = "VRPHWLPHV L ZDQW WR FKDW ZLWK BRX,EXW L KDYH QR UHDVRQ WR FKDW ZLWK BRX";
+    string lowcode = lowercase1(code);
+    log("decode4:", do_encode(lowcode, 23));
 }
 
 void test() {
@@ -310,6 +360,7 @@ void test() {
     testDecode2();
     testEncode3();
     testDecode3();
+    decode4();
 }
 
 int main(int argc, const char *argv[]) {

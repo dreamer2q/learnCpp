@@ -71,6 +71,12 @@ zfill(int n, int width) {
     // 2. 在 zfill 函数前, 构建一个辅助函数 nChar, 生成一个长度为 n 的 0 字符串
     // 3. 算出需要填充的 0 的个数并使用 nChar 生成
     // 4. 拼接
+    string r = to_string(n);
+    if (r.length() < width) {
+        string prefix(width - r.length(), '0');
+        r = prefix + r;
+    }
+    return r;
 }
 
 // 测试函数
@@ -99,6 +105,12 @@ rjust(const string &s, int width, char fillchar = ' ') {
     // 2. 使用作业 1 中的辅助函数 nChar, 修改它以便符合本题的使用
     // 3. 调用修改后的 nChar 生成填充用的字符串
     // 4. 拼接并返回结果
+    string r = s;
+    if (r.length() < width) {
+        string prefix(width - r.length(), fillchar);
+        r = prefix + s;
+    }
+    return r;
 }
 
 // 测试函数
@@ -126,6 +138,12 @@ string ljust(string s, int width, char fillchar = ' ') {
     // 实现步骤
     // 1. 复制作业 2 中的代码, 记得把函数名改成 ljust
     // 2. 把作业 2 最后一步的字符串拼接的两个元素调换位置
+    string r = s;
+    if (r.length() < width) {
+        string suffix(width - r.length(), fillchar);
+        r = s + suffix;
+    }
+    return r;
 }
 
 // 测试函数
@@ -154,6 +172,15 @@ center(const string &s, int width, char fillchar = ' ') {
     //      C++ 中 5/2 结果是 2
     // 3. 生成左右两个填充字符串
     // 4. 拼接字符串, 并返回结果
+    string r = s;
+    if (s.length() < width) {
+        int gap = width - r.length();
+        int left = gap / 2;
+        int right = left + gap % 2;
+        string prefix(left, fillchar), suffix(right, fillchar);
+        r = prefix + s + suffix;
+    }
+    return r;
 }
 
 // 测试函数
@@ -181,6 +208,13 @@ bool isSpace(const string &s) {
     // 2. 遍历 s 中的每个字符
     // 3. 如果字符不是空格, 返回 false
     // 4. 在循环结束后, 返回 true
+    if (s.length() == 0)
+        return false;
+    for (const auto &c : s) {
+        if (!isspace(c))
+            return false;
+    }
+    return true;
 }
 
 // 测试函数
@@ -207,6 +241,13 @@ bool isDigit(const string &s) {
     // 1. 复制 isSpace 函数中的代码
     // 2. 将判断字符是否为空格的部分改为判断是否为数字
     //     通过判断字符是否在字符串 "0123456789" 中, 来判断其是否为数字
+    if (s.length() == 0)
+        return false;
+    for (const auto &c : s) {
+        if (!isdigit(c))
+            return false;
+    }
+    return true;
 }
 
 // 测试函数
@@ -239,6 +280,9 @@ stripLeft(const string &s) {
     // string s1 = s.substr(2, 5);
     // 结果是 aibia
     // 第一个参数表示开始的下标，第二个参数表示切片的个数
+    int i = 0;
+    while (i < s.length() && isspace(s[i])) i++;
+    return string(s.begin() + i, s.end());
 }
 
 // 测试函数
@@ -264,6 +308,9 @@ stripRight(const string &s) {
     //     从右到左遍历的方式是让数字从 n 到 0
     // 2. 遍历字符串找到不是空格的字符的下标
     // 3. 切片并返回
+    int i = s.length() - 1;
+    while (i >= 0 && isspace(s[i])) i--;
+    return string(s.begin(), s.begin() + i + 1);
 }
 
 // 测试函数
@@ -289,6 +336,7 @@ strip(const string &s) {
     // 1. 调用 stripLeft
     // 2. 对上一步的结果继续调用 stripRight
     // 3. 返回结果
+    return stripRight(stripLeft(s));
 }
 
 // 测试函数
@@ -315,6 +363,13 @@ replace(const string &s, const string &old_str, const string &new_str) {
     // 1. 找到 old_str 的下标
     // 2. 把 s 切成 2 个不包含 old_str 的字符串
     // 3. 拼接并返回结果
+    auto index = s.find(old_str);
+    if (index == -1) {
+        return s;
+    }
+    string r1(s.begin(), s.begin() + index);
+    string r2(s.begin() + index + old_str.length(), s.end());
+    return r1 + new_str + r2;
 }
 
 // 测试函数
@@ -326,9 +381,17 @@ void testReplace() {
 
 void test() {
     testZfill();
-    // testRjust();
-    // testLjust();
+    testRjust();
+    testLjust();
     // 剩下的测试函数调用需要你自行补足
+    testIsDigit();
+    testIsSpace();
+    testStripLeft();
+    testStripRight();
+    testStrip();
+    testCenter();
+    testZfill();
+    testReplace();
 }
 
 int main(int argc, const char *argv[]) {
