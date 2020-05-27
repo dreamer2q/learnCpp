@@ -59,6 +59,11 @@ int main() {
     cout << endl;
 
     //反向迭代器
+    cout << "reverse iterator: lst:  ";
+    for (auto beg = lst.rbegin(); beg != lst.rend(); beg++) {
+        cout << *beg << " ";
+    }
+    cout << endl;
 
     return 0;
 }

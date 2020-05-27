@@ -1,8 +1,14 @@
 /*
-by dreamer2q
-
-2020年5月14日
-
+ * Copyright: MIT
+ * ----
+ * File: lambda.cpp
+ * File Created: Tuesday, 26th May 2020 9:59:58 am
+ * Author: dreamer2q (dreamer22qq@gmail.com)
+ * Last Modified: Tuesday, 26th May 2020 10:29:16 am
+ * Modified By: dreamer2q (dreamer22qq@gmail.com>)
+ * -----
+ * Description: 
+ * 
 lambda函数的使用
 
 一些算法可以接收一个额外的谓词，但是对谓词的传入的参收有要求
