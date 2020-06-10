@@ -4,23 +4,18 @@
  * File: map_insert.cpp
  * File Created: Tuesday, 26th May 2020 11:50:13 am
  * Author: dreamer2q (dreamer22qq@gmail.com)
- * Last Modified: Tuesday, 26th May 2020 11:50:25 am
- * Modified By: dreamer2q (dreamer22qq@gmail.com>)
+ * Last Modified: Tuesday, 2nd June 2020 10:51:42 am
+ * Modified By: Jack Li (dreamer22qq@gmail.com>)
  * -----
  * Description: 
  */
 
 #include <bits/stdc++.h>
 
-#include <hash_map>
-
 using namespace std;
 
 int main() {
     map<string, int> m;
-
-    
-
 
     m.insert({"shit", 1000});
     m.insert(make_pair("fuck", 2000));
@@ -60,5 +55,19 @@ int main() {
     }
     cout << endl;
 
-    return 0;
+    //使用迭代器的解决方案
+    cout << "using iterator : " << endl;
+    for (auto beg = authors.lower_bound("dreamer"),
+              end = authors.upper_bound("dreamer");
+         end != beg; ++beg) {
+        cout << beg->second << endl;
+    }
+
+    //迭代器方案2，equal_range 函数-> pair<low,upp>
+    cout << "equal_range iterator method" << endl;
+    for (auto pos = authors.equal_range("dreamer"); pos.first != pos.second; pos.first++) {
+        cout << pos.first->second << endl;
+    }
+
+        return 0;
 }

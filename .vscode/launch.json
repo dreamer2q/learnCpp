@@ -5,6 +5,12 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "java",
+      "name": "Debug Current File",
+      "request": "launch",
+      "mainClass": "${file}"
+    },
+    {
       "name": "desktop g++生成和调试活动文件",
       "type": "cppdbg",
       "request": "launch",

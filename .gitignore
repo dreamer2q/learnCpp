@@ -9,6 +9,7 @@
 *.userosscache
 *.sln.docstates
 *.cmake
+*.exe
 
 CMakeCache.txt
 Makefile
