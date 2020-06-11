@@ -11,7 +11,26 @@
       "mainClass": "${file}"
     },
     {
-      "name": "desktop g++生成和调试活动文件",
+      "name": "(gdb) Linux",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${fileDirname}/${fileBasenameNoExtension}",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
+      "name": "desktop debug",
       "type": "cppdbg",
       "request": "launch",
       "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
@@ -21,18 +40,18 @@
       "environment": [],
       "externalConsole": true,
       "MIMode": "gdb",
-      "miDebuggerPath": "C:\\Users\\11982\\scoop\\apps\\gdb\\current\\bin\\gdb.exe",
+      "miDebuggerPath": "C:\\sdk\\mingw64\\mingw64\\bin\\gdb.exe",
       "setupCommands": [
         {
           "description": "为 gdb 启用整齐打印",
           "text": "-enable-pretty-printing",
-          "ignoreFailures": true
+          "ignoreFailures": false
         }
       ],
       "preLaunchTask": "g++.exe build active file"
     },
     {
-      "name": "laptop g++生成和调试活动文件",
+      "name": "laptop debug",
       "type": "cppdbg",
       "request": "launch",
       "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
@@ -42,7 +61,7 @@
       "environment": [],
       "externalConsole": true,
       "MIMode": "gdb",
-      "miDebuggerPath": "D:software\\mingw64\\mingw64\\bin\\gdb.exe",
+      "miDebuggerPath": "D:\\software\\mingw64\\mingw64\\bin\\gdb.exe",
       "setupCommands": [
         {
           "description": "为 gdb 启用整齐打印",
