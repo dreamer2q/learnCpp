@@ -2,7 +2,7 @@
  * File Created: Wednesday, 10th June 2020 12:19:02 am
  * Author: Jack Li (dreamer22qq@gmail.com)
  * -----
- * Last Modified: Wednesday, 10th June 2020 8:28:26 pm
+ * Last Modified: Tuesday, 16th June 2020 5:14:29 pm
  * Modified By: Jack Li (dreamer22qq@gmail.com>)
  * -----
  * Description: 
@@ -15,7 +15,7 @@
 using namespace std;
 
 class Point {
-   public:
+public:
     int x, y;
 
     static Point from(istream& is) {
@@ -29,10 +29,10 @@ class Point {
 };
 
 class Vector {
-   public:
+public:
     int x, y;
 
-   public:
+public:
     Vector(const Point& p) : x(p.x), y(p.y) {}
     Vector(int x, int y) : x(x), y(y) {}
     friend int operator*(const Vector& v1, const Vector& v2) {
@@ -61,7 +61,12 @@ double vCos(const Vector& v1, const Vector& v2) {
 }
 
 bool isLeft(const Point& v1, const Point& v2, const Point& v3) {
-    return (v2 - v1) * (v3 - v1) > 0;
+    auto p1 = v2 - v1;
+    auto p2 = v3 - v1;
+    auto res = p1 * p2;
+    return res > 0;
+    // return p1 * p2 > 0;
+    // return (v2 - v1) * (v3 - v1) > 0;
 }
 
 int main() {
@@ -82,15 +87,21 @@ int main() {
         });
         sort(pv.begin(), pv.end(), [=](const Point& p1, const Point& p2) {
             Point vx(1, 0);
-            return vCos(vx, p1) > vCos(vx, p2) || distancev(p1) < distancev(p2);
+            auto c1 = vCos(vx, p1);
+            auto c2 = vCos(vx, p2);
+            if (fabs(c1 - c2) < 1e-6) {
+                return p1.x < p2.x;
+            }
+            return c1 > c2;
+            // return vCos(vx, p1) > vCos(vx, p2) || distancev(p1) < distancev(p2);
         });
 
         stack<Point> sp;
         sp.push(Point(0, 0));
         sp.push(pv[0]);
-        sp.push(pv[1]);
-        for (int i = 2; i <= sp.size(); i++) {
-            auto pi = pv[i % sp.size()];
+        // sp.push(pv[1]);
+        for (int i = 1; i < pv.size(); i++) {
+            auto pi = pv[i];
             while (1) {
                 auto p1 = sp.top();
                 sp.pop();
@@ -101,6 +112,7 @@ int main() {
             }
             sp.push(pi);
         }
+        sp.push(Point(0, 0));
         double ans = 0.0;
         auto prev = sp.top();
         sp.pop();
@@ -110,7 +122,7 @@ int main() {
             ans += distancev(curr - prev);
             prev = curr;
         }
-        printf(".2lf\n", ans);
+        printf("%.2lf\n", ans);
     }
 
     return 0;
