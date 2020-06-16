@@ -15,7 +15,7 @@
 using namespace std;
 
 class Point {
-public:
+   public:
     int x, y;
 
     static Point from(istream& is) {
@@ -24,7 +24,7 @@ public:
         return Point(x, y);
     }
 
-public:
+   public:
     Point(int x, int y) : x(x), y(y){};
     friend Point operator-(const Point& lhs, const Point& rhs) {
         return Point(lhs.x - rhs.x, lhs.y - rhs.y);
@@ -32,10 +32,10 @@ public:
 };
 
 class Vector {
-public:
+   public:
     int x, y;
 
-public:
+   public:
     Vector(const Point& p) : x(p.x), y(p.y) {}
     Vector(int x, int y) : x(x), y(y) {}
     friend int operator*(const Vector& v1, const Vector& v2) {
