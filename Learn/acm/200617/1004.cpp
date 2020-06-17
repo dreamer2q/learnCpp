@@ -2,7 +2,7 @@
  * File Created: Thursday, 11th June 2020 1:00:14 am
  * Author: Jack Li (dreamer22qq@gmail.com)
  * -----
- * Last Modified: Wednesday, 17th June 2020 7:36:38 pm
+ * Last Modified: Wednesday, 17th June 2020 7:18:04 pm
  * Modified By: Jack Li (dreamer22qq@gmail.com>)
  * -----
  * Description: 
@@ -67,27 +67,29 @@ public:
         }
     }
 
-    void preOrder() {
+    vector<T> out;
+    void postOrder() {
         if (root != nullptr) {
-            cout << root->data;
             doPostOrder(root->left);
             doPostOrder(root->right);
+            out.push_back(root->data);
+            // cout << root->data;
         }
-        cout << endl;
+        // cout << endl;
     }
 
 private:
     BNode<T> *root;
     void doPostOrder(BNode<T> *tree) {
         if (tree != nullptr) {
-            cout << " " << tree->data;
             doPostOrder(tree->left);
             doPostOrder(tree->right);
+            out.push_back(tree->data);
+            // cout << " " << tree->data;
         }
     }
 
     void doDelete(BNode<T> *tree) {
-        //postOrder
         if (tree != nullptr) {
             doDelete(tree->left);
             doDelete(tree->right);
@@ -102,12 +104,10 @@ void TestBinaryTree() {
     btree.insert(3);
     btree.insert(4);
     btree.insert(2);
-    btree.preOrder();
+    btree.postOrder();
 }
 
 int main() {
-    // TestBinaryTree();
-
     int n;
     while (cin >> n) {
         BinaryTree<int> btree;
@@ -116,7 +116,10 @@ int main() {
             cin >> val;
             btree.insert(val);
         }
-        btree.preOrder();
+        btree.postOrder();
+        ostream_iterator<int> out(cout, " ");
+        copy(btree.out.begin(), btree.out.end(), out);
+        cout << endl;
     }
     return 0;
 }
