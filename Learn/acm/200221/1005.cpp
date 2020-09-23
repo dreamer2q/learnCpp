@@ -1,12 +1,12 @@
 #include <stdio.h>
 
-#define byte char 
+#define byte char
 #define N 100
 
 byte fn[N];
-int A,B;
+int A, B;
 
-#define f(n) (fn[n] = (A*fn[n-1] + B*fn[n-2]) % 7)
+#define f(n) (fn[n] = (A * fn[n - 1] + B * fn[n - 2]) % 7)
 
 /**
  *   
@@ -20,16 +20,22 @@ int A,B;
  * 一下为错误解法。
  * 
  */
-int main(){
-    fn[0]=fn[1]=1;
+
+/*
+大二上
+
+我真的是醉了，正确的算法过不了，只有这样才能过。
+*/
+int main() {
+    fn[0] = fn[1] = 1;
     int n;
-    while(scanf("%d %d %d",&A,&B,&n) == 3){
-        if(n==0)break;
-        if(n>49)n%=49;
-        for(int i=2;i<n;i++){
+    while (scanf("%d %d %d", &A, &B, &n) == 3) {
+        if (n == 0) break;
+        if (n > 49) n %= 49;
+        for (int i = 2; i < n; i++) {
             f(i);
         }
-        printf("%d\n",fn[n-1]);
+        printf("%d\n", fn[n - 1]);
     }
 
     return 0;

@@ -8,7 +8,9 @@
                 "_UNICODE"
             ],
             "windowsSdkVersion": "10.0.18362.0",
-            "compilerPath": "D:/sdk/studio/VC/Tools/MSVC/14.25.28610/bin/Hostx64/x64/cl.exe"
+            "compilerPath": "D:\\sdk\\mingw64\\bin\\g++.exe",
+            "intelliSenseMode": "gcc-x64",
+            "includePath": []
         }
     ],
     "version": 4

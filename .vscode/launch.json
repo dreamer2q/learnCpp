@@ -5,21 +5,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "java",
-      "name": "CodeLens (Launch) - Main",
-      "request": "launch",
-      "mainClass": "Main",
-      "projectName": "learnCpp_cd4f1d2",
-      "encoding": "GBK"
-    },
-    {
-      "type": "java",
-      "name": "Debug Current File",
-      "request": "launch",
-      "mainClass": "${file}",
-      "encoding": "GBK"
-    },
-    {
       "name": "(gdb) Linux",
       "type": "cppdbg",
       "request": "launch",
