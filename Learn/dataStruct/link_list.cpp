@@ -1,8 +1,23 @@
 
+/** 
+ *  THIS IS THE INTRODUCTION OF THE CODE
+ * 
+ * IN THIS CODE, A LINKEDLIST IS IMPLEMENTED AND HAS TEST FUNCTIONS WHICH ENSURE
+ * THAT BASIC FEATURE IS OK BUT THEY HAVE THEIR OWN FEATURES SO USE IS WITH CAUTION.
+ * 
+ * ALSO, THE CODE ARE ONLY A PIECE OF HOMEWORK THAT MEETS MOST OF THE REQIUREMENTS.
+ * 
+ * BESIDES, A MIT LICENSE IS PROVIDED IN THIS REPO WHICH YOU CAN FOUND AT THE ROOT OF
+ * THIS PROJECT.
+ * 
+ * CREATED BY DREAMER2Q AT 2020年9月26日
+ */
+
 #include <bits/stdc++.h>
 
 using namespace std;
 
+//define the struct used for LinkedList
 template <typename T>
 struct Node {
     T data;
@@ -13,10 +28,14 @@ struct Node {
     }
 };
 
+//main implement for LinkedList
 template <typename T>
 class LinkedList {
    public:
+    //new a space to store the head point
     LinkedList() : head(new Node<T>) { head->next = nullptr; }
+
+    //remember to delete in case of memory leak
     ~LinkedList() {
         auto it = head->next;
         while (it) {
@@ -27,6 +46,7 @@ class LinkedList {
         delete head;
     }
 
+    //insert a @data typed T at back of the @pos,
     Node<T> *insert(Node<T> *pos, T data) {
         auto next = pos->next;
         auto item = new Node<T>{
@@ -36,9 +56,11 @@ class LinkedList {
         pos->next = item;
         return item;
     }
+    //insert a @data at the last position
     Node<T> *insertBack(T data) {
         return insert(_last(), data);
     }
+    //insert a @data at a position that makes it ordered;
     Node<T> *insertOrdered(T data) {
         auto it = head;
         while (it->next && it->data < data) {
@@ -46,6 +68,7 @@ class LinkedList {
         }
         return insert(it, data);
     }
+    //remove item after @pos
     Node<T> *remove(Node<T> *pos) {
         auto tmp = pos->next;
         if (tmp != nullptr) {
@@ -54,6 +77,8 @@ class LinkedList {
         }
         return tmp;
     }
+    //remove the item if it matched the @data
+    //otherwise, do nothing with a nullptr return value.
     Node<T> *remove(T data) {
         auto it = head;
         while (it->next && it->next->data != data) {
@@ -64,6 +89,8 @@ class LinkedList {
         }
         return it->next;
     }
+    //find the item if it matches the @data
+    //nullptr is returned if not found
     Node<T> *find(T data) {
         auto it = begin();
         while (it && it->data != data) {
@@ -71,7 +98,8 @@ class LinkedList {
         }
         return it;
     }
-
+    //merge this with another LinkedList
+    //and return a newly built LinkedList
     LinkedList<T> merge(LinkedList<T> &list) {
         LinkedList ret;
         for (auto it = this->begin(); it != this->end(); it = it->next) {
@@ -82,7 +110,7 @@ class LinkedList {
         }
         return ret;
     }
-
+    //return a newly built LinkedList with its nodes from back to forward
     LinkedList<T> reverse() {
         LinkedList<T> list;
         auto it = head->next;
@@ -93,9 +121,11 @@ class LinkedList {
         return list;
     };
 
+    //help function for convenience
     Node<T> *begin() { return head->next; }
     Node<T> *end() { return nullptr; }
 
+    //calculate the total nodes
     size_t length() {
         size_t n = 0;
         auto it = head->next;
@@ -118,6 +148,7 @@ class LinkedList {
     }
 };
 
+//help function to print all the item in LinkedLink with a prefix
 template <typename T>
 void printList(string prefix, LinkedList<T> &list) {
     cout << prefix << " = ";
@@ -127,6 +158,7 @@ void printList(string prefix, LinkedList<T> &list) {
     cout << endl;
 }
 
+//test function to ensure its corrective
 void test() {
     LinkedList<int> list;
     for (int i = 0; i < 10; i++) {
