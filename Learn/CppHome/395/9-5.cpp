@@ -62,7 +62,7 @@ Node<T> *Node<T>::deleteAfter(void) {
 
 //define LinkedList
 template <class T>
-class LinkedList {
+class MyList {
 private:
     Node<T> *front, *rear;
     Node<T> *prevPtr, *currPtr;
@@ -71,13 +71,13 @@ private:
 
     Node<T> *newNode(const T &item, Node<T> *ptrNext = NULL) { return new Node<T>(item, ptrNext); }
     void freeNode(Node<T> *p) { delete p; }
-    void copy(const LinkedList<T> &L);
+    void copy(const MyList<T> &L);
 
 public:
-    LinkedList() : front(NULL), rear(NULL), prevPtr(NULL), currPtr(NULL) { size = position = 0; }
-    LinkedList(const LinkedList<T> &L) { copy(L); }
-    ~LinkedList() { clear(); }
-    LinkedList<T> &operator=(const LinkedList<T> &L) {
+    MyList() : front(NULL), rear(NULL), prevPtr(NULL), currPtr(NULL) { size = position = 0; }
+    MyList(const MyList<T> &L) { copy(L); }
+    ~MyList() { clear(); }
+    MyList<T> &operator=(const MyList<T> &L) {
         clear();
         copy(L);
         return *this;
@@ -101,7 +101,7 @@ public:
 };
 
 template <class T>
-void LinkedList<T>::clear() {
+void MyList<T>::clear() {
     Node<T> *tmp = NULL;
     while (front) {
         tmp = front;
@@ -113,7 +113,7 @@ void LinkedList<T>::clear() {
 }
 
 template <class T>
-void LinkedList<T>::copy(const LinkedList<T> &L) {
+void MyList<T>::copy(const MyList<T> &L) {
     Node<T> *tmp = NULL, *prev = NULL, *cur = NULL;
     int pos = L.currentPosition();
     int i = 0;
@@ -143,7 +143,7 @@ void LinkedList<T>::copy(const LinkedList<T> &L) {
 }
 
 template <class T>
-void LinkedList<T>::reset(int pos) {
+void MyList<T>::reset(int pos) {
     Node<T> *tmp = front;
     int i = 0;
 
@@ -164,7 +164,7 @@ void LinkedList<T>::reset(int pos) {
 }
 
 template <class T>
-T LinkedList<T>::deleteFront() {
+T MyList<T>::deleteFront() {
     Node<T> *tmp = NULL;
     T res;
     assert(size > 0 || front);
@@ -180,7 +180,7 @@ T LinkedList<T>::deleteFront() {
 }
 
 template <class T>
-void LinkedList<T>::deleteCurrent() {
+void MyList<T>::deleteCurrent() {
     assert(currPtr);
 
     Node<T> *tmp = currPtr->nextNode();
@@ -195,7 +195,7 @@ void LinkedList<T>::deleteCurrent() {
 }
 
 template <class T>
-void LinkedList<T>::insertAfter(const T &item) {
+void MyList<T>::insertAfter(const T &item) {
     if (currPtr) {
         currPtr->insertAfter(newNode(item));
         prevPtr = currPtr;
@@ -208,7 +208,7 @@ void LinkedList<T>::insertAfter(const T &item) {
 }
 
 template <class T>
-void LinkedList<T>::insertFront(const T &item) {
+void MyList<T>::insertFront(const T &item) {
     Node<T> *tmp = front;
     Node<T> *newnode = newNode(item);
 
@@ -223,7 +223,7 @@ void LinkedList<T>::insertFront(const T &item) {
 }
 
 template <class T>
-void LinkedList<T>::insertRear(const T &item) {
+void MyList<T>::insertRear(const T &item) {
     Node<T> *newnode = newNode(item);
 
     if (rear) {
@@ -243,7 +243,7 @@ void LinkedList<T>::insertRear(const T &item) {
 }
 
 template <class T>
-void LinkedList<T>::next() {
+void MyList<T>::next() {
     assert(currPtr);
 
     if (currPtr->nextNode() == NULL) {
@@ -257,7 +257,7 @@ void LinkedList<T>::next() {
 }
 
 template <class T>
-void LinkedList<T>::display() const {
+void MyList<T>::display() const {
     Node<T> *tmp = front;
 
     if (front == NULL) {
@@ -273,7 +273,7 @@ void LinkedList<T>::display() const {
 }
 
 int main() {
-    LinkedList<int> a, b;
+    MyList<int> a, b;
 
     for (int i = 0; i < 5; i++) {
         a.insertAfter(i + 1);

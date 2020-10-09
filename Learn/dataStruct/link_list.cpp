@@ -30,13 +30,13 @@ struct Node {
 
 //main implement for LinkedList
 template <typename T>
-class LinkedList {
+class MyList {
    public:
     //new a space to store the head point
-    LinkedList() : head(new Node<T>) { head->next = nullptr; }
+    MyList() : head(new Node<T>) { head->next = nullptr; }
 
     //remember to delete in case of memory leak
-    ~LinkedList() {
+    ~MyList() {
         auto it = head->next;
         while (it) {
             auto tmp = it;
@@ -100,8 +100,8 @@ class LinkedList {
     }
     //merge this with another LinkedList
     //and return a newly built LinkedList
-    LinkedList<T> merge(LinkedList<T> &list) {
-        LinkedList ret;
+    MyList<T> merge(MyList<T> &list) {
+        MyList ret;
         for (auto it = this->begin(); it != this->end(); it = it->next) {
             ret.insertOrdered(**it);
         }
@@ -111,8 +111,8 @@ class LinkedList {
         return ret;
     }
     //return a newly built LinkedList with its nodes from back to forward
-    LinkedList<T> reverse() {
-        LinkedList<T> list;
+    MyList<T> reverse() {
+        MyList<T> list;
         auto it = head->next;
         while (it) {
             list.insert(list.head, it->data);
@@ -150,7 +150,7 @@ class LinkedList {
 
 //help function to print all the item in LinkedLink with a prefix
 template <typename T>
-void printList(string prefix, LinkedList<T> &list) {
+void printList(string prefix, MyList<T> &list) {
     cout << prefix << " = ";
     for (auto it = list.begin(); it != list.end(); it = it->next) {
         cout << **it << " ";
@@ -160,13 +160,13 @@ void printList(string prefix, LinkedList<T> &list) {
 
 //test function to ensure its corrective
 void test() {
-    LinkedList<int> list;
+    MyList<int> list;
     for (int i = 0; i < 10; i++) {
         list.insertBack(i);
     }
     printList("list", list);
 
-    LinkedList<int> list2;
+    MyList<int> list2;
 
     for (int i = 10; i > 0; i--) {
         list2.insertBack(i);
