@@ -29,6 +29,7 @@ int main() {
             if (dp[cost][s] >= n) {
                 able = true;
                 break;
+                
             }
         }
         cout << (able ? m - cost : -1) << endl;

@@ -1,6 +1,4 @@
-
 #include <bits/stdc++.h>
-
 using namespace std;
 
 template <typename T>
@@ -18,7 +16,7 @@ enum VisitType {
 };
 
 ///return true to break;
-///       false to continue;
+/// false to continue;
 template <typename T>
 using VisitCallback = bool(T &);
 
@@ -214,13 +212,25 @@ void testBTree() {
     }
 
     auto print = [](int &item) -> bool {
-        cout << item << endl;
+        cout << item << " ";
         return false;
     };
 
+    cout << "\n-----PreOrder-------" << endl;
+    bt.traverse(PreOrder, print);
+    cout << endl;
+    bt.traverseNonRecursive(PreOrder, print);
+
+    cout << "\n-------InOrder-------" << endl;
+    bt.traverse(InOrder, print);
+    cout << endl;
+    bt.traverseNonRecursive(InOrder, print);
+
+    cout << "\n------PostOrder-------" << endl;
     bt.traverse(PostOrder, print);
-    cout << "-----------------------" << endl;
+    cout << endl;
     bt.traverseNonRecursive(PostOrder, print);
+    cout << endl;
 }
 
 int main() {
