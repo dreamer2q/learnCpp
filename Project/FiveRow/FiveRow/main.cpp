@@ -461,7 +461,7 @@ void startGame(int mode, int firstPlayer)
 			break;
 		default:
 			MessageBoxA(g_main_hwnd, "文件错误", "ERROR", MB_OK | MB_ICONERROR);
-			endGame();
+			overGame();
 			return;
 			break;
 		}
@@ -480,7 +480,7 @@ void startGame(int mode, int firstPlayer)
 	refreshBoard();
 }
 
-void endGame()
+void overGame()
 {
 	g_map->setMode(g_setting.mode = ENDGAME);
 	stopBkMusic();
@@ -554,7 +554,7 @@ void checkWinner() {
 			wsprintfA(stat, "平局");
 			break;
 	}
-	endGame();
+	overGame();
 }
 
 void CALLBACK drawInfoTimerProc(HWND hwnd, UINT message, UINT_PTR timerId, DWORD elaps)

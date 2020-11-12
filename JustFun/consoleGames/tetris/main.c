@@ -91,7 +91,7 @@ void initGame();
 void startGame();
 void pauseGame();
 void continueGame();
-void endGame();
+void overGame();
 int loadMenu(); 
 //more details 
 void drawMap();

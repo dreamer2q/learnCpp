@@ -57,7 +57,7 @@ void saveConfig();
 void freeNew();
 void applySetting(HWND hDlg);
 void startGame(int mode,int firstPlayer);
-void endGame();
+void overGame();
 void takeBack();
 void procPlayerPlayer(POSITION p);
 void procPlayerComputer(POSITION p);
