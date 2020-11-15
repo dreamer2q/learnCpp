@@ -23,16 +23,16 @@ int main() {
             }
         }
 
-        bool able = false;
-        int cost = 0;
-        for (; cost <= m; cost++) {
-            if (dp[cost][s] >= n) {
-                able = true;
-                break;
-                
+        if (dp[m][s] < n) {  //无法满足
+            cout << -1 << endl;
+        } else {
+            for (int i = 0; i <= m; i++) {
+                if (dp[i][s] >= n) {
+                    cout << m - i << endl;
+                    break;
+                }
             }
         }
-        cout << (able ? m - cost : -1) << endl;
     }
     return 0;
 }

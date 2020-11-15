@@ -6,17 +6,13 @@ struct State {
     int a, b, c, steps;
 
     bool operator<(const State& s) const {
-        return (a + b + c) < (s.a + s.b + s.c);
+        return (1000 * a + b) < (1000 * s.a + s.b);
     }
 
     bool operator==(const State& s) const {
         return a == s.a && b == s.b && c == s.c;
     }
 };
-
-std::size_t hash(const State& s) {
-    return 1;
-}
 
 bool match(const State& s) {
     if (s.a == 0 && s.b == s.c ||
@@ -47,7 +43,7 @@ int bfs(State init, State s) {
                     visited[nex] = true;
                 }
             }
-            if (cur.c != s.c && !visited[cur]) {
+            if (cur.c != s.c) {
                 auto t = min(s.c - cur.c, cur.a);
                 State nex = {cur.a - t, cur.b, cur.c + t, cur.steps + 1};
                 if (!visited[nex]) {
