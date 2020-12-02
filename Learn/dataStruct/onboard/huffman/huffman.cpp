@@ -1,21 +1,27 @@
 #include "huffman.h"
 
-int main() {
-    int n;
-    cout << "huffman" << endl;
-    cin >> n;
-    char ch[256] = {0};
-    int weight[256];
+const string intro = "  哈夫曼编码解码系统\n编译日期：" __DATE__ "\n";
 
+int main() {
+    cout << intro << endl;
+    cout << "请输入需要编码的字符数：";
+    int n;
+    cin >> n;
+    char ch[256]{0};
+    int weight[256]{0};
     for (int i = 0; i < n; i++) {
+        cout << "第" << i + 1 << "个字符和权值：";
         cin >> ch[i] >> weight[i];
     }
 
+    //初始化哈夫曼树
     HuffTree ht;
     InitHuffTree(ht, n);
     CreateHuffTree(ht, n, ch, weight);
+    //打印静态表
     Display(ht);
 
+    //初始化编码器
     HuffEncoder hc;
     InitHuffEncoder(hc, n);
     CreateBook(hc, ht);
@@ -24,12 +30,14 @@ int main() {
         cout << i + 1 << " : " << hc.hc[i].ch << "  ->  " << hc.hc[i].str << endl;
     }
     cout << endl;
-    cout << "string to encode: ";
+    cout << "需要编码的字符串: ";
     cin >> ch;
     Encode(hc, ch);
+    cout << endl;
     Decode(ht);
     cout << endl;
 
+    //释放资源
     DestroyHuffTree(ht);
     DestroyHuffEncoder(hc);
     system("pause");
