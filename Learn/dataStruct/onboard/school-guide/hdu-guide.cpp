@@ -58,13 +58,17 @@ void pause() {
     system("pause");
 }
 
-void queryScene() {
+void showScenes() {
     cout << "景点编号\t景点名称" << endl;
     cout << "----------------------------" << endl;
     for (int i = 0; i < VERTEX_NUM; i++) {
         cout << "  " << scenesVex[i].id << "\t\t" << scenesVex[i].title << endl;
     }
     cout << endl;
+}
+
+void queryScene() {
+    showScenes();
     int sel;
     cout << "查询编号(0返回上一级):";
     while (cin >> sel, sel) {
@@ -76,6 +80,22 @@ void queryScene() {
 }
 
 void updateScene() {
+    showMap();
+    cout << "需要修改的景点编号:";
+    int sel;
+    cin >> sel;
+    sel--;
+    string title, content;
+    cout << endl;
+    cout << "标题：";
+    cin >> title;
+    cout << "介绍：";
+    cin >> content;
+    scenesVex[sel].title = title;
+    scenesVex[sel].intro = content;
+    cout << endl;
+    cout << "修改成功" << endl;
+    pause();
 }
 
 void queryPath() {

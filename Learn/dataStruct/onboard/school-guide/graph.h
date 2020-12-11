@@ -87,12 +87,14 @@ typedef struct {
     int cost;        //最小代价
 } Edge;
 
+// 根据顶点信息获取在G中的索引
 int LocateVex(Graph& g, VertexType vex) {
     for (int i = 0; i < g.vex_num; i++)
         if (g.vexs[i] == vex) return i;
     return -1;
 }
 
+// 从G中获取第i个顶点信息
 VertexType& GetVex(Graph& g, int i) {
     return g.vexs[i];
 }
@@ -113,13 +115,14 @@ int minimum(Graph& g, vector<Edge>& closedge) {
 }
 
 // 从u点出发，获取图g的最小生成树
+// Prim最小生成树算法
 vector<pair<VertexType, VertexType>>
 ShortestGraphByPrim(Graph& g, VertexType u) {
     vector<pair<VertexType, VertexType>> ret;
     vector<Edge> closedge(g.vex_num);
     int k = LocateVex(g, u);
     for (int i = 0; i < g.vex_num; i++) {
-        // if (i == k) continue;
+        if (i == k) continue;
         closedge[i].vex = u;
         closedge[i].cost = g.arcs[k][i].adj;
     }
@@ -140,30 +143,7 @@ ShortestGraphByPrim(Graph& g, VertexType u) {
     return ret;
 }
 
-void dfsShortPath(vector<pair<VertexType, VertexType>>& path, VertexType start, VertexType end, bool& found) {
-    static map<int, bool> visited;
-    static vector<VertexType> route;
-    if (start == end) {
-        cout << "found the shortest path" << endl;
-        for (const auto r : route) {
-            cout << r.id << " => ";
-        }
-        cout << end.id << endl;
-        found = true;
-    }
-    for (const auto& p : path) {
-        if (found) return;
-        if (p.first == start) {
-            if (visited[p.first.id]) continue;
-            visited[p.first.id] = true;
-            route.push_back(p.first);
-            dfsShortPath(path, p.second, end, found);
-            route.erase(route.end());
-            visited[p.first.id] = false;
-        }
-    }
-}
-
+//Dijkstra最短路径算法
 tuple<int, vector<int>>
 Dijkstra(Graph& g, int v0, int vend) {
     auto vnum = g.vex_num;
@@ -199,16 +179,18 @@ Dijkstra(Graph& g, int v0, int vend) {
         }
     }
 
-    // return make_tuple(D, P[vend]);
-
     vector<int> result;
     vector<bool> path = P[vend];
     auto p0 = v0;
+    result.push_back(p0);
+    path[p0] = false;
+    path[vend] = false;
     for (int i = 0; i < vnum; i++) {
         bool over = true;
         for (int j = 0; j < vnum; j++) {
+            if (j == p0) continue;
             if (path[j] && g.arcs[p0][j].adj < INF) {
-                result.push_back(p0);
+                result.push_back(j);
                 p0 = j;
                 path[j] = false;
                 over = false;
@@ -216,7 +198,7 @@ Dijkstra(Graph& g, int v0, int vend) {
         }
         if (over) break;
     }
-
+    result.push_back(vend);
     return make_tuple(D[vend], result);
 }
 
