@@ -92,6 +92,14 @@ void CreateHuffTree(HuffTree& ht, int n, char ch[], int w[]) {
             ht.ht[i].parent = -1;                                   //没有parent
             ht.ht[i].ch = ' ';                                      //非树叶节点无字符(空格)
         }
+
+        //写入哈夫曼树到文件
+        ofstream out("hfmTree");
+        for (int i = 0; i < ht.size; i++) {
+            auto h = ht.ht[i];
+            out << i << "\t" << h.ch << "\t" << h.weight << "\t" << h.left << "\t" << h.right << "\t" << h.parent << endl;
+        }
+        out.close();
     }
 }
 
@@ -161,13 +169,13 @@ void CreateBook(HuffEncoder& hc, HuffTree& ht) {
 //字符需要是编码字符集的子集
 // @hc  编码器
 // @ch  需要编码的字符集
-void Encode(HuffEncoder& hc, char ch[]) {
-    ofstream out("f1.txt", ios::out);
+void Encode(HuffEncoder& hc, const char ch[]) {
+    ofstream out("CodeFile", ios::out);
     for (int i = 0; i < strlen(ch); i++) {
         for (int j = 0; j < hc.size; j++) {
-            if (ch[i] == hc.hc[i].ch) {
-                out << hc.hc[i].str;
-                cout << hc.hc[i].str;
+            if (ch[i] == hc.hc[j].ch) {
+                out << hc.hc[j].str;
+                cout << hc.hc[j].str;
                 break;
             }
         }
@@ -180,7 +188,16 @@ void Encode(HuffEncoder& hc, char ch[]) {
 // @ht 哈夫曼树
 void Decode(HuffTree& ht) {
     char ch[256] = {0};
-    ifstream in("f2.txt", ios::in);
+    ifstream in("CodeFile", ios::in);
+    if (in.bad()) {
+        cout << "打开文件失败: " << strerror(errno) << endl;
+        return;
+    }
+    ofstream out("TextFile", ios::out);
+    if (out.bad()) {
+        cout << "打开文件失败：" << strerror(errno) << endl;
+        return;
+    }
     in >> ch;
     in.close();
     cout << "需要译码的二进制电文是: " << ch << endl;
@@ -193,8 +210,40 @@ void Decode(HuffTree& ht) {
             i++;
         }
         cout << ht.ht[pre].ch;
+        out << ht.ht[pre].ch;
     }
     cout << endl;
+    out << endl;
+    out.close();
+}
+
+void print_blank(int n) {
+    while (n--) {
+        cout << "\t";
+    }
+}
+
+void do_tree_print(HuffTree& hf, HTnode& node, int depth) {
+    const int center = 40;
+
+    print_blank(depth);
+    cout << (node.ch == ' ' ? '#' : node.ch);
+    if (node.ch == ' ') {
+        cout << "-------↓";
+    }
+    cout << endl;
+
+    if (node.left != -1) {
+        do_tree_print(hf, hf.ht[node.left], depth + 1);
+    }
+
+    if (node.right != -1) {
+        do_tree_print(hf, hf.ht[node.right], depth + 1);
+    }
+}
+
+void PrintTree(HuffTree& hf) {
+    do_tree_print(hf, hf.ht[hf.size - 1], 0);
 }
 
 #endif

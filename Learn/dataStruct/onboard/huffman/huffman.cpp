@@ -31,11 +31,21 @@ int main() {
     }
     cout << endl;
     cout << "需要编码的字符串: ";
-    cin >> ch;
-    Encode(hc, ch);
+    ifstream in("ToBeTran", ios::in);
+    if (in.bad()) {
+        cerr << "打开文件失败:" << strerror(errno) << endl;
+        return -1;
+    }
+    string ch_to_code;
+    in >> ch_to_code;
+    cout << ch_to_code << endl;
+    Encode(hc, ch_to_code.c_str());
     cout << endl;
     Decode(ht);
     cout << endl;
+
+    //打印哈夫曼树
+    PrintTree(ht);
 
     //释放资源
     DestroyHuffTree(ht);
