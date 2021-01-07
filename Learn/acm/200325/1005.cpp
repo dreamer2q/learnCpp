@@ -2,7 +2,7 @@
 
 using namespace std;
 
-long long t[41];
+long long t[44];
 
 long long f(int n) {
     if (n <= 0) return 0;

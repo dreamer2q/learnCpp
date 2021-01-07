@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <algorithm>
 
+/**
+ * Time Limit Exceeded 
+ */
+
 typedef struct {
     int weight, speed;
     int seq;
