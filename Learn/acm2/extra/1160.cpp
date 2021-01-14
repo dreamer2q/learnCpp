@@ -12,6 +12,7 @@ struct FatMouse {
 int dp[1100];
 
 int main() {
+    NULL;
     vector<FatMouse> mice;
     int index = 1;
     int w, m;
