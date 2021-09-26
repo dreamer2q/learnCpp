@@ -1,120 +1,120 @@
 
-//ÊäÈë×Ö·û´®B(adasdas)B#
-//Êä³ötsaedsaeasaaadasaaadatsaedsae
+//è¾“å…¥å­—ç¬¦ä¸²B(adasdas)B#
+//è¾“å‡ºtsaedsaeasaaadasaaadatsaedsae
 #include <stdio.h>
 #include <stdlib.h>
 #define MAX_SIZE 100
-//¶¨Òå½Úµã
+//å®šä¹‰èŠ‚ç‚¹
 typedef struct node {
-    char word;
-    struct node *pnode;
+  char word;
+  struct node *pnode;
 } Snode, Qnode;
 
-//¶¨ÒåÕ»
+//å®šä¹‰æ ˆ
 typedef struct linkStack {
-    Snode *top;
+  Snode *top;
 } LinkStack;
 
-//¶¨Òå¶ÓÁÐ
+//å®šä¹‰é˜Ÿåˆ—
 typedef struct linkQueue {
-    Qnode *rear, *front;
+  Qnode *rear, *front;
 } LinkQueue;
 
-void initStack(LinkStack *s) {  //³õÊ¼»¯Õ»
-    s->top = NULL;
+void initStack(LinkStack *s) {  //åˆå§‹åŒ–æ ˆ
+  s->top = NULL;
 }
 
 int push(char w, LinkStack *s) {
-    Snode *p = (Snode *)malloc(sizeof(Snode));
-    if (!p) {
-        return 0;  //ÄÚ´æÉêÇëÊ§°Ü·µ»Ø0
-    }
-    p->word = w;
-    p->pnode = s->top;
-    s->top = p;
-    return 1;  //ÄÚ´æÉêÇë³É¹¦·µ»Ø1
+  Snode *p = (Snode *)malloc(sizeof(Snode));
+  if (!p) {
+    return 0;  //å†…å­˜ç”³è¯·å¤±è´¥è¿”å›ž0
+  }
+  p->word = w;
+  p->pnode = s->top;
+  s->top = p;
+  return 1;  //å†…å­˜ç”³è¯·æˆåŠŸè¿”å›ž1
 }
 
-//³öÕ»
+//å‡ºæ ˆ
 int pop(LinkStack *s, char *w) {
-    if (s == NULL || s->top == NULL) return 0;
-    Snode *p = s->top;
-    *w = p->word;
-    s->top = p->pnode;
-    //    free(p);
-    return 1;
+  if (s == NULL || s->top == NULL) return 0;
+  Snode *p = s->top;
+  *w = p->word;
+  s->top = p->pnode;
+  //    free(p);
+  return 1;
 }
 
-void InitQueue(LinkQueue *q) {//³õÊ¼»¯¶ÓÁÐ
-    q->rear = q->front = NULL;
+void InitQueue(LinkQueue *q) {  //åˆå§‹åŒ–é˜Ÿåˆ—
+  q->rear = q->front = NULL;
 }
 
 int EnQueue(LinkQueue *q, char w) {
-    Qnode *p = (Qnode *)malloc(sizeof(Qnode));
-    if (!p) {
-        return 0;  //ÄÚ´æÉêÇëÊ§°Ü·µ»Ø0
-    }
-    p->word = w;
-    if (q->front == NULL)  //¶ÓÁÐÎª¿Õ£¬´´½¨µÚÒ»¸ö½áµã
-        q->front = q->rear = p;
-    else
-        q->rear->pnode = p;
-    q->rear = p;
-    return 1;  //ÄÚ´æÉêÇë³É¹¦·µ»Ø1
+  Qnode *p = (Qnode *)malloc(sizeof(Qnode));
+  if (!p) {
+    return 0;  //å†…å­˜ç”³è¯·å¤±è´¥è¿”å›ž0
+  }
+  p->word = w;
+  if (q->front == NULL)  //é˜Ÿåˆ—ä¸ºç©ºï¼Œåˆ›å»ºç¬¬ä¸€ä¸ªç»“ç‚¹
+    q->front = q->rear = p;
+  else
+    q->rear->pnode = p;
+  q->rear = p;
+  return 1;  //å†…å­˜ç”³è¯·æˆåŠŸè¿”å›ž1
 }
 
-//³ö¶Ó
+//å‡ºé˜Ÿ
 int DeQueue(LinkQueue *q, char *w) {
-    if (q->front == NULL) return 0;
-    Qnode *p = q->front;
-    *w = p->word;
-    q->front = q->front->pnode;
-    free(p);
-    return 1;
+  if (q->front == NULL) return 0;
+  Qnode *p = q->front;
+  *w = p->word;
+  q->front = q->front->pnode;
+  free(p);
+  return 1;
 }
 
-//Ö÷º¯Êý
+//ä¸»å‡½æ•°
 int main() {
-    char input;
-    char w;
-    char sentence[MAX_SIZE];
-    LinkStack S;
-    LinkQueue Q;
-    initStack(&S);
-    InitQueue(&Q);
-    int i = 0;
-    printf("ÇëÊäÈëÒª·­ÒëµÄÓïÑÔ£¬²¢ÒÔ¡®#¡¯½áÎ²:\n");
-    while ((input = getchar()) != '#')  //ÊäÈë#½áÊø
-    {
-        sentence[i] = input;
-        i++;
+  char input;
+  char w;
+  char sentence[MAX_SIZE];
+  LinkStack S;
+  LinkQueue Q;
+  initStack(&S);
+  InitQueue(&Q);
+  int i = 0;
+  printf("è¯·è¾“å…¥è¦ç¿»è¯‘çš„è¯­è¨€ï¼Œå¹¶ä»¥â€˜#â€™ç»“å°¾:\n");
+  while ((input = getchar()) != '#')  //è¾“å…¥#ç»“æŸ
+  {
+    sentence[i] = input;
+    i++;
+  }
+  for (int j = i - 1; j >= 0; j--)  //å€’å™å…¥æ ˆ
+  {
+    push(sentence[j], &S);
+  }
+  while (pop(&S, &w)) {  //æ ¸å¿ƒä»£ç 
+    if (w == 'A') {
+      printf("sae");
+    } else if (w == 'B') {
+      printf("tsaedsae");
+    } else if (w == '(') {
+      char firts_word;
+      while (w != ')') {
+        pop(&S, &w);
+        EnQueue(&Q, w);
+      }
+      DeQueue(&Q, &w);
+      firts_word = w;  //å°†é¦–å…ƒç´ èµ‹å€¼ç»™first_word
+      while (DeQueue(&Q, &w)) {
+        push(firts_word, &S);
+        push(w, &S);
+      }
+    } else if (w == ')') {
+      //å³æ‹¬å·ä¸æ‰“å°ä¸œè¥¿
+    } else {
+      printf("%c", w);
     }
-    for (int j = i - 1; j >= 0; j--)  //µ¹ÐðÈëÕ»
-    {
-        push(sentence[j], &S);
-    }
-    while (pop(&S, &w)) {  //ºËÐÄ´úÂë
-        if (w == 'A') {
-            printf("sae");
-        } else if (w == 'B') {
-            printf("tsaedsae");
-        } else if (w == '(') {
-            char firts_word;
-            while (w != ')') {
-                pop(&S, &w);
-                EnQueue(&Q, w);
-            }
-            DeQueue(&Q, &w);
-            firts_word = w;  //½«Ê×ÔªËØ¸³Öµ¸øfirst_word
-            while (DeQueue(&Q, &w)) {
-                push(firts_word, &S);
-                push(w, &S);
-            }
-        } else if (w == ')') {
-            //ÓÒÀ¨ºÅ²»´òÓ¡¶«Î÷
-        } else {
-            printf("%c", w);
-        }
-    }
-    return 0;
+  }
+  return 0;
 }
