@@ -5,25 +5,32 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "ACM BUG",
+      "name": "Python: Current File",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "g++ - Build and debug active file",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+      "program": "${fileDirname}/${fileBasenameNoExtension}",
       "args": [],
-      "stopAtEntry": true,
-      "cwd": "${workspaceFolder}",
+      "stopAtEntry": false,
+      "cwd": "${fileDirname}",
       "environment": [],
-      "externalConsole": true,
+      "externalConsole": false,
       "MIMode": "gdb",
-      "miDebuggerPath": "D:\\sdk\\mingw64\\bin\\gdb.exe",
       "setupCommands": [
         {
-          "description": "为 gdb 启用整齐打印",
+          "description": "Enable pretty-printing for gdb",
           "text": "-enable-pretty-printing",
           "ignoreFailures": true
         }
       ],
-      "preLaunchTask": "g++.exe build active file"
+      "preLaunchTask": "C/C++: g++ build active file",
+      "miDebuggerPath": "/usr/bin/gdb"
     }
   ]
 }
