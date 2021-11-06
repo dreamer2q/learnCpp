@@ -1,8 +1,0 @@
-{
-  "files.associations": {
-    "string.h": "c",
-    "*.tcc": "c",
-    "list": "c",
-    "charconv": "cpp"
-  }
-}
