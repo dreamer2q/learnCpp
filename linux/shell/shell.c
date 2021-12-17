@@ -1,13 +1,13 @@
+#include <signal.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
+#include <string.h>
 #include <sys/errno.h>
 #include <sys/ipc.h>
 #include <sys/stat.h>
-#include <signal.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 #define DEBUG
 
@@ -42,10 +42,10 @@ pid_t running_pid;  // running child pid
 // int shmid;
 // int* shared_status;
 
-const char* VERSION = "0.1.1";
+const char *VERSION = "0.1.1";
 void print_version() { printf(GREEN("version") ": %s\n", VERSION); }
 
-void unix_error(const char* msg) {
+void unix_error(const char *msg) {
   int errnum = errno;
   fprintf(stderr, "%s (%d: %s)\n", msg, errnum, strerror(errnum));
   exit(EXIT_FAILURE);
@@ -63,7 +63,7 @@ void print_motd() {
   printf("\n");
 }
 
-const char* get_current_workdir() {
+const char *get_current_workdir() {
   static char workdir[BUFSIZ];
   getcwd(workdir, sizeof(workdir));
   return strrchr(workdir, '/') + 1;
@@ -71,7 +71,7 @@ const char* get_current_workdir() {
 
 void print_ps() {
   // print ps
-  const char* cwd = get_current_workdir();
+  const char *cwd = get_current_workdir();
   if (exec_status != 0) {
     printf(RED("➜"));
   } else {
@@ -81,7 +81,7 @@ void print_ps() {
   fflush(stdout);
 }
 
-int builtin_command(char* argv[]) {
+int builtin_command(char *argv[]) {
   if (!strcmp(argv[0], "exit")) {
     exit(0);
   }
@@ -89,7 +89,7 @@ int builtin_command(char* argv[]) {
     return 1;
   }
   if (!strcmp(argv[0], "env")) {
-    char** env = __environ;
+    char **env = __environ;
     while (*env) {
       printf("%s\n", *env);
       env++;
@@ -106,13 +106,13 @@ int builtin_command(char* argv[]) {
   return 0;
 }
 
-int parseline(char* buf, char* argv[]) {
+int parseline(char *buf, char *argv[]) {
   buf[strlen(buf) - 1] = ' ';
   while (*buf && (*buf == ' ')) {
     buf++;
   }
 
-  char* delim;
+  char *delim;
   int argc = 0;
   while ((delim = strchr(buf, ' '))) {
     argv[argc++] = buf;
@@ -137,8 +137,8 @@ int parseline(char* buf, char* argv[]) {
   return bg;
 }
 
-void eval(char* cmdline) {
-  char* argv[MAXARGS];
+void eval(char *cmdline) {
+  char *argv[MAXARGS];
   char buf[MAXLINE];
 
   strcpy(buf, cmdline);
@@ -168,7 +168,7 @@ void eval(char* cmdline) {
     } else {
       debug({
         printf("\n" YELLO("DEBUG:") " status=%d pid=%d", exec_status, pid);
-        char** arg = argv;
+        char **arg = argv;
         printf(" argv: ");
         while (*arg) {
           printf("%s ", *arg);
@@ -182,22 +182,6 @@ void eval(char* cmdline) {
     printf("[BG] %d\n", pid);
   }
 }
-
-// void request_shared() {
-//   if ((shmid = shmget(IPC_PRIVATE, SHARE_MEM_SIZE,
-//                       IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR)) < 0) {
-//     perror("shget error");
-//     exit(-1);
-//   }
-
-//   shared_status = (int*)shmat(shmid, 0, 0);
-//   *shared_status = 0;
-// }
-
-// void release_shared() {
-//   shmdt(shared_status);        //解除绑定
-//   shmctl(shmid, IPC_RMID, 0);  // 释放
-// }
 
 void signal_handler(int signo) {
   debug({ printf("\n(DEBUG) recv signal: %d\n", signo); });
@@ -240,7 +224,7 @@ void register_signal() {
   }
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   register_signal();
 
   print_motd();
