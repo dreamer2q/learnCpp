@@ -37,6 +37,7 @@ struct cmd_t builtin_commands[] = {
                     .desc = "show more information",
                     .flag = required,
                 },
+                {},
             },
         .usage = "display version information",
     },
@@ -86,7 +87,16 @@ struct cmd_t builtin_commands[] = {
         .cmd = "cat",
         .exec = builtin_cat,
         .min_argc = 1,
-        .flags = {},
+        .flags =
+            {
+                {
+                    .desc = "show line number",
+                    .flag = optional,
+                    .long_opt = "lineno",
+                    .short_opt = 'n',
+                },
+                {},
+            },
         .usage = "display the file content",
     },
     {
@@ -290,20 +300,21 @@ int builtin_touch(struct cmd_arg* args) {
 }
 
 int builtin_cat(struct cmd_arg* args) {
-  if (args->argc < 2) {
-    print_usage("cat", "filename");
-  } else {
-    char buf[128];
-    int fd = fat_open(args->argv[1]);
-    if (fd != -1) {
-      int len;
-      while ((len = fat_read(fd, buf, sizeof(buf))) > 0) {
-        for (int i = 0; i < len; i++) {
-          putchar(buf[i]);
-        }
+  char* buf;
+  size_t cap, line = 0;
+  bool hasno = flag_index(args->args, "lineno") != -1;
+  int fd = fat_open(args->argv[1]);
+  if (fd != -1) {
+    int len;
+    while ((len = fat_getline(&buf, &cap, fd)) > 0) {
+      if (hasno) {
+        printf(GREEN("%4d") "  %s", ++line, buf);
+      } else {
+        printf("%s", buf);
       }
-      fat_close(fd);
     }
+    printf("\n");
+    fat_close(fd);
   }
   return 0;
 }
@@ -342,35 +353,32 @@ int builtin_exit(struct cmd_arg* args) {
 }
 
 int builtin_import(struct cmd_arg* args) {
-  //     entry("import") {
-  if (args->argc < 3) {
-    print_usage("import", "target source");
-  } else {
-    if (fat_create(args->argv[1]) < 0) {
-      printf("target file already exists");
-      return -1;
-    }
-    int fd0 = fat_open(args->argv[1]);
-    if (fd0 < 0) {
-      printf("open target file error");
-      return -1;
-    }
-    int fd1 = open(args->argv[2], O_RDONLY);
-    if (fd1 < 0) {
-      perror("open target file");
-      return -1;
-    }
-    char buf[BUFSIZ];
-    int len = 0;
-    while ((len = read(fd1, buf, BUFSIZ)) > 0) {
-      if (fat_write(fd0, buf, len) < 0) {
-        printf("write target error");
-        break;
-      }
-    }
-    fat_close(fd0);
-    close(fd1);
+  const char* target = args->argv[1];
+  const char* source = args->argc < 3 ? target : args->argv[2];
+  if (fat_create(target) < 0) {
+    printf("target file already exists");
+    return -1;
   }
+  int fd0 = fat_open(target);
+  if (fd0 < 0) {
+    printf("open target file error");
+    return -1;
+  }
+  int fd1 = open(source, O_RDONLY);
+  if (fd1 < 0) {
+    perror("open target file");
+    return -1;
+  }
+  char buf[BLOCK_SIZE];
+  int len = 0;
+  while ((len = read(fd1, buf, sizeof buf)) > 0) {
+    if (fat_write(fd0, buf, len) < 0) {
+      printf("write target error");
+      break;
+    }
+  }
+  fat_close(fd0);
+  close(fd1);
 }
 
 int builtin_export(struct cmd_arg* args) {

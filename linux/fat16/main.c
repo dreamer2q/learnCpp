@@ -1,14 +1,13 @@
+#include "cmd.h"
 #include "color.h"
+#include "common.h"
 #include "filesys.h"
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
+#include <string.h>
 #include <sys/file.h>
+#include <sys/wait.h>
 #include <unistd.h>
-#include "common.h"
-#include "cmd.h"
 
 // 函数声明
 void openEditor(const char *filename);

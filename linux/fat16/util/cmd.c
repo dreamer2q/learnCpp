@@ -37,6 +37,14 @@ int flag_index(struct flag_arg* flags, const char* key) {
   return -1;
 }
 
+const char* flag_get(struct flag_arg* flags, const char* key) {
+  int i = flag_index(flags, key);
+  if (i != -1) {
+    return flags[i].val;
+  }
+  return NULL;
+}
+
 int cmd_index_name(struct cmd_t* cmds, const char* cmd) {
   int index = 0;
   struct cmd_t* c;
@@ -74,8 +82,12 @@ int cmd_parse_flags(struct flag_t* defs, const char** argv,
           arg++;
         }
         res[i++] = fa;
+        indef = flag - defs;
         break;
       }
+    }
+    if (indef == -1) {
+      return argv - arg;  // invalid flag
     }
   }
   return i;
@@ -90,8 +102,9 @@ int flag_cmp(const void* f1, const void* f2) {
 void cmd_print_usage(struct cmd_t* execcmd) {
   printf("Usage of %s: %s\n\n", execcmd->cmd, execcmd->usage);
   for (struct flag_t* f = execcmd->flags; f->desc; f++) {
-    printf("\t -%c, --%s \t\t\t %s\n", f->short_opt, f->long_opt, f->desc);
+    printf("  -%c, --%s \t\t\t %s\n", f->short_opt, f->long_opt, f->desc);
   }
+  printf("\n");
 }
 
 int cmd_exec(struct cmd_t* execcmd, int argc, const char** argv) {
@@ -103,11 +116,15 @@ int cmd_exec(struct cmd_t* execcmd, int argc, const char** argv) {
   }
 
   struct flag_arg fargs[MAX_FLAGS] = {NULL};
-  int flen = cmd_parse_flags(execcmd->flags, argv, fargs);
-  qsort(fargs, flen, sizeof(struct flag_arg), flag_cmp);
+  int flag_len = cmd_parse_flags(execcmd->flags, argv, fargs);
+  if (flag_len < 0) {
+    printf("cmd_exec: invalid flag %s\n", argv[-flag_len]);
+    return -1;
+  }
+  qsort(fargs, flag_len, sizeof(struct flag_arg), flag_cmp);
 
   // find duplicated flag
-  for (int i = 0; i < flen - 1; i++) {
+  for (int i = 0; i < flag_len - 1; i++) {
     if (compare(fargs[i].key, ==, fargs[i + 1].key)) {
       printf("cmd_exec: duplicated flag %s\n", fargs->key);
       return -1;

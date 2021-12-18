@@ -4,6 +4,8 @@ cmake_minimum_required (VERSION 2.8)
 # 项目信息
 project (filesys)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # include header
 include_directories(include)
 

@@ -65,15 +65,21 @@ struct block0 {
 
 // FCB 文件控制块
 struct fcb_t {
-  char filename[8];  // 文件名(目录是一种特殊的文件)
-  char extname[3];   // 文件扩展名
-  u8 attr;           // 文件属性字段
-  u16 time;          // 最近修改时间
-  u16 date;          // 最近修改日期
-  u16 first_id;      // 起始磁盘块号
-  u32 length;        // 文件长度 bytes
-  u8 use_state;      // 目录项目是否为空(0,表示空)
-};
+  /**
+   * 魔改：增加文件名长度，不再区分扩展名
+   */
+  char filename[20];  // 文件名(目录是一种特殊的文件)
+  // char extname[3];   // 文件扩展名
+  u8 attr;       // 文件属性字段
+  u16 time;      // 最近修改时间
+  u16 date;      // 最近修改日期
+  u16 first_id;  // 起始磁盘块号
+  u32 length;    // 文件长度 bytes
+  /**
+   * 这里不知道为何要用一个 use_state 来标记 FCB 是否被使用
+   */
+  u8 use_state;  // 目录项目是否为空(0,表示空)
+};               // 32bytes
 
 #define FAT_ATTR_DIR 0x01
 #define FAT_ATTR_FILE 0x00

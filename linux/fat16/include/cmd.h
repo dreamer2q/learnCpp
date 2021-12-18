@@ -28,7 +28,7 @@ struct flag_arg {
 // command argument
 struct cmd_arg {
   int argc;               // raw argc
-  const char** argv;            // raw argv
+  const char** argv;      // raw argv
   struct flag_arg* args;  // parsed argument flags
 };
 
@@ -49,5 +49,8 @@ int cmd_parseline(char* buf, const char* argv[]);
 int cmd_index_name(struct cmd_t* cmds, const char* cmd);
 
 int cmd_exec(struct cmd_t* cmds, int argc, const char** argv);
+
+int flag_index(struct flag_arg* flags, const char* key);
+const char* flag_get(struct flag_arg* flags, const char* key);
 
 #endif

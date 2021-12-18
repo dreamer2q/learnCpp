@@ -12,6 +12,9 @@
 #include <time.h>
 #include <unistd.h>
 
+int do_fat_write(int fd, void *buf, u32 len);
+int do_fat_read(int fd, void *buf, u32 len);
+
 #define _get_fat_ptr(i) ((struct fat_t *)(virtual_disk + i * BLOCK_SIZE))
 #define get_fat1 _get_fat_ptr(1)
 #define get_fat2 _get_fat_ptr(3)
@@ -167,7 +170,7 @@ void fat_format() {
   struct fat_datetime now = fat_now();
   struct fcb_t fcb = {
       .filename = ".",  // 本级目录
-      .extname = "",
+      // .extname = "",
       .attr = FAT_ATTR_DIR,
       .use_state = 1,
       .length = 2 * sizeof(struct fcb_t),
@@ -297,7 +300,7 @@ int do_fat_read(int fd, void *buf, u32 len) {
   return readcnt;
 }
 
-int do_fat_write(int fd, const void *buf, u32 len) {
+int do_fat_write(int fd, void *buf, u32 len) {
   assert(buf != NULL, "buf is empty");
   assert(fd >= 0 && fd <= MAX_OPENCNT, "invalid fd");
 
@@ -306,18 +309,12 @@ int do_fat_write(int fd, const void *buf, u32 len) {
   struct file_t *of = current_useropens + fd;
   int first_id = of->fcb.first_id;
 
-  // 移动 FAT 位置，匹配 OFFSET
-  int offset = of->count;
-  while (offset >= BLOCK_SIZE) {
-    offset -= BLOCK_SIZE;
-    first_id = get_fat1[first_id].id;  // 下一个 block
-    if (first_id == BLOCK_END) {
-      // offset 错误
-      debug_log("do_fat_write: invalid offset\n");
-      return EOF;
-    }
+  if (of->count > of->fcb.length) {
+    debug_log("do_fat_write: invalid offset\n");
+    return EOF;
   }
 
+  // 保证至少有一个 BLOCK 可用
   if (first_id == BLOCK_END) {
     // 如果还没有分配BLOCK, 再这里给它分配空间
     first_id = get_smallest_free_block();
@@ -326,9 +323,35 @@ int do_fat_write(int fd, const void *buf, u32 len) {
       debug_log("do_fat_write: next_block: disk is full\n");
       return ERR_DISK_FULL;
     }
+    // 这里分配的是初始块，不需要 connect
+    get_fat1[first_id].id = BLOCK_END;  // mark END
+
     // 分配成功后我们要更新它的 first_id
     of->fcb.first_id = first_id;
     of->fcb_state = 1;
+  }
+
+  // 移动 FAT 位置，匹配 OFFSET
+  int offset = of->count;
+  while (offset >= BLOCK_SIZE) {
+    offset -= BLOCK_SIZE;
+    int next_id = get_fat1[first_id].id;
+    if (next_id == BLOCK_END) {
+      if (offset > 0) {  // offset 错误
+        debug_log("do_fat_write: invalid offset\n");
+        return EOF;
+      }
+      // 边界情况, 当offset是block整数倍时候, 确保后续有块可写
+      next_id = get_smallest_free_block();
+      if (next_id == BLOCK_END) {
+        // 空间分配失败
+        debug_log("do_fat_write: next_block: disk is full\n");
+        return ERR_DISK_FULL;
+      }
+      get_fat1[first_id].id = next_id;   // connect BLOCK
+      get_fat1[next_id].id = BLOCK_END;  // mark END
+    }
+    first_id = next_id;  // 下一个 block
   }
 
   // 如果 BLOCK_SIZE 比较大,可以使用 malloc
@@ -354,16 +377,17 @@ int do_fat_write(int fd, const void *buf, u32 len) {
     while (written < len) {
       int left = len - written;
 
-      first_id = get_fat1[first_id].id;
-      if (first_id == BLOCK_END) {
-        int next_block = get_smallest_free_block();
-        if (next_block == BLOCK_END) {
+      int next_id = get_fat1[first_id].id;
+      if (next_id == BLOCK_END) {
+        next_id = get_smallest_free_block();
+        if (next_id == BLOCK_END) {
           debug_log("do_fat_write: next_block: disk is full\n");
           return ERR_DISK_FULL;
         }
-        first_id = next_block;
-        get_fat1[first_id].id = BLOCK_END;  // mark END
+        get_fat1[first_id].id = next_id;   // connect BLOCK
+        get_fat1[next_id].id = BLOCK_END;  // mark END
       }
+      first_id = next_id;  // move NEXT
       blockptr = virtual_disk + first_id * BLOCK_SIZE;
 
       int len = min(BLOCK_SIZE, left);
@@ -404,7 +428,8 @@ int fat_mkdir(const char *dirname) {
   struct fcb_t *fcb;
   int free_fcbid = -1, i = 0;
   for_each_current_fcb(fcb) {
-    if (fcb->attr & FAT_ATTR_DIR && compare(dirname, ==, fcb->filename)) {
+    // 不允许目录和文件重名
+    if (compare(dirname, ==, fcb->filename)) {
       debug_log("fat_mkdir: dirname already exist\n");
       return -1;
     }
@@ -430,7 +455,7 @@ int fat_mkdir(const char *dirname) {
       .attr = FAT_ATTR_DIR,
       .date = now.date,
       .time = now.time,
-      .extname = "",
+      // .extname = "",
       .first_id = first_block,
       .use_state = 1,
       // 初始化只有 "." 和 ".." 两个子目录
@@ -550,7 +575,7 @@ int fat_create(const char *filename) {
       .attr = FAT_ATTR_FILE,
       .date = now.date,
       .time = now.time,
-      .extname = "",
+      // .extname = "",
       .use_state = true,
       .length = 0,
   };
@@ -749,6 +774,12 @@ int fat_chdir(const char *dirname) {
 int fat_read(int fd, void *buf, u32 len) { return do_fat_read(fd, buf, len); }
 int fat_write(int fd, void *buf, u32 len) { return do_fat_write(fd, buf, len); }
 
+int fat_eof(int fd) {
+  assert(fd >= 0 && fd <= MAX_OPENCNT, "invalid fd");
+  struct file_t *op = current_useropens + fd;
+  return op->count >= op->fcb.length;
+}
+
 int fat_getline(char **buf, size_t *bufcap, int fd) {
   assert(buf != NULL, "buf is empty");
   assert(fd >= 0 && fd <= MAX_OPENCNT, "invalid fd");
@@ -757,14 +788,18 @@ int fat_getline(char **buf, size_t *bufcap, int fd) {
   *bufcap = BUFSIZ;
   *buf = bufline;
 
-  int len;
+  if (fat_eof(fd)) return -1;
+
   char ch;
-  for (int i = 0; (len = do_fat_read(fd, &ch, 1)) == 1; i++) {
-    bufline[i] = ch;
+  int len = 0;
+  while (do_fat_read(fd, &ch, 1) == 1 && len < sizeof bufline) {
+    bufline[len++] = ch;
     if (ch == '\n') {
-      return i;
+      bufline[len] = '\0';
+      return len;
     }
   }
+  bufline[len] = '\0';
   return len;
 }
 
