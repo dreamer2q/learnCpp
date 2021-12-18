@@ -1,20 +1,17 @@
 #ifndef __FAT_FILESYS
 #define __FAT_FILESYS
 
-#define assert(boolean, err)                                      \
-  do {                                                            \
-    if (!(boolean)) {                                             \
-      fprintf(stderr, "assert error at %d: %s\n", __LINE__, err); \
-      exit(-1);                                                   \
-    }                                                             \
-  } while (0)
+#include "common.h"
 
-// 数据结构定义
-#define u32 unsigned int
-#define u16 unsigned short
-#define u8 unsigned char
-#define true 1
-#define false (!true)
+#define __DEBUG_FLAG
+#ifdef __DEBUG_FLAG
+#define DEBUG(block) \
+  do block while (0)
+#else
+#define DEBUG(block)
+#endif
+
+#define debug_log(log, args...) DEBUG({ fprintf(stderr, log, ##args); })
 
 #define FAT_MAGIC 0x1234   // MAGIC NUMBER
 #define KiB 1024           // kilobytes
@@ -28,10 +25,6 @@
 #define MAX_OPENCNT 32
 #define BUFSIZ_FCB ((sizeof(struct fcb_t) * BLOCK_SIZE))
 #define MAX_PATHCNT 80
-
-#define offsetof(type, member) ((size_t) & (((type *)0)->member))
-
-typedef unsigned long size_t;
 
 // FAT 日期时间
 struct fat_datetime {
@@ -103,28 +96,25 @@ struct file_t {
 /*
  * 全局变量定义
  */
-extern u8 *virtual_disk;  // 虚拟磁盘的起始地址
-extern struct file_t current_useropens[MAX_OPENCNT];
-extern u8 current_dirfd;  // 当前目录的文件描述号 fd
-extern u8 *start_vdata;   // 虚拟磁盘数据区开始位置
-extern int fat_errno;     // FAT 操作错误
-
-#define _get_fat_ptr(i) ((struct fat_t *)(virtual_disk + i * BLOCK_SIZE))
-#define get_fat1 _get_fat_ptr(1)
-#define get_fat2 _get_fat_ptr(3)
-#define current_dir current_useropens[current_dirfd]
+// extern u8 *virtual_disk;  // 虚拟磁盘的起始地址
+// extern struct file_t current_useropens[MAX_OPENCNT];
+// extern u8 current_dirfd;  // 当前目录的文件描述号 fd
+// extern u8 *start_vdata;   // 虚拟磁盘数据区开始位置
+extern int fat_errno;  // FAT 操作错误
 
 /**
  * 函数声明
  */
 void startsys();
 void exitsys();
+struct block0 *fat_blkinfo();
 struct fcb_t *fat_list(int *count);
+char *fat_getcwd(char *buf, size_t len);
+int fat_chdir(const char *dirname);
 int fat_mkdir(const char *dirname);
 int fat_rmdir(const char *dirname);
 int fat_open(const char *filename);
 int fat_close(int fd);
-int fat_cd(const char *dirname);
 int fat_delete(const char *filename);
 int fat_create(const char *filename);
 int fat_read(int fd, void *buf, u32 len);

@@ -4,8 +4,16 @@ cmake_minimum_required (VERSION 2.8)
 # 项目信息
 project (filesys)
 
+# include header
+include_directories(include)
+
+# 添加源码目录
+aux_source_directory(. SRC_DIR)
+
+aux_source_directory(util SRC_UTIL_DIR)
+
 # 指定生成目标
-add_executable(filesys filesys.c texor.c main.c)
+add_executable(filesys ${SRC_UTIL_DIR} ${SRC_DIR})
 
 # add_compile_options(
 #   "-Wall" "-Wpedantic" "-Wextra" "-fexceptions"

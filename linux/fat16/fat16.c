@@ -12,18 +12,10 @@
 #include <time.h>
 #include <unistd.h>
 
-#define min(a, b) ((a) < (b) ? (a) : (b))
-#define compare(s1, cmp, s2) (strcmp(s1, s2) cmp 0)
-
-#define __DEBUG_FLAG
-#ifdef __DEBUG_FLAG
-#define DEBUG(block) \
-  do block while (0)
-#else
-#define DEBUG(block)
-#endif
-
-#define debug_log(log, args...) DEBUG({ fprintf(stderr, log, ##args); })
+#define _get_fat_ptr(i) ((struct fat_t *)(virtual_disk + i * BLOCK_SIZE))
+#define get_fat1 _get_fat_ptr(1)
+#define get_fat2 _get_fat_ptr(3)
+#define current_dir current_useropens[current_dirfd]
 
 struct fat_datetime fat_now() {
   time_t now = time(NULL);
@@ -45,6 +37,10 @@ struct file_t current_useropens[MAX_OPENCNT];
 const char *local_disk_file = "fat16.disk";
 
 void sync_fat2() { memcpy(get_fat2, get_fat1, 2 * BLOCK_SIZE); }
+
+struct block0 *fat_blkinfo() {
+  return (struct block0 *)virtual_disk;
+}
 
 int get_free_openfd() {
   for (int i = 0; i < MAX_OPENCNT; i++) {
@@ -388,6 +384,13 @@ int do_fat_write(int fd, const void *buf, u32 len) {
   return written;
 }
 
+char *fat_getcwd(char *buf, size_t len) {
+  int cpylen = min(strlen(current_dir.dirname), len);
+  strncpy(buf, current_dir.dirname, cpylen);
+  buf[cpylen] = '\0';
+  return buf;
+}
+
 int fat_mkdir(const char *dirname) {
   /**
    * 当前目录：当前打开目录项表示的目录
@@ -691,7 +694,7 @@ int fat_close(int fd) {
   return 0;
 }
 
-int fat_cd(const char *dirname) {
+int fat_chdir(const char *dirname) {
   assert(strlen(dirname) < 8, "dirname is too long");
 
   if (!strcmp(dirname, ".")) {

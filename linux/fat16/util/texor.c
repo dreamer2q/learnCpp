@@ -619,6 +619,8 @@ char *editorRowsToString(int *buflen) {
 }
 
 void editorOpen(char *filename) {
+  if (!filename) return;
+
   if (E.filename) {
     free(E.filename);
   }
