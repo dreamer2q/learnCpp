@@ -34,6 +34,7 @@
  */
 int exec_status;    // 前台进程返回状态
 pid_t running_pid;  // running child pid
+char **environ;
 
 /*
  ** 共享内存
@@ -89,7 +90,7 @@ int builtin_command(char *argv[]) {
     return 1;
   }
   if (!strcmp(argv[0], "env")) {
-    char **env = __environ;
+    char **env = environ;
     while (*env) {
       printf("%s\n", *env);
       env++;
@@ -224,7 +225,8 @@ void register_signal() {
   }
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[], char *env[]) {
+  environ = env;
   register_signal();
 
   print_motd();
