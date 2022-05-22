@@ -102,10 +102,6 @@ struct file_t {
 /*
  * 全局变量定义
  */
-// extern u8 *virtual_disk;  // 虚拟磁盘的起始地址
-// extern struct file_t current_useropens[MAX_OPENCNT];
-// extern u8 current_dirfd;  // 当前目录的文件描述号 fd
-// extern u8 *start_vdata;   // 虚拟磁盘数据区开始位置
 extern int fat_errno;  // FAT 操作错误
 
 /**

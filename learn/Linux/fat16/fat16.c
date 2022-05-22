@@ -824,5 +824,6 @@ int fat_trunc(int fd, int len) {
   memset(buf, 0, siz);
   int ex = do_fat_write(fd, buf, siz);
   free(buf);
+  of->count = 0;
   return ex;
 }

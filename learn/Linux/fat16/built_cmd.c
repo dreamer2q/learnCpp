@@ -24,7 +24,24 @@ int builtin_exit(struct cmd_arg* args);
 int builtin_import(struct cmd_arg* args);
 int builtin_export(struct cmd_arg* args);
 
+int builtin_test(struct cmd_arg* args) {
+  const char* testfile = "test.c";
+  const char testbuf[] = "this is a test line\n";
+  int fd = fat_open(testfile);
+  if (fd != -1) {
+    fat_trunc(fd, sizeof(testbuf));
+    fat_write(fd, testbuf, sizeof(testbuf));
+    fat_close(fd);
+  }
+}
+
 struct cmd_t builtin_commands[] = {
+    {
+        .cmd = "test",
+        .exec = builtin_test,
+        .min_argc = 0,
+        .usage = "debug test",
+    },
     {
         .cmd = "ver",
         .exec = builtin_ver,
@@ -37,7 +54,6 @@ struct cmd_t builtin_commands[] = {
                     .desc = "show more information",
                     .flag = required,
                 },
-                {},
             },
         .usage = "display version information",
     },
@@ -95,7 +111,6 @@ struct cmd_t builtin_commands[] = {
                     .long_opt = "lineno",
                     .short_opt = 'n',
                 },
-                {},
             },
         .usage = "display the file content",
     },
