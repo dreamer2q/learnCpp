@@ -314,10 +314,10 @@ int main(int argc, char* argv[]) {
   opterr = 0;
   while ((opt = getopt(argc, argv, "p:h:")) != -1) {
     switch (opt) {
-      case 'p':
+      case 'h':
         serv_ip = optarg;
         break;
-      case 'h':
+      case 'p':
         serv_port = atoi(optarg);
         break;
       default:
