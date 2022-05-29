@@ -8,8 +8,13 @@
 #include <signal.h>
 #include <unistd.h>
 #include <locale.h>
+#include <getopt.h>
 
 #include "chat.h"
+
+#define DEFAULT_IP "127.0.0.1"
+const char* serv_ip = DEFAULT_IP;
+uint16_t serv_port = 8081;
 
 WINDOW* main_win;
 WINDOW *chat_win, *chat_wbox;
@@ -34,8 +39,6 @@ int sockfd;
 struct sockaddr_in serv_addr;
 
 void setup_socket(int argc, char* argv[]) {
-  const int SERV_PORT = 8081;
-
   sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
   if (sockfd < 0) {
     fprintf(stderr, "create socket error\n");
@@ -43,8 +46,9 @@ void setup_socket(int argc, char* argv[]) {
   }
 
   serv_addr.sin_family = AF_INET;
-  serv_addr.sin_port = htons(SERV_PORT);
-  serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+  serv_addr.sin_port = htons(serv_port);
+  serv_addr.sin_addr.s_addr = inet_addr(serv_ip);
+  debug_log("connecting %s:%d as %s\n", serv_ip, serv_port, current_name);
 }
 
 void make_udp_req(uint8_t type, size_t sz) {
@@ -108,6 +112,7 @@ void setup_connection() {
 
   memcpy(req_buf, &join, sizeof join);
   make_udp_req(Type_REQ_JOIN, sizeof join);
+  debug_log("waiting for reply...\n");
   wait_udp_res();
   if (res_pkg->type != Type_RES_JOIN) {
     debug_log("setup connection\n");
@@ -300,11 +305,30 @@ void send_msg(struct req_send_msg* msg) {
   make_udp_req(Type_REQ_SEND, msg_off + msg->msg_len);
 }
 
+void print_usage() {
+  fprintf(stderr, "usage: chat_client -h ip_addr -p ip_port [nickname]\n");
+}
+
 int main(int argc, char* argv[]) {
-  if (argc == 1) {
-    sprintf(current_name, "user_%d", (int)(time(NULL) % 100));
-  } else if (argc == 2) {
-    strncpy(current_name, argv[1], sizeof current_name);
+  int opt = 0;
+  opterr = 0;
+  while ((opt = getopt(argc, argv, "p:h:")) != -1) {
+    switch (opt) {
+      case 'p':
+        serv_ip = optarg;
+        break;
+      case 'h':
+        serv_port = atoi(optarg);
+        break;
+      default:
+        print_usage();
+        exit(-1);
+    }
+  }
+  argc -= optind;
+  argv += optind;
+  if (argc > 0) {
+    strcpy(current_name, argv[0]);
   }
 
   signal(SIGINT, sig_interupt);
