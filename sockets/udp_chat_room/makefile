@@ -5,7 +5,7 @@ CLIENT=udp_chat_client.c
 SERVER=udp_chat_server.c
 
 CC=gcc
-CFLAGS=-Wformat -Wall -lpthread -lncursesw -I../../
+CFLAGS=-Wformat -Wall -lpthread -lncurses -I../../
 
 all: chat_client chat_server
 

@@ -6,7 +6,7 @@
 
 #include "chat.h"
 
-const int SERV_PORT = 8081;
+const int SERV_PORT = 3001;
 
 void exit_handler() { printf("echo server terminated\n"); }
 
