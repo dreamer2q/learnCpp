@@ -180,7 +180,7 @@ void init_window() {
   endwin();
   refresh();
   clear();
-
+  
   int w = COLS;
   int chat_h = LINES * 0.8;
   int input_h = LINES * 0.2;
@@ -201,7 +201,7 @@ void init_window() {
   refresh_chat_messages();
 }
 
-void sig_interupt() {
+void signal_interupt() {
   // TODO
   exit(1);
 }
@@ -331,7 +331,7 @@ int main(int argc, char* argv[]) {
     strcpy(current_name, argv[0]);
   }
 
-  signal(SIGINT, sig_interupt);
+  signal(SIGINT, signal_interupt);
   signal(SIGWINCH, init_window);
 
   setup_socket(argc, argv);

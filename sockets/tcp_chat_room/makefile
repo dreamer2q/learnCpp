@@ -1,11 +1,11 @@
 CLIENT_NAME=chat_client
 SERVER_NAME=chat_server
 
-CLIENT=udp_chat_client.c
-SERVER=udp_chat_server.c
+CLIENT=chat_client.c tpl.c
+SERVER=chat_server.c tpl.c
 
 CC=gcc
-CFLAGS=-Wformat -Wall -lpthread -lncurses -I../../
+CFLAGS=-Wformat -Wall -lncursesw -lpthread -pthread -I../../
 
 all: chat_client chat_server
 

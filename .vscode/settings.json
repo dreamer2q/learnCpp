@@ -1,5 +1,4 @@
 {
-  "files.associations": {},
   "C_Cpp.clang_format_fallbackStyle": "Google",
   "C_Cpp.clang_format_sortIncludes": false,
   "code-runner.runInTerminal": true
